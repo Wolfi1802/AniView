@@ -10,11 +10,22 @@ namespace AniView.Structure.API.Querys
               Page(page: $page, perPage: $perPage) {
                 media(type: ANIME, sort: $sort, isAdult: false) {
                   id
-                  title { romaji english }
-                  coverImage { large extraLarge }
+                  title {
+                    romaji
+                    english
+                  }
+                  coverImage {
+                    large
+                    extraLarge
+                  }
                   format
                   averageScore
                   popularity
+                  nextAiringEpisode {
+                    airingAt
+                    timeUntilAiring
+                    episode
+                  }
                 }
               }
             }
@@ -49,6 +60,11 @@ namespace AniView.Structure.API.Querys
                   format
                   averageScore
                   popularity
+                  nextAiringEpisode {
+                    airingAt
+                    timeUntilAiring
+                    episode
+                  }
                 }
               }
             }

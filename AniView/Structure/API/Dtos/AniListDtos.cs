@@ -42,6 +42,8 @@ namespace AniView.Structure.API.Dtos
         public int? AverageScore { get; init; }
 
         public int? Popularity { get; init; }
+
+        public MediaAiringScheduleDto? NextAiringEpisode { get; init; }
     }
 
     internal sealed class MediaTitleDto
@@ -56,5 +58,23 @@ namespace AniView.Structure.API.Dtos
         public string? Large { get; init; }
 
         public string? ExtraLarge { get; init; }
+    }
+
+    internal sealed class MediaAiringScheduleDto
+    {
+        /// <summary>
+        /// Unix-Zeitstempel der Ausstrahlung in Sekunden.
+        /// </summary>
+        public int? AiringAt { get; init; }
+
+        /// <summary>
+        /// Verbleibende Sekunden bis zur Ausstrahlung.
+        /// </summary>
+        public int? TimeUntilAiring { get; init; }
+
+        /// <summary>
+        /// Nummer der nächsten Episode.
+        /// </summary>
+        public int? Episode { get; init; }
     }
 }

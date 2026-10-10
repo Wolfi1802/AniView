@@ -3,6 +3,7 @@ using AniView.Structure.API.Dtos;
 using AniView.Structure.API.Exceptions;
 using AniView.Structure.API.Querys;
 using Microsoft.Extensions.Caching.Memory;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
 
@@ -10,6 +11,9 @@ namespace AniView.Structure.API.Services
 {
     public sealed class AnimeService : IAnimeListService
     {
+        private const int MIN_PAGE_NUMBER = 1;
+        private const int MAX_PAGE_NUMBER = 50;
+
         private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
         private static readonly TimeSpan PopularCacheDuration = TimeSpan.FromMinutes(10);
 
@@ -59,18 +63,18 @@ namespace AniView.Structure.API.Services
         }
 
         public async Task<IReadOnlyList<AnimeSummary>> GetCurrentSimulcast(
-            int pageIndex = 1,
-            int itemsPerPage = 50,
+            int pageIndex = MIN_PAGE_NUMBER,
+            int itemsPerPage = MAX_PAGE_NUMBER,
             CancellationToken cancellationToken = default)
         {
-            int page = Math.Max(1, pageIndex);
+            int indexOfPage = GetPageIndex(pageIndex);
             int perPage = GetPageCount(itemsPerPage);
 
             var (season, seasonYear) = GetCurrentSeason();
 
             // Season, Jahr und Pagination müssen Teil des Cache-Keys sein.
             var cacheKey =
-                $"anilist:simulcast:{season}:{seasonYear}:{page}:{perPage}";
+                $"anilist:simulcast:{season}:{seasonYear}:{indexOfPage}:{perPage}";
 
             if (_cache.TryGetValue(
                 cacheKey,
@@ -82,7 +86,7 @@ namespace AniView.Structure.API.Services
 
             var variables = new
             {
-                page,
+                indexOfPage,
                 perPage,
                 season,
                 seasonYear,
@@ -169,16 +173,45 @@ namespace AniView.Structure.API.Services
 
         private static AnimeSummary MapToSummary(MediaDto media)
         {
-            var title = FirstNonEmpty(media.Title?.English, media.Title?.Romaji) ?? "Unbekannter Titel";
-            var cover = FirstNonEmpty(media.CoverImage?.ExtraLarge, media.CoverImage?.Large);
+            var title = FirstNonEmpty(
+                media.Title?.English,
+                media.Title?.Romaji) ?? "Unbekannter Titel";
+
+            var cover = FirstNonEmpty(
+                media.CoverImage?.ExtraLarge,
+                media.CoverImage?.Large);
 
             string? format = null;
+
             if (!string.IsNullOrWhiteSpace(media.Format))
             {
-                format = FormatLabels.TryGetValue(media.Format, out var label) ? label : media.Format;
+                format = FormatLabels.TryGetValue(media.Format, out var label)
+                    ? label
+                    : media.Format;
             }
 
-            return new AnimeSummary(media.Id, title, cover, format, media.AverageScore, media.Popularity);
+            var airing = media.NextAiringEpisode;
+
+            DateTimeOffset? airingAt = airing?.AiringAt is int timestamp
+                ? DateTimeOffset.FromUnixTimeSeconds(timestamp)
+                : null;
+
+            TimeSpan? timeUntilAiring = airing?.TimeUntilAiring is int seconds
+                ? TimeSpan.FromSeconds(seconds)
+                : null;
+
+            return new AnimeSummary(
+                media.Id,
+                title,
+                cover,
+                format,
+                media.AverageScore,
+                media.Popularity)
+            {
+                NextEpisodeNumber = airing?.Episode,
+                NextEpisodeAiringAt = airingAt,
+                TimeUntilNextEpisode = timeUntilAiring
+            };
         }
 
         private static string? FirstNonEmpty(params string?[] values) =>
@@ -186,7 +219,12 @@ namespace AniView.Structure.API.Services
 
         private static int GetPageCount(int count)
         {
-            return Math.Clamp(count, 1, 50);
+            return Math.Clamp(count, MIN_PAGE_NUMBER, MAX_PAGE_NUMBER);
+        }
+
+        private static int GetPageIndex(int pageIndex)
+        {
+            return Math.Max(MIN_PAGE_NUMBER, pageIndex);
         }
 
         private static (string Season, int Year) GetCurrentSeason()
