@@ -3,16 +3,18 @@
 @using AniView
 @using AniView.Components
 @using AniView.Components.Layout
+@using AniView.Models
 @using AniView.Structure
+@using AniView.Structure.Services
+@using AniView.Theme
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using MudBlazor
-@using WolfisBlazorPage.Structure
+@using System.Globalization
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 
-@inject APIService APIService
 @inject UiMessageService UiMessages
 @inject ISnackbar Snackbar

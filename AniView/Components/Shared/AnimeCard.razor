@@ -1,0 +1,136 @@
+<article class="av-card">
+    <div class="av-cover-wrap">
+        @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
+        {
+            <img class="av-cover" src="@Anime.CoverUrl" alt="Cover von @Anime.Title" loading="lazy" />
+        }
+        else
+        {
+            <div class="av-cover-fallback" role="img" aria-label="Kein Cover verfügbar">
+                <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Large" />
+            </div>
+        }
+
+        @if (Rank is { } rank)
+        {
+            <span class="av-rank" title="Platz @rank">@rank</span>
+        }
+    </div>
+
+    <div class="av-body">
+        <h3 class="av-title" title="@Anime.Title">@Anime.Title</h3>
+        <div class="av-meta">
+            <p>Format:</p>
+
+            @if (!string.IsNullOrWhiteSpace(Anime.Format))
+            {
+                <p class="av-meta__value">@Anime.Format</p>
+            }
+            else
+            {
+                <p class="av-meta__value">-</p>
+            }
+        </div>
+        <div class="av-meta">
+            <p>Rating:</p>
+
+            @if (Anime.ScoreOutOfTen is { } score)
+            {
+                <p class="av-meta__value">★ @score.ToString("0.0")</p>
+            }           
+            else
+            {
+                <p class="av-meta__value">-</p>
+            }
+        </div>
+        <div class="av-meta">
+            <p>Nummer der nächsten Episode:</p>
+
+            @if (Anime.NextEpisodeNumber  is { } nextEpisodeNumber)
+            {
+                <p class="av-meta__value">@nextEpisodeNumber.ToString()</p>
+            }
+            else
+            {
+                <p class="av-meta__value">-</p>
+            }
+        </div>
+        <div class="av-meta">
+            <p>Erscheint am:<br></p>
+
+            @if (Anime.NextEpisodeAiringAt  is { } airingAt)
+            {
+                <p class="av-meta__value">@airingAt.ToLocalTime().ToString("dddd, 'den' dd.MM.yyyy", CultureInfo.GetCultureInfo("de-DE"))</p>
+            }
+            else
+            {
+                <p class="av-meta__value">-</p>
+            }
+        </div>
+        <div class="av-meta">
+            <p>Erscheint in:</p>
+
+            @if (Anime.NextEpisodeAiringAt  is { } nextEpisodeAt)
+            {
+                var remaining = nextEpisodeAt - _now;
+                
+                @if (remaining > TimeSpan.Zero)
+                {
+                    <p class="av-meta__value">
+                        @((int)remaining.TotalDays) Tage,
+                        @remaining.Hours Stunden,
+                        @remaining.Minutes Minuten
+                    </p>
+                }
+                else
+                {
+                    <p class="av-meta__value">Die Folge sollte bereits erschienen sein.</p>
+                }
+            }
+            else
+            {
+                <p class="av-meta__value">-</p>
+            }
+        </div>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public AnimeSummary Anime { get; set; } = default!;
+
+    [Parameter]
+    public int? Rank { get; set; }
+
+    private DateTimeOffset _now = DateTimeOffset.Now;
+    private readonly CancellationTokenSource _timerCts = new();
+    protected override void OnInitialized()
+    {
+        _ = UpdateCountdownAsync(_timerCts.Token);
+    }
+    private async Task UpdateCountdownAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                await InvokeAsync(() =>
+                {
+                    _now = DateTimeOffset.Now;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // Timer wurde beim Verlassen der Komponente beendet.
+        }
+    }
+
+    public void Dispose()
+    {
+        _timerCts.Cancel();
+        _timerCts.Dispose();
+    }
+}

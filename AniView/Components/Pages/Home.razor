@@ -1,9 +1,24 @@
-﻿@page "/"
-@using AniView.Structure
-@using MudBlazor
-
-@inject UiMessageService UiMessages
+@page "/home"
+@using AniView.Components.Shared
+@implements IDisposable
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Top 10 Animes</MudText>
+<MudText Class="mud-text-secondary mb-6">Top Animes gemessen anhand der community</MudText>
+
+@if (_errorTitle is not null)
+{
+    <StateMessage Title="@_errorTitle" Message="@_errorMessage" Icon="@_errorIcon" OnRetry="LoadAsync" />
+}
+else if (!_isLoading && _items is { Count: 0 })
+{
+    <StateMessage Title="Keine Animes gefunden"
+                  Message="API hat keine Einträge geliefert."
+                  Icon="@Icons.Material.Filled.SearchOff"
+                  OnRetry="LoadAsync" />
+}
+else
+{
+    <AnimeGrid Items="_items" IsLoading="_isLoading" ShowRank="true" SkeletonCount="RankingSize" />
+}

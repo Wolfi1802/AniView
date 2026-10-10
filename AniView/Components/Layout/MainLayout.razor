@@ -1,14 +1,50 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider @ref="_themeProvider"
+                  Theme="AniViewTheme.Default"
+                  @bind-IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-@Body
+<MudLayout>
+    <MudAppBar Elevation="0" Class="border-b">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       Class="d-md-none"
+                       AriaLabel="Navigation öffnen oder schließen"
+                       OnClick="ToggleDrawer" />
+        <MudSpacer />
+        <ThemeToggle IsDarkMode="_isDarkMode" IsDarkModeChanged="OnDarkModeChangedAsync" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen"
+               Variant="DrawerVariant.Responsive"
+               Breakpoint="Breakpoint.Md"
+               ClipMode="DrawerClipMode.Never"
+               Elevation="0"
+               Class="border-e">
+        <MudDrawerHeader>
+            <MudLink Href="/home" Underline="Underline.None" Color="Color.Inherit" Typo="Typo.h6" aria-label="AniView – zur Startseite">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Movie" Color="Color.Primary" />
+                    <span>AniView</span>
+                </MudStack>
+            </MudLink>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6 pb-12">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
+    Es ist ein unerwarteter Fehler aufgetreten.
+    <a href="." class="reload">Neu laden</a>
     <span class="dismiss">🗙</span>
 </div>

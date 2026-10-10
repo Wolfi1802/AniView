@@ -1,8 +1,9 @@
 using AniView.Components;
 using AniView.Structure;
+using AniView.Structure.API.Services;
+using AniView.Structure.Services;
 using MudBlazor;
 using MudBlazor.Services;
-using WolfisBlazorPage.Structure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,17 +25,18 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<UiMessageService>();
-builder.Services.AddTransient<ApiResponseInterceptor>();
+builder.Services.AddScoped<ThemeService>();
 
-builder.Services.AddHttpClient<APIService>(client =>
+builder.Services.AddMemoryCache();
+builder.Services.AddTransient<ApiResponseInterceptor>();
+builder.Services.AddHttpClient<IAnimeListService, AnimeService>(client =>
 {
-#if RELEASE
-    client.BaseAddress = new Uri("https://api-hdm0.onrender.com/");
-#else
-    client.BaseAddress = new Uri("https://localhost:7118/");
-#endif
+    client.BaseAddress = new Uri("https://graphql.anilist.co/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
 })
 .AddHttpMessageHandler<ApiResponseInterceptor>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
