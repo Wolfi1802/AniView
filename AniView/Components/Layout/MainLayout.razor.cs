@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace AniView.Components.Layout
 {
-    public partial class MainLayout : LayoutComponentBase
+    public partial class MainLayout
     {
         private MudThemeProvider? _themeProvider;
         private bool _isDarkMode;
