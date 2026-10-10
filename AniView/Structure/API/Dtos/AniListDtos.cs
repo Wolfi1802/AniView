@@ -250,7 +250,8 @@ namespace AniView.Structure.API.Dtos
 
         public int? Popularity { get; init; }
 
-        public bool? InProgress { get; init; }
+        /// <summary>Anzahl der Nutzer, die den Anime gerade schauen.</summary>
+        public int? InProgress { get; init; }
 
         public bool? Releasing { get; init; }
 
