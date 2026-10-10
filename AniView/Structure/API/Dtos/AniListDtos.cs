@@ -1,4 +1,4 @@
-namespace AniView.Services
+namespace AniView.Structure.API.Dtos
 {
     // Interne Transportmodelle für die AniList-API. Alle Felder sind nullable,
     // weil die API fehlende Werte als null liefert.

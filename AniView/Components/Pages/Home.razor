@@ -1,10 +1,11 @@
-@page "/"
+@page "/home"
+@using AniView.Components.Shared
 @implements IDisposable
 
-<PageTitle>AniView – Top 10</PageTitle>
+<PageTitle>Home</PageTitle>
 
 <MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Top 10 Animes</MudText>
-<MudText Class="mud-text-secondary mb-6">Die beliebtesten Animes auf AniList, gemessen an der Anzahl der Nutzerlisten.</MudText>
+<MudText Class="mud-text-secondary mb-6">Top Animes gemessen anhand der community</MudText>
 
 @if (_errorTitle is not null)
 {
@@ -13,7 +14,7 @@
 else if (!_isLoading && _items is { Count: 0 })
 {
     <StateMessage Title="Keine Animes gefunden"
-                  Message="AniList hat keine Einträge geliefert."
+                  Message="API hat keine Einträge geliefert."
                   Icon="@Icons.Material.Filled.SearchOff"
                   OnRetry="LoadAsync" />
 }

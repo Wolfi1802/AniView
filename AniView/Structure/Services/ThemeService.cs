@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace AniView.Services
+namespace AniView.Structure.Services
 {
     /// <summary>
     /// Speichert und liest die gewählte Farbvariante (hell/dunkel) im localStorage des Browsers.

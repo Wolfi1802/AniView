@@ -1,11 +1,11 @@
-namespace AniView.Services
+namespace AniView.Structure.API.Exceptions
 {
     /// <summary>
     /// Allgemeiner Fehler bei der Kommunikation mit der AniList-API.
     /// </summary>
-    public class AniListException : Exception
+    public class ApiException : Exception
     {
-        public AniListException(string message, Exception? innerException = null)
+        public ApiException(string message, Exception? innerException = null)
             : base(message, innerException)
         {
         }
@@ -14,10 +14,10 @@ namespace AniView.Services
     /// <summary>
     /// AniList hat die Anfrage wegen des Rate-Limits abgelehnt (HTTP 429).
     /// </summary>
-    public sealed class AniListRateLimitException : AniListException
+    public sealed class ApiRateLimitException : ApiException
     {
-        public AniListRateLimitException(TimeSpan? retryAfter)
-            : base("Das Anfragelimit von AniList ist erreicht.")
+        public ApiRateLimitException(TimeSpan? retryAfter)
+            : base("Das Anfragelimit von Api ist erreicht.")
         {
             RetryAfter = retryAfter;
         }

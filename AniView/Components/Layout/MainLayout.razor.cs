@@ -1,4 +1,4 @@
-using AniView.Services;
+using AniView.Structure.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 

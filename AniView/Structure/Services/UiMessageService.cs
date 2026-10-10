@@ -1,6 +1,6 @@
 ﻿using MudBlazor;
 
-namespace AniView.Structure
+namespace AniView.Structure.Services
 {
     public class UiMessageService
     {

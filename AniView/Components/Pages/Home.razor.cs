@@ -1,5 +1,6 @@
 using AniView.Models;
-using AniView.Services;
+using AniView.Structure.API.Exceptions;
+using AniView.Structure.API.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -18,7 +19,7 @@ namespace AniView.Components.Pages
         private string _errorIcon = Icons.Material.Filled.ErrorOutline;
 
         [Inject]
-        private IAniListService AniList { get; set; } = default!;
+        private IAnimeListService animeList { get; set; } = default!;
 
         [Inject]
         private ILogger<Home> Logger { get; set; } = default!;
@@ -33,17 +34,18 @@ namespace AniView.Components.Pages
 
             try
             {
-                _items = await AniList.GetPopularAsync(RankingSize, _cts.Token);
+                _items = await animeList.GetPopularAsync(RankingSize, _cts.Token);
+                // TODO exception handling doppelt
             }
-            catch (AniListRateLimitException ex)
+            catch (ApiRateLimitException ex)
             {
                 _errorIcon = Icons.Material.Filled.HourglassEmpty;
                 _errorTitle = "Zu viele Anfragen";
                 _errorMessage = ex.RetryAfter is { } wait
-                    ? $"AniList bittet um etwas Geduld. Bitte versuche es in ca. {Math.Ceiling(wait.TotalSeconds)} Sekunden erneut."
-                    : "AniList bittet um etwas Geduld. Bitte versuche es gleich noch einmal.";
+                    ? $"API bittet um etwas Geduld. Bitte versuche es in ca. {Math.Ceiling(wait.TotalSeconds)} Sekunden erneut."
+                    : "API bittet um etwas Geduld. Bitte versuche es gleich noch einmal.";
             }
-            catch (AniListException ex)
+            catch (ApiException ex)
             {
                 Logger.LogWarning(ex, "Das Ranking konnte nicht geladen werden.");
                 _errorIcon = Icons.Material.Filled.ErrorOutline;

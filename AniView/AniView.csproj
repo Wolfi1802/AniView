@@ -11,8 +11,4 @@
     <PackageReference Include="MudBlazor" Version="9.11.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Structure\Dtos\" />
-  </ItemGroup>
-
 </Project>

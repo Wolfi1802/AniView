@@ -1,6 +1,7 @@
 using AniView.Components;
-using AniView.Services;
 using AniView.Structure;
+using AniView.Structure.API.Services;
+using AniView.Structure.Services;
 using MudBlazor;
 using MudBlazor.Services;
 
@@ -28,7 +29,7 @@ builder.Services.AddScoped<ThemeService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<ApiResponseInterceptor>();
-builder.Services.AddHttpClient<IAniListService, AniListService>(client =>
+builder.Services.AddHttpClient<IAnimeListService, AnimeService>(client =>
 {
     client.BaseAddress = new Uri("https://graphql.anilist.co/");
     client.Timeout = TimeSpan.FromSeconds(15);
