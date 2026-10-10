@@ -175,11 +175,14 @@ namespace AniView.Structure.API.Services
         {
             var title = FirstNonEmpty(
                 media.Title?.English,
-                media.Title?.Romaji) ?? "Unbekannter Titel";
+                media.Title?.Romaji,
+                media.Title?.UserPreferred,
+                media.Title?.Native) ?? "Unbekannter Titel";
 
             var cover = FirstNonEmpty(
                 media.CoverImage?.ExtraLarge,
-                media.CoverImage?.Large);
+                media.CoverImage?.Large,
+                media.CoverImage?.Medium);
 
             string? format = null;
 
