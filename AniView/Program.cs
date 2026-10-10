@@ -1,8 +1,8 @@
 using AniView.Components;
+using AniView.Services;
 using AniView.Structure;
 using MudBlazor;
 using MudBlazor.Services;
-using WolfisBlazorPage.Structure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,17 +24,8 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<UiMessageService>();
-builder.Services.AddTransient<ApiResponseInterceptor>();
+builder.Services.AddScoped<ThemeService>();
 
-builder.Services.AddHttpClient<APIService>(client =>
-{
-#if RELEASE
-    client.BaseAddress = new Uri("https://api-hdm0.onrender.com/");
-#else
-    client.BaseAddress = new Uri("https://localhost:7118/");
-#endif
-})
-.AddHttpMessageHandler<ApiResponseInterceptor>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

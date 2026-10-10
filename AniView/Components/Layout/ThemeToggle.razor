@@ -1,0 +1,20 @@
+<MudTooltip Text="@Label">
+    <MudIconButton Icon="@Icon"
+                   Color="Color.Inherit"
+                   AriaLabel="@Label"
+                   OnClick="ToggleAsync" />
+</MudTooltip>
+
+@code {
+    [Parameter]
+    public bool IsDarkMode { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsDarkModeChanged { get; set; }
+
+    private string Icon => IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode;
+
+    private string Label => IsDarkMode ? "Zum hellen Modus wechseln" : "Zum dunklen Modus wechseln";
+
+    private Task ToggleAsync() => IsDarkModeChanged.InvokeAsync(!IsDarkMode);
+}
