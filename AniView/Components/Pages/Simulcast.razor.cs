@@ -22,7 +22,7 @@ namespace AniView.Components.Pages
         private string? _seasonString;
 
         [Inject]
-        private IAnimeListService animeList { get; set; } = default!;
+        private ICurrentSimulcastService simulcastAnimes { get; set; } = default!;
 
         [Inject]
         private ILogger<Home> Logger { get; set; } = default!;
@@ -44,7 +44,7 @@ namespace AniView.Components.Pages
 
             try
             {
-                _items = await animeList.GetCurrentSimulcast(PageIndex, PageSize, _cts.Token);
+                _items = await simulcastAnimes.GetCurrentSimulcast(PageIndex, PageSize, _cts.Token);
                 // TODO exception handling doppelt
             }
             catch (ApiRateLimitException ex)

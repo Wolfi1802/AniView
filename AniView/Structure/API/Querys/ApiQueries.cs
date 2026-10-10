@@ -1,30 +1,23 @@
+using System.Text;
+
 namespace AniView.Structure.API.Querys
 {
     /// <summary>
-    /// GraphQL-Abfragen für AniList. Wird nur vom Service verwendet, nicht von Komponenten.
+    /// GraphQL-Abfragen für AniList. Wird nur von den Services verwendet, nicht von Komponenten.
+    /// Die Feldauswahl wird über ein <see cref="MediaFieldsProfile"/> zusammengesetzt.
     /// </summary>
     internal static class ApiQueries
     {
         /// <summary>
-        /// Gemeinsame Feldauswahl für alle Media-Abfragen, passend zu MediaDto.
-        /// Verschachtelte Listen sind begrenzt, damit die Abfrage unter dem
-        /// Komplexitätslimit der AniList-API bleibt.
+        /// Einfache Felder der ersten Ebene, die immer abgefragt werden.
         /// </summary>
-        private const string MediaFields = """
+        private const string BaseFields = """
             id
             idMal
-            title {
-              romaji
-              english
-              native
-              userPreferred
-            }
             type
             format
             status(version: 2)
             description(asHtml: false)
-            startDate { year month day }
-            endDate { year month day }
             season
             seasonYear
             seasonInt
@@ -36,14 +29,7 @@ namespace AniView.Structure.API.Querys
             isLicensed
             source(version: 3)
             hashtag
-            trailer { id site thumbnail }
             updatedAt
-            coverImage {
-              extraLarge
-              large
-              medium
-              color
-            }
             bannerImage
             genres
             synonyms
@@ -53,6 +39,40 @@ namespace AniView.Structure.API.Querys
             isLocked
             trending
             favourites
+            isAdult
+            siteUrl
+            autoCreateForumThread
+            isRecommendationBlocked
+            isReviewBlocked
+            """;
+
+        // Objekte der zweiten Ebene. Verschachtelte Listen sind begrenzt, damit die
+        // Abfrage unter dem Komplexitätslimit der AniList-API bleibt.
+        private const string TitleFields = """
+            title {
+              romaji
+              english
+              native
+              userPreferred
+            }
+            """;
+
+        private const string StartDateFields = "startDate { year month day }";
+
+        private const string EndDateFields = "endDate { year month day }";
+
+        private const string TrailerFields = "trailer { id site thumbnail }";
+
+        private const string CoverImageFields = """
+            coverImage {
+              extraLarge
+              large
+              medium
+              color
+            }
+            """;
+
+        private const string TagsFields = """
             tags {
               id
               name
@@ -63,6 +83,9 @@ namespace AniView.Structure.API.Querys
               isMediaSpoiler
               isAdult
             }
+            """;
+
+        private const string RelationsFields = """
             relations {
               edges {
                 id
@@ -77,6 +100,9 @@ namespace AniView.Structure.API.Querys
                 }
               }
             }
+            """;
+
+        private const string CharactersFields = """
             characters(perPage: 10, sort: [ROLE, RELEVANCE, ID]) {
               edges {
                 id
@@ -88,6 +114,9 @@ namespace AniView.Structure.API.Querys
                 }
               }
             }
+            """;
+
+        private const string StaffFields = """
             staff(perPage: 10, sort: [RELEVANCE, ID]) {
               edges {
                 id
@@ -99,6 +128,9 @@ namespace AniView.Structure.API.Querys
                 }
               }
             }
+            """;
+
+        private const string StudiosFields = """
             studios {
               edges {
                 id
@@ -111,7 +143,9 @@ namespace AniView.Structure.API.Querys
                 }
               }
             }
-            isAdult
+            """;
+
+        private const string NextAiringEpisodeFields = """
             nextAiringEpisode {
               id
               airingAt
@@ -119,6 +153,9 @@ namespace AniView.Structure.API.Querys
               episode
               mediaId
             }
+            """;
+
+        private const string AiringScheduleFields = """
             airingSchedule(perPage: 10, notYetAired: true) {
               nodes {
                 id
@@ -128,6 +165,9 @@ namespace AniView.Structure.API.Querys
                 mediaId
               }
             }
+            """;
+
+        private const string TrendsFields = """
             trends(perPage: 10, sort: [DATE_DESC]) {
               nodes {
                 mediaId
@@ -140,6 +180,9 @@ namespace AniView.Structure.API.Querys
                 episode
               }
             }
+            """;
+
+        private const string ExternalLinksFields = """
             externalLinks {
               id
               url
@@ -152,12 +195,18 @@ namespace AniView.Structure.API.Querys
               notes
               isDisabled
             }
+            """;
+
+        private const string StreamingEpisodesFields = """
             streamingEpisodes {
               title
               thumbnail
               url
               site
             }
+            """;
+
+        private const string RankingsFields = """
             rankings {
               id
               rank
@@ -168,6 +217,9 @@ namespace AniView.Structure.API.Querys
               allTime
               context
             }
+            """;
+
+        private const string RecommendationsFields = """
             recommendations(perPage: 5, sort: [RATING_DESC]) {
               nodes {
                 id
@@ -182,6 +234,9 @@ namespace AniView.Structure.API.Querys
                 }
               }
             }
+            """;
+
+        private const string ReviewsFields = """
             reviews(limit: 5, sort: [RATING_DESC]) {
               nodes {
                 id
@@ -196,23 +251,19 @@ namespace AniView.Structure.API.Querys
                 }
               }
             }
-            siteUrl
-            autoCreateForumThread
-            isRecommendationBlocked
-            isReviewBlocked
             """;
 
-        public const string MediaPage = $$"""
+        public static string MediaPage(MediaFieldsProfile profile) => $$"""
             query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
               Page(page: $page, perPage: $perPage) {
                 media(type: ANIME, sort: $sort, isAdult: false) {
-                  {{MediaFields}}
+                  {{BuildMediaFields(profile)}}
                 }
               }
             }
             """;
 
-        public const string CurrentSimulcast = $$"""
+        public static string CurrentSimulcast(MediaFieldsProfile profile) => $$"""
             query (
               $page: Int,
               $perPage: Int,
@@ -229,10 +280,44 @@ namespace AniView.Structure.API.Querys
                   sort: $sort,
                   isAdult: false
                 ) {
-                  {{MediaFields}}
+                  {{BuildMediaFields(profile)}}
                 }
               }
             }
             """;
+
+        private static string BuildMediaFields(MediaFieldsProfile profile)
+        {
+            var fields = new StringBuilder(BaseFields);
+
+            AppendIf(fields, profile.Title, TitleFields);
+            AppendIf(fields, profile.StartDate, StartDateFields);
+            AppendIf(fields, profile.EndDate, EndDateFields);
+            AppendIf(fields, profile.Trailer, TrailerFields);
+            AppendIf(fields, profile.CoverImage, CoverImageFields);
+            AppendIf(fields, profile.Tags, TagsFields);
+            AppendIf(fields, profile.Relations, RelationsFields);
+            AppendIf(fields, profile.Characters, CharactersFields);
+            AppendIf(fields, profile.Staff, StaffFields);
+            AppendIf(fields, profile.Studios, StudiosFields);
+            AppendIf(fields, profile.NextAiringEpisode, NextAiringEpisodeFields);
+            AppendIf(fields, profile.AiringSchedule, AiringScheduleFields);
+            AppendIf(fields, profile.Trends, TrendsFields);
+            AppendIf(fields, profile.ExternalLinks, ExternalLinksFields);
+            AppendIf(fields, profile.StreamingEpisodes, StreamingEpisodesFields);
+            AppendIf(fields, profile.Rankings, RankingsFields);
+            AppendIf(fields, profile.Recommendations, RecommendationsFields);
+            AppendIf(fields, profile.Reviews, ReviewsFields);
+
+            return fields.ToString();
+        }
+
+        private static void AppendIf(StringBuilder fields, bool enabled, string block)
+        {
+            if (enabled)
+            {
+                fields.Append('\n').Append(block);
+            }
+        }
     }
 }
