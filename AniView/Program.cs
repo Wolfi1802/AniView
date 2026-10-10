@@ -26,6 +26,16 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<UiMessageService>();
 builder.Services.AddScoped<ThemeService>();
 
+builder.Services.AddMemoryCache();
+builder.Services.AddTransient<ApiResponseInterceptor>();
+builder.Services.AddHttpClient<IAniListService, AniListService>(client =>
+{
+    client.BaseAddress = new Uri("https://graphql.anilist.co/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+})
+.AddHttpMessageHandler<ApiResponseInterceptor>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

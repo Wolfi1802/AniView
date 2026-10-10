@@ -8,6 +8,7 @@ namespace AniView.Components.Layout
     {
         private MudThemeProvider? _themeProvider;
         private bool _isDarkMode;
+        private bool _drawerOpen = true;
 
         [Inject]
         private ThemeService ThemeService { get; set; } = default!;
@@ -26,6 +27,8 @@ namespace AniView.Components.Layout
 
             StateHasChanged();
         }
+
+        private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
 
         private async Task OnDarkModeChangedAsync(bool isDarkMode)
         {

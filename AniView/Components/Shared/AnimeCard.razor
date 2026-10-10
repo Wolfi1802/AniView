@@ -1,0 +1,41 @@
+<article class="av-card">
+    <div class="av-cover-wrap">
+        @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
+        {
+            <img class="av-cover" src="@Anime.CoverUrl" alt="Cover von @Anime.Title" loading="lazy" />
+        }
+        else
+        {
+            <div class="av-cover-fallback" role="img" aria-label="Kein Cover verfügbar">
+                <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Large" />
+            </div>
+        }
+
+        @if (Rank is { } rank)
+        {
+            <span class="av-rank" title="Platz @rank">@rank</span>
+        }
+    </div>
+
+    <div class="av-body">
+        <h3 class="av-title" title="@Anime.Title">@Anime.Title</h3>
+        <p class="av-meta">
+            @if (!string.IsNullOrWhiteSpace(Anime.Format))
+            {
+                <span>@Anime.Format</span>
+            }
+            @if (Anime.ScoreOutOfTen is { } score)
+            {
+                <span>★ @score.ToString("0.0")</span>
+            }
+        </p>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public AnimeSummary Anime { get; set; } = default!;
+
+    [Parameter]
+    public int? Rank { get; set; }
+}

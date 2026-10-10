@@ -1,0 +1,37 @@
+<div class="av-grid" aria-busy="@(IsLoading ? "true" : "false")">
+    @if (IsLoading)
+    {
+        @for (var i = 0; i < SkeletonCount; i++)
+        {
+            <div class="av-skeleton-card" aria-hidden="true">
+                <div class="av-skeleton-cover">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="100%" />
+                </div>
+                <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="85%" />
+                <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="45%" />
+            </div>
+        }
+    }
+    else if (Items is not null)
+    {
+        @for (var i = 0; i < Items.Count; i++)
+        {
+            var item = Items[i];
+            <AnimeCard Anime="item" Rank="@(ShowRank ? i + 1 : null)" />
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<AnimeSummary>? Items { get; set; }
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public bool ShowRank { get; set; }
+
+    [Parameter]
+    public int SkeletonCount { get; set; } = 10;
+}

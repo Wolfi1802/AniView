@@ -9,15 +9,32 @@
 
 <MudLayout>
     <MudAppBar Elevation="0" Class="border-b">
-        <MudLink Href="/" Underline="Underline.None" Color="Color.Inherit" Typo="Typo.h6" aria-label="AniView – zur Startseite">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                <MudIcon Icon="@Icons.Material.Filled.Movie" Color="Color.Primary" />
-                <span>AniView</span>
-            </MudStack>
-        </MudLink>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       Class="d-md-none"
+                       AriaLabel="Navigation öffnen oder schließen"
+                       OnClick="ToggleDrawer" />
         <MudSpacer />
         <ThemeToggle IsDarkMode="_isDarkMode" IsDarkModeChanged="OnDarkModeChangedAsync" />
     </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen"
+               Variant="DrawerVariant.Responsive"
+               Breakpoint="Breakpoint.Md"
+               ClipMode="DrawerClipMode.Never"
+               Elevation="0"
+               Class="border-e">
+        <MudDrawerHeader>
+            <MudLink Href="/" Underline="Underline.None" Color="Color.Inherit" Typo="Typo.h6" aria-label="AniView – zur Startseite">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Movie" Color="Color.Primary" />
+                    <span>AniView</span>
+                </MudStack>
+            </MudLink>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
 
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6 pb-12">
