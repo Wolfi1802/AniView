@@ -11,7 +11,7 @@ namespace AniView.Structure.API.Services
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
 
         // Bestimmt, welche Objekte der zweiten Ebene diese Abfrage lädt.
-        private static readonly MediaFieldsProfile Profile = MediaFieldsProfile.Full;
+        private static readonly MediaFieldsProfile Profile = MediaFieldsProfile.Summary;
 
         private readonly IAniListClient _client;
         private readonly IMemoryCache _cache;

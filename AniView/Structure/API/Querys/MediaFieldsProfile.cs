@@ -43,6 +43,7 @@ namespace AniView.Structure.API.Querys
 
         public bool Reviews { get; init; }
 
+
         /// <summary>
         /// Nur die Objekte, die Karten und Ranglisten benötigen.
         /// </summary>
