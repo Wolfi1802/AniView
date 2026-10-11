@@ -40,5 +40,17 @@ namespace AniView.Structure.API.Services
             _cache.Set(cacheKey, result, CacheDuration);
             return result;
         }
+
+        public async Task<PageResult<AnimeSummary>> GetPopularPageAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        {
+            int perPage = ApiPaging.GetPageCount(pageSize);
+            var variables = new { page = ApiPaging.GetPageIndex(page), perPage, sort = new[] { "POPULARITY_DESC" } };
+            var data = await _client.SendAsync<MediaPageData>(ApiQueries.MediaPage(Profile), variables, cancellationToken);
+
+            var items = AnimeSummaryMapper.MapAll(data);
+
+            // Die Abfrage liefert keine Seiteninfo. Eine volle Seite gilt als "es gibt eventuell mehr".
+            return new PageResult<AnimeSummary>(items, items.Count >= perPage);
+        }
     }
 }

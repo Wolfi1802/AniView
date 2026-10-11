@@ -1,0 +1,8 @@
+.av-infinite-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 16px 0;
+}
