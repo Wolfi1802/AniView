@@ -55,14 +55,7 @@ namespace AniView.Structure.API.Mapping
                 media.CoverImage?.Large,
                 media.CoverImage?.Medium);
 
-            string? format = null;
-
-            if (!string.IsNullOrWhiteSpace(media.Format))
-            {
-                format = FormatLabels.TryGetValue(media.Format, out var label)
-                    ? label
-                    : media.Format;
-            }
+            var format = GetFormatLabel(media.Format);
 
             var airing = media.NextAiringEpisode;
 
@@ -90,7 +83,20 @@ namespace AniView.Structure.API.Mapping
             };
         }
 
-        private static string? FirstNonEmpty(params string?[] values) =>
+        /// <summary>
+        /// Übersetzt das AniList-Format (zum Beispiel MOVIE) in die Anzeige; unbekannte Werte bleiben unverändert.
+        /// </summary>
+        internal static string? GetFormatLabel(string? format)
+        {
+            if (string.IsNullOrWhiteSpace(format))
+            {
+                return null;
+            }
+
+            return FormatLabels.TryGetValue(format, out var label) ? label : format;
+        }
+
+        internal static string? FirstNonEmpty(params string?[] values) =>
             values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
     }
 }

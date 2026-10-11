@@ -1,4 +1,5 @@
 @implements IDisposable
+@inject IDialogService DialogService
 
 <article class="av-card">
     <div class="av-cover-wrap">
@@ -16,6 +17,18 @@
         @if (Rank is { } rank)
         {
             <span class="av-rank" title="Platz @rank">@rank</span>
+        }
+
+        @if (ShowDetails)
+        {
+            <button type="button"
+                    class="av-info-btn"
+                    title="Weitere Informationen"
+                    aria-label="Weitere Informationen zu @Anime.Title"
+                    aria-haspopup="dialog"
+                    @onclick="OpenDetailsAsync">
+                <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" />
+            </button>
         }
     </div>
 
@@ -133,6 +146,32 @@
     /// </summary>
     [Parameter]
     public bool ShowPopularity { get; set; }
+
+    /// <summary>
+    /// Zeigt oben rechts im Bild ein Info-Symbol, das den Detail-Dialog mit allen Informationen zum Anime öffnet.
+    /// </summary>
+    [Parameter]
+    public bool ShowDetails { get; set; }
+
+    private Task OpenDetailsAsync()
+    {
+        var parameters = new DialogParameters<AnimeDetailDialog>
+        {
+            { dialog => dialog.Anime, Anime }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            NoHeader = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = true
+        };
+
+        // Der Dialog lädt die Details selbst nach, sobald er geöffnet ist.
+        return DialogService.ShowAsync<AnimeDetailDialog>(Anime.Title, parameters, options);
+    }
 
     private string FinishedText => Anime.Episodes is { } episodes
         ? $"Anime ist beendet, er hat {episodes} {(episodes == 1 ? "Folge" : "Folgen")}"

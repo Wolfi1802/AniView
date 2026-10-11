@@ -1,0 +1,17 @@
+.av-fact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.av-fact__label {
+    font-size: 0.75rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.av-fact__value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}

@@ -1,0 +1,21 @@
+@if (!string.IsNullOrWhiteSpace(Value))
+{
+    <div class="av-fact">
+        <span class="av-fact__label">@Label</span>
+        <span class="av-fact__value">@Value</span>
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Bezeichnung der Angabe, zum Beispiel "Format".
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Wert der Angabe. Ohne Wert wird die gesamte Zeile ausgeblendet.
+    /// </summary>
+    [Parameter]
+    public string? Value { get; set; }
+}

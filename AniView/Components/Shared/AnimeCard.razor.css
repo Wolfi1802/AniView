@@ -46,6 +46,33 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
+.av-info-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    transition: background-color 0.15s ease;
+}
+
+.av-info-btn:hover {
+    background: var(--mud-palette-primary);
+}
+
+.av-info-btn:focus-visible {
+    outline: 2px solid var(--mud-palette-primary);
+    outline-offset: 2px;
+}
+
 .av-body {
     padding: 12px 14px 14px;
 }

@@ -24,6 +24,11 @@ namespace AniView.Structure.API.Dtos
         public MediaPageDto? Page { get; init; }
     }
 
+    internal sealed class MediaByIdData
+    {
+        public MediaDto? Media { get; init; }
+    }
+
     internal sealed class MediaPageDto
     {
         public PageInfoDto? PageInfo { get; init; }
