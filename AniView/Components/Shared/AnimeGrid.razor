@@ -18,7 +18,7 @@
         @for (var i = 0; i < Items.Count; i++)
         {
             var item = Items[i];
-            <AnimeCard Anime="item" Rank="@(ShowRank ? i + 1 : null)" ShowPopularity="ShowPopularity" />
+            <AnimeCard Anime="item" Rank="@(ShowRank ? i + 1 : null)" ShowPopularity="ShowPopularity" ShowDetails="ShowDetails" />
         }
     }
 </div>
@@ -36,6 +36,12 @@
 
     [Parameter]
     public bool ShowPopularity { get; set; }
+
+    /// <summary>
+    /// Zeigt auf jeder Karte das Info-Symbol, das alle Informationen zum Anime öffnet.
+    /// </summary>
+    [Parameter]
+    public bool ShowDetails { get; set; }
 
     [Parameter]
     public int SkeletonCount { get; set; } = 10;

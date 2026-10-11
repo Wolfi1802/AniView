@@ -11,7 +11,7 @@ namespace AniView.Structure
         [
             new(new DateOnly(2026, 10, 11),
                 "Mehr Informationen zu jedem Anime",
-                "Auf der Simulcast-Seite öffnet das Info-Symbol oben rechts im Bild alle Details zu einem Anime. Die Informationen werden erst beim Öffnen geladen."),
+                "In Simulcast und Top 10 öffnet das Info-Symbol oben rechts im Bild alle Details zu einem Anime, bei All Animes ein Klick auf die Zeile. Die Informationen werden erst beim Öffnen geladen."),
             new(new DateOnly(2026, 10, 11),
                 "Beliebtheit in den Top 10",
                 "Die Top 10 zeigen jetzt auch, wie beliebt ein Anime ist. Bei beendeten Animes steht statt der nächsten Folge, wie viele Folgen es gibt."),

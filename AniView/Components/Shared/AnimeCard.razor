@@ -153,25 +153,7 @@
     [Parameter]
     public bool ShowDetails { get; set; }
 
-    private Task OpenDetailsAsync()
-    {
-        var parameters = new DialogParameters<AnimeDetailDialog>
-        {
-            { dialog => dialog.Anime, Anime }
-        };
-
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Large,
-            FullWidth = true,
-            NoHeader = true,
-            CloseOnEscapeKey = true,
-            BackdropClick = true
-        };
-
-        // Der Dialog lädt die Details selbst nach, sobald er geöffnet ist.
-        return DialogService.ShowAsync<AnimeDetailDialog>(Anime.Title, parameters, options);
-    }
+    private Task OpenDetailsAsync() => AnimeDetailDialog.ShowAsync(DialogService, Anime);
 
     private string FinishedText => Anime.Episodes is { } episodes
         ? $"Anime ist beendet, er hat {episodes} {(episodes == 1 ? "Folge" : "Folgen")}"

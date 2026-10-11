@@ -482,6 +482,28 @@
         }
     }
 
+    /// <summary>
+    /// Öffnet den Detail-Dialog zu einem Anime. Die Details lädt der Dialog selbst nach, sobald er offen ist.
+    /// </summary>
+    public static Task<IDialogReference> ShowAsync(IDialogService dialogService, AnimeSummary anime)
+    {
+        var parameters = new DialogParameters<AnimeDetailDialog>
+        {
+            { dialog => dialog.Anime, anime }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            NoHeader = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = true
+        };
+
+        return dialogService.ShowAsync<AnimeDetailDialog>(anime.Title, parameters, options);
+    }
+
     private void Close() => MudDialog.Close();
 
     private static string? Number(int? value) => value?.ToString("N0", De);

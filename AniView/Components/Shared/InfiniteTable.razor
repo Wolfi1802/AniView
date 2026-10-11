@@ -39,7 +39,10 @@
                     <tbody>
                         @foreach (var item in _rows)
                         {
-                            <tr>@RowTemplate?.Invoke(item)</tr>
+                            <tr class="@(OnRowClick.HasDelegate ? "av-row-clickable" : null)"
+                                tabindex="@(OnRowClick.HasDelegate ? "0" : null)"
+                                @onclick="() => OnRowClickedAsync(item)"
+                                @onkeydown="e => OnRowKeyDownAsync(e, item)">@RowTemplate?.Invoke(item)</tr>
                         }
                     </tbody>
                 </MudSimpleTable>

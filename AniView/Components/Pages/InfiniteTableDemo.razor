@@ -6,7 +6,7 @@
 
 <MudText Typo="Typo.h4" Component="h1" GutterBottom="true">All Animes</MudText>
 
-<InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" ItemsPerPage="20" @bind-TotalItems="_requestTotal">
+<InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" ItemsPerPage="20" @bind-TotalItems="_requestTotal" OnRowClick="OpenDetailsAsync">
     <HeaderContent>
         <AnimeTableHeader />
     </HeaderContent>
@@ -25,6 +25,11 @@
 
     [Inject]
     private IPopularAnimeService PopularAnimes { get; set; } = default!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = default!;
+
+    private Task OpenDetailsAsync(AnimeSummary anime) => AnimeDetailDialog.ShowAsync(DialogService, anime);
 
     protected override Task OnInitializedAsync() => LoadListAsync();
 
