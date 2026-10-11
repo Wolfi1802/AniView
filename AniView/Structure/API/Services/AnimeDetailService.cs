@@ -11,8 +11,8 @@ namespace AniView.Structure.API.Services
     {
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
 
-        // Die Detailansicht zeigt alle Objekte der zweiten Ebene.
-        private static readonly MediaFieldsProfile Profile = MediaFieldsProfile.Full;
+        // Die Detailansicht lädt alles außer verwandten Titeln und Empfehlungen.
+        private static readonly MediaFieldsProfile Profile = MediaFieldsProfile.Detail;
 
         private readonly IAniListClient _client;
         private readonly IMemoryCache _cache;

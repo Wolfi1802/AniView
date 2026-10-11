@@ -75,10 +75,6 @@ namespace AniView.Models
 
         public IReadOnlyList<AnimePerson> Staff { get; init; } = [];
 
-        public IReadOnlyList<AnimeRelation> Relations { get; init; } = [];
-
-        public IReadOnlyList<AnimeRecommendation> Recommendations { get; init; } = [];
-
         public IReadOnlyList<AnimeExternalLink> ExternalLinks { get; init; } = [];
 
         public IReadOnlyList<AnimeStreamingEpisode> StreamingEpisodes { get; init; } = [];
@@ -113,10 +109,6 @@ namespace AniView.Models
 
     /// <summary>Charakter oder Mitarbeiter mit Rolle.</summary>
     public sealed record AnimePerson(string Name, string? NativeName, string? Role, string? ImageUrl);
-
-    public sealed record AnimeRelation(int Id, string Title, string? RelationType, string? Format, string? Status, string? CoverUrl);
-
-    public sealed record AnimeRecommendation(int Id, string Title, string? Format, string? CoverUrl, int? Rating);
 
     public sealed record AnimeExternalLink(string Site, string Url, string? Type, string? Language, string? Color, string? Notes);
 

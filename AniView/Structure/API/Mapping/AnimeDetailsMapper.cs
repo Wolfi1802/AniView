@@ -46,23 +46,6 @@ namespace AniView.Structure.API.Mapping
             ["PICTURE_BOOK"] = "Bilderbuch"
         };
 
-        private static readonly Dictionary<string, string> RelationLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["ADAPTATION"] = "Vorlage",
-            ["PREQUEL"] = "Vorgänger",
-            ["SEQUEL"] = "Nachfolger",
-            ["PARENT"] = "Hauptgeschichte",
-            ["SIDE_STORY"] = "Nebengeschichte",
-            ["CHARACTER"] = "Gemeinsame Charaktere",
-            ["SUMMARY"] = "Zusammenfassung",
-            ["ALTERNATIVE"] = "Alternative",
-            ["SPIN_OFF"] = "Spin-off",
-            ["OTHER"] = "Sonstiges",
-            ["SOURCE"] = "Quelle",
-            ["COMPILATION"] = "Kompilation",
-            ["CONTAINS"] = "Enthält"
-        };
-
         private static readonly Dictionary<string, string> RoleLabels = new(StringComparer.OrdinalIgnoreCase)
         {
             ["MAIN"] = "Hauptrolle",
@@ -132,8 +115,6 @@ namespace AniView.Structure.API.Mapping
                 Studios = MapStudios(media.Studios),
                 Characters = MapPeople(media.Characters?.Edges, edge => (edge.Node?.Name, edge.Node?.Image, edge.Role)),
                 Staff = MapPeople(media.Staff?.Edges, edge => (edge.Node?.Name, edge.Node?.Image, edge.Role)),
-                Relations = MapRelations(media.Relations),
-                Recommendations = MapRecommendations(media.Recommendations),
                 ExternalLinks = MapLinks(media.ExternalLinks),
                 StreamingEpisodes = MapStreamingEpisodes(media.StreamingEpisodes),
                 Rankings = MapRankings(media.Rankings),
@@ -188,29 +169,6 @@ namespace AniView.Structure.API.Mapping
                     Clean(person.Name.Native),
                     TranslateRole(person.Role),
                     AnimeSummaryMapper.FirstNonEmpty(person.Image?.Large, person.Image?.Medium)))
-                .ToList();
-
-        private static IReadOnlyList<AnimeRelation> MapRelations(EdgeListDto<MediaRelationEdgeDto>? relations) =>
-            (relations?.Edges ?? [])
-                .Where(edge => edge?.Node is not null)
-                .Select(edge => new AnimeRelation(
-                    edge!.Node!.Id,
-                    TitleOf(edge.Node.Title),
-                    Label(RelationLabels, edge.RelationType),
-                    AnimeSummaryMapper.GetFormatLabel(edge.Node.Format) ?? Label(null, edge.Node.Type),
-                    Label(StatusLabels, edge.Node.Status),
-                    CoverOf(edge.Node.CoverImage)))
-                .ToList();
-
-        private static IReadOnlyList<AnimeRecommendation> MapRecommendations(NodeListDto<RecommendationDto>? recommendations) =>
-            (recommendations?.Nodes ?? [])
-                .Where(node => node?.MediaRecommendation is not null)
-                .Select(node => new AnimeRecommendation(
-                    node!.MediaRecommendation!.Id,
-                    TitleOf(node.MediaRecommendation.Title),
-                    AnimeSummaryMapper.GetFormatLabel(node.MediaRecommendation.Format),
-                    CoverOf(node.MediaRecommendation.CoverImage),
-                    node.Rating))
                 .ToList();
 
         private static IReadOnlyList<AnimeExternalLink> MapLinks(List<MediaExternalLinkDto?>? links) =>
@@ -275,13 +233,6 @@ namespace AniView.Structure.API.Mapping
             airing?.Episode is { } episode
                 ? new AnimeAiring(episode, FromUnix(airing.AiringAt))
                 : null;
-
-        private static string TitleOf(MediaTitleDto? title) =>
-            AnimeSummaryMapper.FirstNonEmpty(title?.English, title?.Romaji, title?.UserPreferred, title?.Native)
-            ?? "Unbekannter Titel";
-
-        private static string? CoverOf(MediaCoverDto? cover) =>
-            AnimeSummaryMapper.FirstNonEmpty(cover?.Large, cover?.Medium, cover?.ExtraLarge);
 
         private static string? TranslateRole(string? role) => Label(RoleLabels, role);
 

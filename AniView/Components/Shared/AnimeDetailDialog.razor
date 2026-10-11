@@ -279,45 +279,6 @@
                         </AnimeDetailSection>
                     }
 
-                    @if (d.Relations.Count > 0)
-                    {
-                        <AnimeDetailSection Title="Verwandte Titel">
-                            <div class="av-media-grid">
-                                @foreach (var relation in d.Relations)
-                                {
-                                    <div class="av-media">
-                                        @if (!string.IsNullOrWhiteSpace(relation.CoverUrl))
-                                        {
-                                            <img src="@relation.CoverUrl" alt="Cover von @relation.Title" loading="lazy" />
-                                        }
-                                        <span class="av-media__label">@relation.RelationType</span>
-                                        <span class="av-media__title">@relation.Title</span>
-                                        <span class="av-media__meta">@(Joined(" · ", relation.Format, relation.Status))</span>
-                                    </div>
-                                }
-                            </div>
-                        </AnimeDetailSection>
-                    }
-
-                    @if (d.Recommendations.Count > 0)
-                    {
-                        <AnimeDetailSection Title="Empfehlungen">
-                            <div class="av-media-grid">
-                                @foreach (var recommendation in d.Recommendations)
-                                {
-                                    <div class="av-media">
-                                        @if (!string.IsNullOrWhiteSpace(recommendation.CoverUrl))
-                                        {
-                                            <img src="@recommendation.CoverUrl" alt="Cover von @recommendation.Title" loading="lazy" />
-                                        }
-                                        <span class="av-media__title">@recommendation.Title</span>
-                                        <span class="av-media__meta">@(Joined(" · ", recommendation.Format, recommendation.Rating is { } votes ? $"{votes} Stimmen" : null))</span>
-                                    </div>
-                                }
-                            </div>
-                        </AnimeDetailSection>
-                    }
-
                     @if (d.ExternalLinks.Count > 0)
                     {
                         <AnimeDetailSection Title="Links und Streaming">
