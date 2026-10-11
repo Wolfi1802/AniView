@@ -2,7 +2,7 @@ Guide for Docker: https://www.youtube.com/watch?v=Q_7rrpgy4Lo
 
 Framework: https://mudblazor.com/docs/overview
 
-URL: https://wolfisblazorpage.onrender.com
+URL: [https://wolfisblazorpage.onrender.com](https://aniview-3iky.onrender.com/home)
 
 API: https://docs.anilist.co/guide/introduction
 
