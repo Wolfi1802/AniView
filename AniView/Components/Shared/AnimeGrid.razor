@@ -18,7 +18,7 @@
         @for (var i = 0; i < Items.Count; i++)
         {
             var item = Items[i];
-            <AnimeCard Anime="item" Rank="@(ShowRank ? i + 1 : null)" />
+            <AnimeCard Anime="item" Rank="@(ShowRank ? i + 1 : null)" ShowPopularity="ShowPopularity" />
         }
     }
 </div>
@@ -33,6 +33,9 @@
 
     [Parameter]
     public bool ShowRank { get; set; }
+
+    [Parameter]
+    public bool ShowPopularity { get; set; }
 
     [Parameter]
     public int SkeletonCount { get; set; } = 10;

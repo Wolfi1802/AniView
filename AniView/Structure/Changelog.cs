@@ -10,17 +10,20 @@ namespace AniView.Structure
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
             new(new DateOnly(2026, 10, 11),
+                "Beliebtheit in den Top 10",
+                "Die Top 10 zeigen jetzt auch, wie beliebt ein Anime ist. Bei beendeten Animes steht statt der nächsten Folge, wie viele Folgen es gibt."),
+            new(new DateOnly(2026, 10, 11),
                 "Neue Startseite",
-                "Neuigkeiten stehen oben, darunter die Top 10 Animes."),
+                "Hier siehst du zuerst die Neuigkeiten und darunter die zehn beliebtesten Animes."),
             new(new DateOnly(2026, 10, 11),
-                "All Animes mit Infinite Scroll",
-                "Die Tabelle lädt beim Scrollen automatisch weitere Animes nach und zeigt jetzt auch die Anzahl der Episoden."),
+                "Neue Seite All Animes",
+                "Auf dieser Seite sind nun alle Animes in tabellarischer Auflistung zu finden, auch mit der Anzahl ihrer Folgen."),
             new(new DateOnly(2026, 10, 11),
-                "Simulcast zeigt die Gesamtanzahl",
-                "Unter der Überschrift steht, wie viele Animes in der aktuellen Season laufen."),
+                "Simulcast mit Gesamtzahl",
+                "Auf der Simulcast-Seite siehst du jetzt, wie viele Animes in der aktuellen Season laufen."),
             new(new DateOnly(2026, 10, 11),
                 "Mehr Platz auf allen Seiten",
-                "Der Inhalt nutzt die volle Breite mit einheitlichem Abstand zum Rand.")
+                "Die Seiten nutzen jetzt die volle Breite deines Bildschirms.")
         ];
     }
 }

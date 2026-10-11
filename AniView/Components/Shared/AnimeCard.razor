@@ -45,6 +45,21 @@
                 <p class="av-meta__value">-</p>
             }
         </div>
+        @if (ShowPopularity)
+        {
+            <div class="av-meta">
+                <p>Beliebtheit:</p>
+
+                @if (Anime.Popularity is { } popularity)
+                {
+                    <p class="av-meta__value">@popularity.ToString("N0", CultureInfo.GetCultureInfo("de-DE"))</p>
+                }
+                else
+                {
+                    <p class="av-meta__value">-</p>
+                }
+            </div>
+        }
         @if (Anime.IsFinished)
         {
             <div class="av-meta">
@@ -112,6 +127,12 @@
 
     [Parameter]
     public int? Rank { get; set; }
+
+    /// <summary>
+    /// Zeigt die Beliebtheit (Anzahl der Nutzer, die den Anime in ihrer Liste haben) auf der Karte.
+    /// </summary>
+    [Parameter]
+    public bool ShowPopularity { get; set; }
 
     private string FinishedText => Anime.Episodes is { } episodes
         ? $"Anime ist beendet, er hat {episodes} {(episodes == 1 ? "Folge" : "Folgen")}"
