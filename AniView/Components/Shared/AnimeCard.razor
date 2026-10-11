@@ -1,3 +1,5 @@
+@implements IDisposable
+
 <article class="av-card">
     <div class="av-cover-wrap">
         @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
@@ -43,6 +45,14 @@
                 <p class="av-meta__value">-</p>
             }
         </div>
+        @if (Anime.IsFinished)
+        {
+            <div class="av-meta">
+                <p class="av-meta__value">@FinishedText</p>
+            </div>
+        }
+        else
+        {
         <div class="av-meta">
             <p>Nummer der nächsten Episode:</p>
 
@@ -92,6 +102,7 @@
                 <p class="av-meta__value">-</p>
             }
         </div>
+        }
     </div>
 </article>
 
@@ -101,6 +112,10 @@
 
     [Parameter]
     public int? Rank { get; set; }
+
+    private string FinishedText => Anime.Episodes is { } episodes
+        ? $"Anime ist beendet, er hat {episodes} {(episodes == 1 ? "Folge" : "Folgen")}"
+        : "Anime ist beendet";
 
     private DateTimeOffset _now = DateTimeOffset.Now;
     private readonly CancellationTokenSource _timerCts = new();

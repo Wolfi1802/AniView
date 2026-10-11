@@ -82,6 +82,7 @@ namespace AniView.Structure.API.Mapping
                 media.AverageScore,
                 media.Popularity)
             {
+                IsFinished = string.Equals(media.Status, "FINISHED", StringComparison.OrdinalIgnoreCase),
                 Episodes = media.Episodes,
                 NextEpisodeNumber = airing?.Episode,
                 NextEpisodeAiringAt = airingAt,
