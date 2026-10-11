@@ -1,44 +1,19 @@
-@page "/infinite-table"
+@page "/overall-animes"
 @using AniView.Components.Shared
 @using AniView.Structure.API.Services
 
-<PageTitle>Infinite Table</PageTitle>
+<PageTitle>All Animes</PageTitle>
 
-<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Infinite Table</MudText>
-<MudText Class="mud-text-secondary mb-6">Beide Quellen der Komponente: Request pro Seite und vorhandene Liste.</MudText>
+<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">All Animes</MudText>
 
-<MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pt-4">
-    <MudTabPanel Text="Request pro Seite">
-        <MudText Class="mud-text-secondary mb-2">Pro Seite: 20 · Insgesamt: @(_requestTotal?.ToString("N0", CultureInfo.CurrentCulture) ?? "wird ermittelt")</MudText>
-        <InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" ItemsPerPage="20" @bind-TotalItems="_requestTotal">
-            <HeaderContent>
-                <AnimeTableHeader />
-            </HeaderContent>
-            <RowTemplate Context="anime">
-                <AnimeTableRow Anime="anime" />
-            </RowTemplate>
-        </InfiniteTable>
-    </MudTabPanel>
-
-    <MudTabPanel Text="Vorhandene Liste">
-        @if (_listError)
-        {
-            <StateMessage Title="Die Liste konnte nicht geladen werden" OnRetry="LoadListAsync" />
-        }
-        else if (_list is not null)
-        {
-            <MudText Class="mud-text-secondary mb-2">Pro Seite: 10 · Insgesamt: @(_listTotal?.ToString("N0", CultureInfo.CurrentCulture) ?? "wird ermittelt")</MudText>
-            <InfiniteTable TItem="AnimeSummary" Items="_list" ItemsPerPage="10" @bind-TotalItems="_listTotal">
-                <HeaderContent>
-                    <AnimeTableHeader />
-                </HeaderContent>
-                <RowTemplate Context="anime">
-                    <AnimeTableRow Anime="anime" />
-                </RowTemplate>
-            </InfiniteTable>
-        }
-    </MudTabPanel>
-</MudTabs>
+<InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" ItemsPerPage="20" @bind-TotalItems="_requestTotal">
+    <HeaderContent>
+        <AnimeTableHeader />
+    </HeaderContent>
+    <RowTemplate Context="anime">
+        <AnimeTableRow Anime="anime" />
+    </RowTemplate>
+</InfiniteTable>
 
 @code {
     private const int ListSize = 50;
