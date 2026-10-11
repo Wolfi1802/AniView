@@ -1,0 +1,25 @@
+<section class="av-whats-new" aria-labelledby="whats-new-title">
+    <MudText Typo="Typo.h5" Component="h2" id="whats-new-title" GutterBottom="true">What's new</MudText>
+
+    <ul class="av-whats-new__list">
+        @foreach (var entry in Entries)
+        {
+            <li class="av-whats-new__item">
+                <time class="av-whats-new__date" datetime="@entry.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">
+                    @entry.Date.ToString("dd.MM.yyyy", GermanCulture)
+                </time>
+                <div>
+                    <p class="av-whats-new__title">@entry.Title</p>
+                    <p class="av-whats-new__text">@entry.Description</p>
+                </div>
+            </li>
+        }
+    </ul>
+</section>
+
+@code {
+    private static readonly CultureInfo GermanCulture = CultureInfo.GetCultureInfo("de-DE");
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<ChangelogEntry> Entries { get; set; } = [];
+}
