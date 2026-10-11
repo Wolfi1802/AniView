@@ -80,6 +80,28 @@ namespace AniView.Structure.API.Querys
         };
 
         /// <summary>
+        /// Alle Objekte der zweiten Ebene, die die Detailansicht anzeigt (ohne verwandte Titel und Empfehlungen).
+        /// </summary>
+        public static MediaFieldsProfile Detail { get; } = new()
+        {
+            Title = true,
+            StartDate = true,
+            EndDate = true,
+            Trailer = true,
+            CoverImage = true,
+            Tags = true,
+            Characters = true,
+            Staff = true,
+            Studios = true,
+            NextAiringEpisode = true,
+            AiringSchedule = true,
+            Trends = true,
+            ExternalLinks = true,
+            Rankings = true,
+            Reviews = true
+        };
+
+        /// <summary>
         /// Eindeutiger Schlüssel der aktiven Objekte, damit unterschiedliche Profile
         /// im Cache nicht dieselben Einträge teilen.
         /// </summary>

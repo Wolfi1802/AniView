@@ -291,6 +291,17 @@ namespace AniView.Structure.API.Querys
             """;
 
         /// <summary>
+        /// Ein einzelner Anime anhand seiner ID, zum Beispiel für die Detailansicht.
+        /// </summary>
+        public static string MediaById(MediaFieldsProfile profile) => $$"""
+            query ($id: Int) {
+              Media(id: $id, type: ANIME) {
+                {{BuildMediaFields(profile)}}
+              }
+            }
+            """;
+
+        /// <summary>
         /// Nur die IDs der laufenden Animes der Season. Dient dazu, die Gesamtanzahl exakt zu zählen,
         /// weil "pageInfo.total" von AniList eine Schätzung ist.
         /// </summary>

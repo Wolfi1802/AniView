@@ -1,5 +1,6 @@
 using AniView.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using MudBlazor;
 
@@ -109,6 +110,13 @@ namespace AniView.Components.Shared
         [Parameter]
         public RenderFragment? EmptyContent { get; set; }
 
+        /// <summary>
+        /// Wird beim Klick auf eine Zeile (oder Enter/Leertaste bei fokussierter Zeile) aufgerufen, nur für
+        /// <see cref="InfiniteViewType.Table"/>. Ohne Angabe sind die Zeilen nicht klickbar.
+        /// </summary>
+        [Parameter]
+        public EventCallback<TItem> OnRowClick { get; set; }
+
         [Parameter]
         public bool Dense { get; set; }
 
@@ -202,6 +210,12 @@ namespace AniView.Components.Shared
                 await LoadNextPageAsync();
             }
         }
+
+        private Task OnRowClickedAsync(TItem item) =>
+            OnRowClick.HasDelegate ? OnRowClick.InvokeAsync(item) : Task.CompletedTask;
+
+        private Task OnRowKeyDownAsync(KeyboardEventArgs args, TItem item) =>
+            args.Key is "Enter" or " " ? OnRowClickedAsync(item) : Task.CompletedTask;
 
         private Task RetryAsync()
         {
