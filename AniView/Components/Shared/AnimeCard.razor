@@ -1,3 +1,5 @@
+@implements IDisposable
+
 <article class="av-card">
     <div class="av-cover-wrap">
         @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
@@ -43,6 +45,29 @@
                 <p class="av-meta__value">-</p>
             }
         </div>
+        @if (ShowPopularity)
+        {
+            <div class="av-meta">
+                <p>Beliebtheit:</p>
+
+                @if (Anime.Popularity is { } popularity)
+                {
+                    <p class="av-meta__value">@popularity.ToString("N0", CultureInfo.GetCultureInfo("de-DE"))</p>
+                }
+                else
+                {
+                    <p class="av-meta__value">-</p>
+                }
+            </div>
+        }
+        @if (Anime.IsFinished)
+        {
+            <div class="av-meta">
+                <p class="av-meta__value">@FinishedText</p>
+            </div>
+        }
+        else
+        {
         <div class="av-meta">
             <p>Nummer der nächsten Episode:</p>
 
@@ -92,6 +117,7 @@
                 <p class="av-meta__value">-</p>
             }
         </div>
+        }
     </div>
 </article>
 
@@ -101,6 +127,16 @@
 
     [Parameter]
     public int? Rank { get; set; }
+
+    /// <summary>
+    /// Zeigt die Beliebtheit (Anzahl der Nutzer, die den Anime in ihrer Liste haben) auf der Karte.
+    /// </summary>
+    [Parameter]
+    public bool ShowPopularity { get; set; }
+
+    private string FinishedText => Anime.Episodes is { } episodes
+        ? $"Anime ist beendet, er hat {episodes} {(episodes == 1 ? "Folge" : "Folgen")}"
+        : "Anime ist beendet";
 
     private DateTimeOffset _now = DateTimeOffset.Now;
     private readonly CancellationTokenSource _timerCts = new();

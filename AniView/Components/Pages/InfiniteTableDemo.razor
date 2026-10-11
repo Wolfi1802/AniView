@@ -1,0 +1,47 @@
+@page "/overall-animes"
+@using AniView.Components.Shared
+@using AniView.Structure.API.Services
+
+<PageTitle>All Animes</PageTitle>
+
+<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">All Animes</MudText>
+
+<InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" ItemsPerPage="20" @bind-TotalItems="_requestTotal">
+    <HeaderContent>
+        <AnimeTableHeader />
+    </HeaderContent>
+    <RowTemplate Context="anime">
+        <AnimeTableRow Anime="anime" />
+    </RowTemplate>
+</InfiniteTable>
+
+@code {
+    private const int ListSize = 50;
+
+    private IReadOnlyList<AnimeSummary>? _list;
+    private bool _listError;
+    private int? _requestTotal;
+    private int? _listTotal;
+
+    [Inject]
+    private IPopularAnimeService PopularAnimes { get; set; } = default!;
+
+    protected override Task OnInitializedAsync() => LoadListAsync();
+
+    private Task<PageResult<AnimeSummary>> LoadPopularPageAsync(int page, int pageSize, CancellationToken token) =>
+        PopularAnimes.GetPopularPageAsync(page, pageSize, token);
+
+    private async Task LoadListAsync()
+    {
+        _listError = false;
+
+        try
+        {
+            _list = await PopularAnimes.GetPopularAsync(ListSize);
+        }
+        catch (Exception)
+        {
+            _listError = true;
+        }
+    }
+}

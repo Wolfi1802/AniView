@@ -1,0 +1,62 @@
+@typeparam TItem
+@implements IAsyncDisposable
+
+<div class="av-infinite-table" aria-busy="@(_isLoading ? "true" : "false")">
+    @if (_error is not null && _rows.Count == 0)
+    {
+        <StateMessage Title="@ErrorTitle" Message="@_error" OnRetry="RetryAsync" />
+    }
+    else if (IsEmpty)
+    {
+        @if (EmptyContent is not null)
+        {
+            @EmptyContent
+        }
+        else
+        {
+            <StateMessage Title="Keine Einträge gefunden"
+                          Icon="@Icons.Material.Filled.SearchOff" />
+        }
+    }
+    else if (_rows.Count > 0)
+    {
+        @switch (ViewType)
+        {
+            case InfiniteViewType.Cards:
+                <div class="av-infinite-cards">
+                    @for (var i = 0; i < _rows.Count; i++)
+                    {
+                        @CardTemplate?.Invoke(new InfiniteEntry<TItem>(_rows[i], i))
+                    }
+                </div>
+                break;
+
+            default:
+                <MudSimpleTable Hover="true" Dense="@Dense" Elevation="0" Outlined="true">
+                    <thead>
+                        <tr>@HeaderContent</tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in _rows)
+                        {
+                            <tr>@RowTemplate?.Invoke(item)</tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+                break;
+        }
+    }
+
+    @* Der Sentinel bleibt immer im DOM, damit der IntersectionObserver dasselbe Element beobachten kann. *@
+    <div @ref="_sentinel" class="av-infinite-footer" role="status">
+        @if (_isLoading || (_rows.Count == 0 && _hasMore && _error is null))
+        {
+            <MudProgressCircular Indeterminate="true" Size="Size.Small" aria-label="Weitere Einträge werden geladen" />
+        }
+        else if (_error is not null && _rows.Count > 0)
+        {
+            <MudText Class="mud-text-secondary">@_error</MudText>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="RetryAsync">Erneut versuchen</MudButton>
+        }
+    </div>
+</div>

@@ -1,4 +1,5 @@
-<div class="av-grid" aria-busy="@(IsLoading ? "true" : "false")">
+<div class="av-grid-host">
+<div class="@GridCssClass" aria-busy="@(IsLoading ? "true" : "false")">
     @if (IsLoading)
     {
         @for (var i = 0; i < SkeletonCount; i++)
@@ -17,9 +18,10 @@
         @for (var i = 0; i < Items.Count; i++)
         {
             var item = Items[i];
-            <AnimeCard Anime="item" Rank="@(ShowRank ? i + 1 : null)" />
+            <AnimeCard Anime="item" Rank="@(ShowRank ? i + 1 : null)" ShowPopularity="ShowPopularity" />
         }
     }
+</div>
 </div>
 
 @code {
@@ -33,5 +35,17 @@
     public bool ShowRank { get; set; }
 
     [Parameter]
+    public bool ShowPopularity { get; set; }
+
+    [Parameter]
     public int SkeletonCount { get; set; } = 10;
+
+    /// <summary>
+    /// Feste Spaltenzahl nach verfügbarer Breite: 5, 2 oder 1 Karte pro Zeile (siehe app.css).
+    /// Ohne Angabe füllt das Raster die Zeile automatisch.
+    /// </summary>
+    [Parameter]
+    public bool RankingLayout { get; set; }
+
+    private string GridCssClass => RankingLayout ? "av-grid av-grid--ranking" : "av-grid";
 }

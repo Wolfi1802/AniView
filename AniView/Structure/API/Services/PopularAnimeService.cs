@@ -35,10 +35,23 @@ namespace AniView.Structure.API.Services
             var variables = new { page = 1, perPage, sort = new[] { "POPULARITY_DESC" } };
             var data = await _client.SendAsync<MediaPageData>(ApiQueries.MediaPage(Profile), variables, cancellationToken);
 
-            var result = AnimeSummaryMapper.MapAll(data);
+            // AniList sortiert bereits nach Beliebtheit. Die Sortierung hier stellt sicher, dass die Reihenfolge
+            // und der Rang immer zur angezeigten Beliebtheit passen (bei gleichem Wert bleibt die Reihenfolge der API).
+            IReadOnlyList<AnimeSummary> result = AnimeSummaryMapper.MapAll(data)
+                .OrderByDescending(anime => anime.Popularity ?? 0)
+                .ToList();
 
             _cache.Set(cacheKey, result, CacheDuration);
             return result;
+        }
+
+        public async Task<PageResult<AnimeSummary>> GetPopularPageAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        {
+            int perPage = ApiPaging.GetPageCount(pageSize);
+            var variables = new { page = ApiPaging.GetPageIndex(page), perPage, sort = new[] { "POPULARITY_DESC" } };
+            var data = await _client.SendAsync<MediaPageData>(ApiQueries.MediaPage(Profile), variables, cancellationToken);
+
+            return AnimeSummaryMapper.MapPage(data, perPage);
         }
     }
 }

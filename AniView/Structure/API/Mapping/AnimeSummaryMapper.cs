@@ -25,6 +25,23 @@ namespace AniView.Structure.API.Mapping
                 .Select(media => Map(media!))
                 .ToList();
 
+        /// <summary>
+        /// Bildet eine Seite inklusive der Seiteninformationen von AniList ab.
+        /// </summary>
+        /// <param name="data">Antwort der API.</param>
+        /// <param name="requestedPerPage">Angefragte Seitengröße, falls die API keine liefert.</param>
+        public static PageResult<AnimeSummary> MapPage(MediaPageData data, int requestedPerPage)
+        {
+            var items = MapAll(data);
+            var info = data.Page?.PageInfo;
+            var perPage = info?.PerPage ?? requestedPerPage;
+
+            // Ohne Angabe der API gilt eine volle Seite als "es gibt eventuell mehr".
+            var hasNextPage = info?.HasNextPage ?? items.Count >= perPage;
+
+            return new PageResult<AnimeSummary>(items, hasNextPage, info?.Total, perPage);
+        }
+
         public static AnimeSummary Map(MediaDto media)
         {
             var title = FirstNonEmpty(
@@ -65,6 +82,8 @@ namespace AniView.Structure.API.Mapping
                 media.AverageScore,
                 media.Popularity)
             {
+                IsFinished = string.Equals(media.Status, "FINISHED", StringComparison.OrdinalIgnoreCase),
+                Episodes = media.Episodes,
                 NextEpisodeNumber = airing?.Episode,
                 NextEpisodeAiringAt = airingAt,
                 TimeUntilNextEpisode = timeUntilAiring

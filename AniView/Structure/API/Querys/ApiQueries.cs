@@ -253,9 +253,12 @@ namespace AniView.Structure.API.Querys
             }
             """;
 
+        private const string PageInfoFields = "pageInfo { total perPage currentPage lastPage hasNextPage }";
+
         public static string MediaPage(MediaFieldsProfile profile) => $$"""
             query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
               Page(page: $page, perPage: $perPage) {
+                {{PageInfoFields}}
                 media(type: ANIME, sort: $sort, isAdult: false) {
                   {{BuildMediaFields(profile)}}
                 }
@@ -272,6 +275,7 @@ namespace AniView.Structure.API.Querys
               $sort: [MediaSort]
             ) {
               Page(page: $page, perPage: $perPage) {
+                {{PageInfoFields}}
                 media(
                   type: ANIME,
                   season: $season,
@@ -281,6 +285,31 @@ namespace AniView.Structure.API.Querys
                   isAdult: false
                 ) {
                   {{BuildMediaFields(profile)}}
+                }
+              }
+            }
+            """;
+
+        /// <summary>
+        /// Nur die IDs der laufenden Animes der Season. Dient dazu, die Gesamtanzahl exakt zu zählen,
+        /// weil "pageInfo.total" von AniList eine Schätzung ist.
+        /// </summary>
+        public const string CurrentSimulcastIds = """
+            query (
+              $page: Int,
+              $perPage: Int,
+              $season: MediaSeason!,
+              $seasonYear: Int!
+            ) {
+              Page(page: $page, perPage: $perPage) {
+                media(
+                  type: ANIME,
+                  season: $season,
+                  seasonYear: $seasonYear,
+                  status: RELEASING,
+                  isAdult: false
+                ) {
+                  id
                 }
               }
             }

@@ -4,7 +4,9 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Top 10 Animes</MudText>
+<WhatsNew Entries="Changelog.Entries" />
+
+<MudText Typo="Typo.h5" Component="h2" Class="mt-8" GutterBottom="true">Top 10 Animes</MudText>
 <MudText Class="mud-text-secondary mb-6">Top Animes gemessen anhand der community</MudText>
 
 @if (_errorTitle is not null)
@@ -20,5 +22,5 @@ else if (!_isLoading && _items is { Count: 0 })
 }
 else
 {
-    <AnimeGrid Items="_items" IsLoading="_isLoading" ShowRank="true" SkeletonCount="RankingSize" />
+    <AnimeGrid Items="_items" IsLoading="_isLoading" ShowRank="true" ShowPopularity="true" SkeletonCount="RankingSize" RankingLayout="true" />
 }

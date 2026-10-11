@@ -18,6 +18,16 @@ namespace AniView.Models
             AverageScore is > 0 ? AverageScore / 10.0 : null;
 
         /// <summary>
+        /// Gibt an, ob der Anime vollständig erschienen ist (Status FINISHED bei AniList).
+        /// </summary>
+        public bool IsFinished { get; init; }
+
+        /// <summary>
+        /// Anzahl der Episoden, sofern bekannt (bei laufenden Serien oft noch nicht festgelegt).
+        /// </summary>
+        public int? Episodes { get; init; }
+
+        /// <summary>
         /// Nummer der nächsten Episode.
         /// </summary>
         public int? NextEpisodeNumber { get; init; }

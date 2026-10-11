@@ -36,3 +36,26 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* Top-10-Raster: Spaltenzahl richtet sich nach der Breite des Inhaltsbereichs (nicht des Fensters),
+   damit sie auch mit eingeblendeter Seitenleiste stimmt. Hohe Spezifität, weil AnimeGrid.razor.css
+   die Spalten sonst per Scope-Selektor überschreibt. */
+.av-grid-host {
+    container-type: inline-size;
+}
+
+.av-grid-host .av-grid.av-grid--ranking {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@container (min-width: 480px) {
+    .av-grid-host .av-grid.av-grid--ranking {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@container (min-width: 960px) {
+    .av-grid-host .av-grid.av-grid--ranking {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
