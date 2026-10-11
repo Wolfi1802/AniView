@@ -82,6 +82,7 @@ namespace AniView.Structure.API.Mapping
                 media.AverageScore,
                 media.Popularity)
             {
+                Episodes = media.Episodes,
                 NextEpisodeNumber = airing?.Episode,
                 NextEpisodeAiringAt = airingAt,
                 TimeUntilNextEpisode = timeUntilAiring
