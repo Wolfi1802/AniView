@@ -297,32 +297,6 @@
                         </AnimeDetailSection>
                     }
 
-                    @if (d.StreamingEpisodes.Count > 0)
-                    {
-                        <AnimeDetailSection Title="Folgen bei Streaming-Anbietern">
-                            <div class="av-media-grid av-media-grid--wide">
-                                @foreach (var episode in d.StreamingEpisodes)
-                                {
-                                    <div class="av-media">
-                                        @if (SafeUrl(episode.ThumbnailUrl) is { } episodeThumb)
-                                        {
-                                            <img class="av-media__wide" src="@episodeThumb" alt="Vorschaubild von @episode.Title" loading="lazy" />
-                                        }
-                                        @if (SafeUrl(episode.Url) is { } episodeUrl)
-                                        {
-                                            <a class="av-media__title" href="@episodeUrl" target="_blank" rel="noopener noreferrer">@(episode.Title ?? "Folge")</a>
-                                        }
-                                        else
-                                        {
-                                            <span class="av-media__title">@(episode.Title ?? "Folge")</span>
-                                        }
-                                        <span class="av-media__meta">@episode.Site</span>
-                                    </div>
-                                }
-                            </div>
-                        </AnimeDetailSection>
-                    }
-
                     @if (d.Reviews.Count > 0)
                     {
                         <AnimeDetailSection Title="Reviews">

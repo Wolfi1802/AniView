@@ -77,8 +77,6 @@ namespace AniView.Models
 
         public IReadOnlyList<AnimeExternalLink> ExternalLinks { get; init; } = [];
 
-        public IReadOnlyList<AnimeStreamingEpisode> StreamingEpisodes { get; init; } = [];
-
         public IReadOnlyList<AnimeRanking> Rankings { get; init; } = [];
 
         public IReadOnlyList<AnimeReview> Reviews { get; init; } = [];
@@ -111,8 +109,6 @@ namespace AniView.Models
     public sealed record AnimePerson(string Name, string? NativeName, string? Role, string? ImageUrl);
 
     public sealed record AnimeExternalLink(string Site, string Url, string? Type, string? Language, string? Color, string? Notes);
-
-    public sealed record AnimeStreamingEpisode(string? Title, string? ThumbnailUrl, string? Url, string? Site);
 
     public sealed record AnimeRanking(int Rank, string? Type, string? Context, int? Year, string? Season, bool AllTime);
 

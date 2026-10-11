@@ -116,7 +116,6 @@ namespace AniView.Structure.API.Mapping
                 Characters = MapPeople(media.Characters?.Edges, edge => (edge.Node?.Name, edge.Node?.Image, edge.Role)),
                 Staff = MapPeople(media.Staff?.Edges, edge => (edge.Node?.Name, edge.Node?.Image, edge.Role)),
                 ExternalLinks = MapLinks(media.ExternalLinks),
-                StreamingEpisodes = MapStreamingEpisodes(media.StreamingEpisodes),
                 Rankings = MapRankings(media.Rankings),
                 Reviews = MapReviews(media.Reviews),
                 Trends = MapTrends(media.Trends),
@@ -181,16 +180,6 @@ namespace AniView.Structure.API.Mapping
                     Clean(link.Language),
                     Clean(link.Color),
                     Clean(link.Notes)))
-                .ToList();
-
-        private static IReadOnlyList<AnimeStreamingEpisode> MapStreamingEpisodes(List<MediaStreamingEpisodeDto?>? episodes) =>
-            (episodes ?? [])
-                .Where(episode => episode is not null)
-                .Select(episode => new AnimeStreamingEpisode(
-                    Clean(episode!.Title),
-                    Clean(episode.Thumbnail),
-                    Clean(episode.Url),
-                    Clean(episode.Site)))
                 .ToList();
 
         private static IReadOnlyList<AnimeRanking> MapRankings(List<MediaRankDto?>? rankings) =>

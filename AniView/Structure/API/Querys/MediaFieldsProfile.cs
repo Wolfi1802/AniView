@@ -97,7 +97,6 @@ namespace AniView.Structure.API.Querys
             AiringSchedule = true,
             Trends = true,
             ExternalLinks = true,
-            StreamingEpisodes = true,
             Rankings = true,
             Reviews = true
         };
