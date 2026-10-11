@@ -4,15 +4,13 @@
 <PageTitle>Simulcast</PageTitle>
 
 <MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Aktueller Simulcast</MudText>
-@if(_seasonString is not null)
-{
-    <MudText Class="mud-text-secondary mb-6">@_seasonString</MudText>
-}
+<MudText Class="mud-text-secondary mb-6">@SubTitle</MudText>
 
 <InfiniteTable TItem="AnimeSummary"
                ViewType="InfiniteViewType.Cards"
                LoadPage="LoadPageAsync"
-               PageSize="PageSize"
+               ItemsPerPage="ItemsPerPage"
+               @bind-TotalItems="_totalItems"
                ErrorTitle="Der Simulcast konnte nicht geladen werden"
                ErrorMessageProvider="GetErrorMessage">
     <CardTemplate Context="entry">

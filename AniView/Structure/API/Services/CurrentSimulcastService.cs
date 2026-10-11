@@ -30,8 +30,17 @@ namespace AniView.Structure.API.Services
             int itemsPerPage = DefaultItemsPerPage,
             CancellationToken cancellationToken = default)
         {
-            int indexOfPage = ApiPaging.GetPageIndex(pageIndex);
-            int perPage = ApiPaging.GetPageCount(itemsPerPage);
+            var page = await GetCurrentSimulcastPageAsync(pageIndex, itemsPerPage, cancellationToken);
+            return page.Items;
+        }
+
+        public async Task<PageResult<AnimeSummary>> GetCurrentSimulcastPageAsync(
+            int page = DefaultPageIndex,
+            int pageSize = DefaultItemsPerPage,
+            CancellationToken cancellationToken = default)
+        {
+            int indexOfPage = ApiPaging.GetPageIndex(page);
+            int perPage = ApiPaging.GetPageCount(pageSize);
 
             var (season, seasonYear) = GetCurrentSeason();
 
@@ -41,7 +50,7 @@ namespace AniView.Structure.API.Services
 
             if (_cache.TryGetValue(
                 cacheKey,
-                out IReadOnlyList<AnimeSummary>? cached)
+                out PageResult<AnimeSummary>? cached)
                 && cached is not null)
             {
                 return cached;
@@ -61,23 +70,11 @@ namespace AniView.Structure.API.Services
                 variables,
                 cancellationToken);
 
-            var result = AnimeSummaryMapper.MapAll(data);
+            var result = AnimeSummaryMapper.MapPage(data, perPage);
 
             _cache.Set(cacheKey, result, CacheDuration);
 
             return result;
-        }
-
-        public async Task<PageResult<AnimeSummary>> GetCurrentSimulcastPageAsync(
-            int page,
-            int pageSize,
-            CancellationToken cancellationToken = default)
-        {
-            int perPage = ApiPaging.GetPageCount(pageSize);
-            var items = await GetCurrentSimulcast(page, perPage, cancellationToken);
-
-            // Die Abfrage liefert keine Seiteninfo. Eine volle Seite gilt als "es gibt eventuell mehr".
-            return new PageResult<AnimeSummary>(items, items.Count >= perPage);
         }
 
         private static (string Season, int Year) GetCurrentSeason()

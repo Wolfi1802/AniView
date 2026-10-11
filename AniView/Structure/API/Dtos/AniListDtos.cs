@@ -26,7 +26,25 @@ namespace AniView.Structure.API.Dtos
 
     internal sealed class MediaPageDto
     {
+        public PageInfoDto? PageInfo { get; init; }
+
         public List<MediaDto?>? Media { get; init; }
+    }
+
+    /// <summary>
+    /// Seiteninformationen von AniList (Gesamtanzahl, Seitengröße, weitere Seiten).
+    /// </summary>
+    internal sealed class PageInfoDto
+    {
+        public int? Total { get; init; }
+
+        public int? PerPage { get; init; }
+
+        public int? CurrentPage { get; init; }
+
+        public int? LastPage { get; init; }
+
+        public bool? HasNextPage { get; init; }
     }
 
     /// <summary>

@@ -9,7 +9,8 @@
 
 <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pt-4">
     <MudTabPanel Text="Request pro Seite">
-        <InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" PageSize="20">
+        <MudText Class="mud-text-secondary mb-2">Pro Seite: 20 · Insgesamt: @(_requestTotal?.ToString("N0", CultureInfo.CurrentCulture) ?? "wird ermittelt")</MudText>
+        <InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" ItemsPerPage="20" @bind-TotalItems="_requestTotal">
             <HeaderContent>
                 <AnimeTableHeader />
             </HeaderContent>
@@ -26,7 +27,8 @@
         }
         else if (_list is not null)
         {
-            <InfiniteTable TItem="AnimeSummary" Items="_list" PageSize="10">
+            <MudText Class="mud-text-secondary mb-2">Pro Seite: 10 · Insgesamt: @(_listTotal?.ToString("N0", CultureInfo.CurrentCulture) ?? "wird ermittelt")</MudText>
+            <InfiniteTable TItem="AnimeSummary" Items="_list" ItemsPerPage="10" @bind-TotalItems="_listTotal">
                 <HeaderContent>
                     <AnimeTableHeader />
                 </HeaderContent>
@@ -43,6 +45,8 @@
 
     private IReadOnlyList<AnimeSummary>? _list;
     private bool _listError;
+    private int? _requestTotal;
+    private int? _listTotal;
 
     [Inject]
     private IPopularAnimeService PopularAnimes { get; set; } = default!;

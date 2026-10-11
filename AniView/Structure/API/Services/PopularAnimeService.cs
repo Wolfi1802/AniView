@@ -47,10 +47,7 @@ namespace AniView.Structure.API.Services
             var variables = new { page = ApiPaging.GetPageIndex(page), perPage, sort = new[] { "POPULARITY_DESC" } };
             var data = await _client.SendAsync<MediaPageData>(ApiQueries.MediaPage(Profile), variables, cancellationToken);
 
-            var items = AnimeSummaryMapper.MapAll(data);
-
-            // Die Abfrage liefert keine Seiteninfo. Eine volle Seite gilt als "es gibt eventuell mehr".
-            return new PageResult<AnimeSummary>(items, items.Count >= perPage);
+            return AnimeSummaryMapper.MapPage(data, perPage);
         }
     }
 }

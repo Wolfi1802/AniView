@@ -253,9 +253,12 @@ namespace AniView.Structure.API.Querys
             }
             """;
 
+        private const string PageInfoFields = "pageInfo { total perPage currentPage lastPage hasNextPage }";
+
         public static string MediaPage(MediaFieldsProfile profile) => $$"""
             query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
               Page(page: $page, perPage: $perPage) {
+                {{PageInfoFields}}
                 media(type: ANIME, sort: $sort, isAdult: false) {
                   {{BuildMediaFields(profile)}}
                 }
@@ -272,6 +275,7 @@ namespace AniView.Structure.API.Querys
               $sort: [MediaSort]
             ) {
               Page(page: $page, perPage: $perPage) {
+                {{PageInfoFields}}
                 media(
                   type: ANIME,
                   season: $season,

@@ -2,18 +2,24 @@ using AniView.Models;
 using AniView.Structure.API.Exceptions;
 using AniView.Structure.API.Services;
 using Microsoft.AspNetCore.Components;
+using System.Globalization;
 
 namespace AniView.Components.Pages
 {
     public partial class Simulcast
     {
         // TODO soll der user einstellen dürfen
-        private const int PageSize = 20;
+        private const int ItemsPerPage = 20;
 
         private string? _seasonString;
+        private int? _totalItems;
 
         [Inject]
         private ICurrentSimulcastService simulcastAnimes { get; set; } = default!;
+
+        private string SubTitle => _totalItems is { } total
+            ? $"{_seasonString} - {total.ToString("N0", CultureInfo.CurrentCulture)} {(total == 1 ? "Anime" : "Animes")}"
+            : _seasonString ?? string.Empty;
 
         protected override void OnInitialized() => _seasonString = GetCurrentSeasonString();
 

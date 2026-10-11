@@ -13,7 +13,8 @@ namespace AniView.Structure.API.Services
         Task<IReadOnlyList<AnimeSummary>> GetCurrentSimulcast(int pageIndex, int itemsPerPage, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Liefert eine Seite des aktuellen Simulcasts inklusive der Angabe, ob weitere Seiten folgen, zum Beispiel für Infinite Scroll.
+        /// Liefert eine Seite des aktuellen Simulcasts inklusive Gesamtanzahl, Seitengröße und der Angabe, ob weitere Seiten folgen,
+        /// zum Beispiel für Infinite Scroll.
         /// </summary>
         /// <param name="page">Seitennummer ab 1.</param>
         /// <param name="pageSize">Elemente pro Seite (wird auf die Grenzen der API begrenzt).</param>

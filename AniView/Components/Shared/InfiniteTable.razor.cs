@@ -9,7 +9,7 @@ namespace AniView.Components.Shared
     /// Tabelle mit Infinite Scroll. Intern wird seitenweise geladen, für den Nutzer wirkt die Liste endlos.
     /// Es gibt zwei Quellen (genau eine muss gesetzt sein):
     /// <list type="bullet">
-    /// <item><see cref="Items"/>: vorhandene Liste, die seitenweise (<see cref="PageSize"/>) angezeigt wird.</item>
+    /// <item><see cref="Items"/>: vorhandene Liste, die seitenweise (<see cref="ItemsPerPage"/>) angezeigt wird.</item>
     /// <item><see cref="LoadPage"/>: Request pro Seite, wird beim Scrollen jeweils für die nächste Seite aufgerufen.</item>
     /// </list>
     /// Bereits geladene Zeilen bleiben erhalten; beim Hochscrollen wird nichts neu geladen.
@@ -42,7 +42,7 @@ namespace AniView.Components.Shared
         public IReadOnlyList<TItem>? Items { get; set; }
 
         /// <summary>
-        /// Lädt eine Seite per Request. Parameter: Seitennummer (ab 1), Seitengröße, Abbruchtoken.
+        /// Lädt eine Seite per Request. Parameter: Seitennummer (ab 1), Elemente pro Seite, Abbruchtoken.
         /// </summary>
         [Parameter]
         public Func<int, int, CancellationToken, Task<PageResult<TItem>>>? LoadPage { get; set; }
@@ -51,7 +51,18 @@ namespace AniView.Components.Shared
         /// Anzahl der Elemente pro Seite.
         /// </summary>
         [Parameter]
-        public int PageSize { get; set; } = 20;
+        public int ItemsPerPage { get; set; } = 20;
+
+        /// <summary>
+        /// Gesamtanzahl aller Elemente über alle Seiten. Wird von der Komponente gesetzt, sobald sie bekannt ist
+        /// (bei einer Liste sofort, bei einem Request nach dem Laden der ersten Seite). Mit
+        /// <c>@bind-TotalItems</c> kann die Elternkomponente den Wert anzeigen.
+        /// </summary>
+        [Parameter]
+        public int? TotalItems { get; set; }
+
+        [Parameter]
+        public EventCallback<int?> TotalItemsChanged { get; set; }
 
         /// <summary>
         /// Ändert sich dieser Wert (Equals), wird die Tabelle zurückgesetzt und von Seite 1 neu geladen,
@@ -220,6 +231,12 @@ namespace AniView.Components.Shared
                 _rows.AddRange(page.Items);
                 _nextPage++;
                 _hasMore = page.HasNextPage && page.Items.Count > 0;
+
+                if (page.TotalItems is { } total && total != TotalItems)
+                {
+                    TotalItems = total;
+                    await TotalItemsChanged.InvokeAsync(total);
+                }
             }
             catch (OperationCanceledException) when (token.IsCancellationRequested)
             {
@@ -245,7 +262,7 @@ namespace AniView.Components.Shared
 
         private Task<PageResult<TItem>> FetchPageAsync(int pageNumber, CancellationToken token)
         {
-            var size = Math.Max(1, PageSize);
+            var size = Math.Max(1, ItemsPerPage);
 
             if (LoadPage is not null)
             {
@@ -262,7 +279,7 @@ namespace AniView.Components.Shared
                 slice.Add(source[i]);
             }
 
-            return Task.FromResult(new PageResult<TItem>(slice, end < source.Count));
+            return Task.FromResult(new PageResult<TItem>(slice, end < source.Count, source.Count, size));
         }
 
         private void Reset()
