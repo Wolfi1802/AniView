@@ -1,3 +1,9 @@
+.av-infinite-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
 .av-infinite-footer {
     display: flex;
     align-items: center;

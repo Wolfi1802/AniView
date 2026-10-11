@@ -1,82 +1,33 @@
-﻿using AniView.Models;
+using AniView.Models;
 using AniView.Structure.API.Exceptions;
 using AniView.Structure.API.Services;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace AniView.Components.Pages
 {
     public partial class Simulcast
     {
         // TODO soll der user einstellen dürfen
-        private const int PageSize = 50;
-        private const int PageIndex = 1;
+        private const int PageSize = 20;
 
-        private readonly CancellationTokenSource _cts = new();
-
-        private IReadOnlyList<AnimeSummary>? _items;
-        private bool _isLoading = true;
-        private string? _errorTitle;
-        private string? _errorMessage;
-        private string _errorIcon = Icons.Material.Filled.ErrorOutline;
         private string? _seasonString;
 
         [Inject]
         private ICurrentSimulcastService simulcastAnimes { get; set; } = default!;
 
-        [Inject]
-        private ILogger<Home> Logger { get; set; } = default!;
+        protected override void OnInitialized() => _seasonString = GetCurrentSeasonString();
 
-        protected override Task OnInitializedAsync() => LoadAll();
+        private Task<PageResult<AnimeSummary>> LoadPageAsync(int page, int pageSize, CancellationToken token) =>
+            simulcastAnimes.GetCurrentSimulcastPageAsync(page, pageSize, token);
 
-
-        private async Task LoadAll()
+        private static string? GetErrorMessage(Exception exception) => exception switch
         {
-            _seasonString = GetCurrentSeasonString();
-            await LoadApiData();
-        }
-
-        private async Task LoadApiData()
-        {
-            _isLoading = true;
-            _errorTitle = null;
-            _errorMessage = null;
-
-            try
-            {
-                _items = await simulcastAnimes.GetCurrentSimulcast(PageIndex, PageSize, _cts.Token);
-                // TODO exception handling doppelt
-            }
-            catch (ApiRateLimitException ex)
-            {
-                _errorIcon = Icons.Material.Filled.HourglassEmpty;
-                _errorTitle = "Zu viele Anfragen";
-                _errorMessage = ex.RetryAfter is { } wait
-                    ? $"API bittet um etwas Geduld. Bitte versuche es in ca. {Math.Ceiling(wait.TotalSeconds)} Sekunden erneut."
-                    : "API bittet um etwas Geduld. Bitte versuche es gleich noch einmal.";
-            }
-            catch (ApiException ex)
-            {
-                Logger.LogWarning(ex, "Das Ranking konnte nicht geladen werden.");
-                _errorIcon = Icons.Material.Filled.ErrorOutline;
-                _errorTitle = "Das Ranking konnte nicht geladen werden";
-                _errorMessage = "Bitte prüfe deine Verbindung und versuche es erneut.";
-            }
-            catch (OperationCanceledException)
-            {
-                // Komponente wurde verlassen, es gibt nichts mehr anzuzeigen.
-            }
-            finally
-            {
-                _isLoading = false;
-            }
-        }
-
-        public void Dispose()
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-        }
+            ApiRateLimitException { RetryAfter: { } wait } =>
+                $"API bittet um etwas Geduld. Bitte versuche es in ca. {Math.Ceiling(wait.TotalSeconds)} Sekunden erneut.",
+            ApiRateLimitException =>
+                "API bittet um etwas Geduld. Bitte versuche es gleich noch einmal.",
+            _ => null
+        };
 
         private string GetCurrentSeasonString()
         {

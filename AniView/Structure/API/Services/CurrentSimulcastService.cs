@@ -49,7 +49,7 @@ namespace AniView.Structure.API.Services
 
             var variables = new
             {
-                indexOfPage,
+                page = indexOfPage,
                 perPage,
                 season,
                 seasonYear,
@@ -66,6 +66,18 @@ namespace AniView.Structure.API.Services
             _cache.Set(cacheKey, result, CacheDuration);
 
             return result;
+        }
+
+        public async Task<PageResult<AnimeSummary>> GetCurrentSimulcastPageAsync(
+            int page,
+            int pageSize,
+            CancellationToken cancellationToken = default)
+        {
+            int perPage = ApiPaging.GetPageCount(pageSize);
+            var items = await GetCurrentSimulcast(page, perPage, cancellationToken);
+
+            // Die Abfrage liefert keine Seiteninfo. Eine volle Seite gilt als "es gibt eventuell mehr".
+            return new PageResult<AnimeSummary>(items, items.Count >= perPage);
         }
 
         private static (string Season, int Year) GetCurrentSeason()

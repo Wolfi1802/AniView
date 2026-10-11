@@ -1,4 +1,4 @@
-﻿@page "/simulcast"
+@page "/simulcast"
 @using AniView.Components.Shared
 
 <PageTitle>Simulcast</PageTitle>
@@ -9,18 +9,18 @@
     <MudText Class="mud-text-secondary mb-6">@_seasonString</MudText>
 }
 
-@if (_errorTitle is not null)
-{
-    <StateMessage Title="@_errorTitle" Message="@_errorMessage" Icon="@_errorIcon" OnRetry="LoadApiData" />
-}
-else if (!_isLoading && _items is { Count: 0 })
-{
-    <StateMessage Title="Keine Animes gefunden"
-                  Message="API hat keine Einträge geliefert."
-                  Icon="@Icons.Material.Filled.SearchOff"
-                  OnRetry="LoadApiData" />
-}
-else
-{
-    <AnimeGrid Items="_items" IsLoading="_isLoading" ShowRank="true" SkeletonCount="PageSize" />
-}
+<InfiniteTable TItem="AnimeSummary"
+               ViewType="InfiniteViewType.Cards"
+               LoadPage="LoadPageAsync"
+               PageSize="PageSize"
+               ErrorTitle="Der Simulcast konnte nicht geladen werden"
+               ErrorMessageProvider="GetErrorMessage">
+    <CardTemplate Context="entry">
+        <AnimeCard Anime="entry.Item" Rank="entry.Index + 1" />
+    </CardTemplate>
+    <EmptyContent>
+        <StateMessage Title="Keine Animes gefunden"
+                      Message="API hat keine Einträge geliefert."
+                      Icon="@Icons.Material.Filled.SearchOff" />
+    </EmptyContent>
+</InfiniteTable>

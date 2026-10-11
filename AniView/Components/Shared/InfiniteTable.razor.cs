@@ -60,16 +60,36 @@ namespace AniView.Components.Shared
         public object? ResetKey { get; set; }
 
         /// <summary>
-        /// Spaltenüberschriften (th-Elemente).
+        /// Steuert die Darstellung. Bei <see cref="InfiniteViewType.Table"/> werden <see cref="HeaderContent"/> und
+        /// <see cref="RowTemplate"/> benötigt, bei <see cref="InfiniteViewType.Cards"/> das <see cref="CardTemplate"/>.
         /// </summary>
-        [Parameter, EditorRequired]
+        [Parameter]
+        public InfiniteViewType ViewType { get; set; } = InfiniteViewType.Table;
+
+        /// <summary>
+        /// Spaltenüberschriften (th-Elemente), nur für <see cref="InfiniteViewType.Table"/>.
+        /// </summary>
+        [Parameter]
         public RenderFragment? HeaderContent { get; set; }
 
         /// <summary>
-        /// Zellen einer Zeile (td-Elemente).
+        /// Zellen einer Zeile (td-Elemente), nur für <see cref="InfiniteViewType.Table"/>.
         /// </summary>
-        [Parameter, EditorRequired]
+        [Parameter]
         public RenderFragment<TItem>? RowTemplate { get; set; }
+
+        /// <summary>
+        /// Eine Karte pro Eintrag, nur für <see cref="InfiniteViewType.Cards"/>.
+        /// </summary>
+        [Parameter]
+        public RenderFragment<InfiniteEntry<TItem>>? CardTemplate { get; set; }
+
+        /// <summary>
+        /// Optional: wandelt einen Ladefehler in eine Meldung für den Nutzer um.
+        /// Ohne Angabe oder bei null wird ein allgemeiner Hinweis angezeigt.
+        /// </summary>
+        [Parameter]
+        public Func<Exception, string?>? ErrorMessageProvider { get; set; }
 
         /// <summary>
         /// Anzeige, wenn keine Einträge vorhanden sind.
@@ -112,6 +132,20 @@ namespace AniView.Components.Shared
             {
                 throw new InvalidOperationException(
                     $"{nameof(InfiniteTable<TItem>)} benötigt genau einen der Parameter {nameof(Items)} oder {nameof(LoadPage)}.");
+            }
+
+            var missingTemplate = ViewType switch
+            {
+                InfiniteViewType.Cards when CardTemplate is null => nameof(CardTemplate),
+                InfiniteViewType.Table when RowTemplate is null || HeaderContent is null =>
+                    $"{nameof(HeaderContent)} und {nameof(RowTemplate)}",
+                _ => null
+            };
+
+            if (missingTemplate is not null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(InfiniteTable<TItem>)} mit {nameof(ViewType)} {ViewType} benötigt {missingTemplate}.");
             }
 
             var sourceChanged = _parametersInitialized
@@ -194,7 +228,8 @@ namespace AniView.Components.Shared
             catch (Exception ex)
             {
                 Logger.LogWarning(ex, "Seite {Page} der Tabelle konnte nicht geladen werden.", _nextPage);
-                _error = "Bitte prüfe deine Verbindung und versuche es erneut.";
+                _error = ErrorMessageProvider?.Invoke(ex)
+                    ?? "Bitte prüfe deine Verbindung und versuche es erneut.";
             }
             finally
             {

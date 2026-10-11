@@ -20,17 +20,31 @@
     }
     else if (_rows.Count > 0)
     {
-        <MudSimpleTable Hover="true" Dense="@Dense" Elevation="0" Outlined="true">
-            <thead>
-                <tr>@HeaderContent</tr>
-            </thead>
-            <tbody>
-                @foreach (var item in _rows)
-                {
-                    <tr>@RowTemplate?.Invoke(item)</tr>
-                }
-            </tbody>
-        </MudSimpleTable>
+        @switch (ViewType)
+        {
+            case InfiniteViewType.Cards:
+                <div class="av-infinite-cards">
+                    @for (var i = 0; i < _rows.Count; i++)
+                    {
+                        @CardTemplate?.Invoke(new InfiniteEntry<TItem>(_rows[i], i))
+                    }
+                </div>
+                break;
+
+            default:
+                <MudSimpleTable Hover="true" Dense="@Dense" Elevation="0" Outlined="true">
+                    <thead>
+                        <tr>@HeaderContent</tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in _rows)
+                        {
+                            <tr>@RowTemplate?.Invoke(item)</tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+                break;
+        }
     }
 
     @* Der Sentinel bleibt immer im DOM, damit der IntersectionObserver dasselbe Element beobachten kann. *@
