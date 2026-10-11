@@ -290,6 +290,31 @@ namespace AniView.Structure.API.Querys
             }
             """;
 
+        /// <summary>
+        /// Nur die IDs der laufenden Animes der Season. Dient dazu, die Gesamtanzahl exakt zu zählen,
+        /// weil "pageInfo.total" von AniList eine Schätzung ist.
+        /// </summary>
+        public const string CurrentSimulcastIds = """
+            query (
+              $page: Int,
+              $perPage: Int,
+              $season: MediaSeason!,
+              $seasonYear: Int!
+            ) {
+              Page(page: $page, perPage: $perPage) {
+                media(
+                  type: ANIME,
+                  season: $season,
+                  seasonYear: $seasonYear,
+                  status: RELEASING,
+                  isAdult: false
+                ) {
+                  id
+                }
+              }
+            }
+            """;
+
         private static string BuildMediaFields(MediaFieldsProfile profile)
         {
             var fields = new StringBuilder(BaseFields);
