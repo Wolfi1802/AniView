@@ -19,7 +19,7 @@ namespace AniView.Components.Pages
         private string _errorIcon = Icons.Material.Filled.ErrorOutline;
 
         [Inject]
-        private IAnimeListService animeList { get; set; } = default!;
+        private IPopularAnimeService popularAnimes { get; set; } = default!;
 
         [Inject]
         private ILogger<Home> Logger { get; set; } = default!;
@@ -34,7 +34,7 @@ namespace AniView.Components.Pages
 
             try
             {
-                _items = await animeList.GetPopularAsync(RankingSize, _cts.Token);
+                _items = await popularAnimes.GetPopularAsync(RankingSize, _cts.Token);
                 // TODO exception handling doppelt
             }
             catch (ApiRateLimitException ex)

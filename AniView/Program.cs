@@ -29,13 +29,15 @@ builder.Services.AddScoped<ThemeService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<ApiResponseInterceptor>();
-builder.Services.AddHttpClient<IAnimeListService, AnimeService>(client =>
+builder.Services.AddHttpClient<IAniListClient, AniListClient>(client =>
 {
     client.BaseAddress = new Uri("https://graphql.anilist.co/");
     client.Timeout = TimeSpan.FromSeconds(15);
     client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
 })
 .AddHttpMessageHandler<ApiResponseInterceptor>();
+builder.Services.AddTransient<IPopularAnimeService, PopularAnimeService>();
+builder.Services.AddTransient<ICurrentSimulcastService, CurrentSimulcastService>();
 
 var app = builder.Build();
 
