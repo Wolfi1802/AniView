@@ -6,10 +6,13 @@
 <MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Aktueller Simulcast</MudText>
 <MudText Class="mud-text-secondary mb-6">@SubTitle</MudText>
 
+<AnimeFilterBar @bind-Options="_options" />
+
 <InfiniteTable TItem="AnimeSummary"
                ViewType="InfiniteViewType.Cards"
                LoadPage="LoadPageAsync"
                ItemsPerPage="ItemsPerPage"
+               ResetKey="_options"
                @bind-TotalItems="_totalItems"
                ErrorTitle="Der Simulcast konnte nicht geladen werden"
                ErrorMessageProvider="GetErrorMessage">
@@ -18,7 +21,7 @@
     </CardTemplate>
     <EmptyContent>
         <StateMessage Title="Keine Animes gefunden"
-                      Message="API hat keine Einträge geliefert."
+                      Message="Zu diesen Filtern gibt es keine Einträge."
                       Icon="@Icons.Material.Filled.SearchOff" />
     </EmptyContent>
 </InfiniteTable>

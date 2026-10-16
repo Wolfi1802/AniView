@@ -256,10 +256,22 @@ namespace AniView.Structure.API.Querys
         private const string PageInfoFields = "pageInfo { total perPage currentPage lastPage hasNextPage }";
 
         public static string MediaPage(MediaFieldsProfile profile) => $$"""
-            query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
+            query (
+              $page: Int,
+              $perPage: Int,
+              $sort: [MediaSort],
+              $search: String,
+              $formatIn: [MediaFormat]
+            ) {
               Page(page: $page, perPage: $perPage) {
                 {{PageInfoFields}}
-                media(type: ANIME, sort: $sort, isAdult: false) {
+                media(
+                  type: ANIME,
+                  sort: $sort,
+                  search: $search,
+                  format_in: $formatIn,
+                  isAdult: false
+                ) {
                   {{BuildMediaFields(profile)}}
                 }
               }
@@ -272,7 +284,9 @@ namespace AniView.Structure.API.Querys
               $perPage: Int,
               $season: MediaSeason!,
               $seasonYear: Int!,
-              $sort: [MediaSort]
+              $sort: [MediaSort],
+              $search: String,
+              $formatIn: [MediaFormat]
             ) {
               Page(page: $page, perPage: $perPage) {
                 {{PageInfoFields}}
@@ -282,6 +296,8 @@ namespace AniView.Structure.API.Querys
                   seasonYear: $seasonYear,
                   status: RELEASING,
                   sort: $sort,
+                  search: $search,
+                  format_in: $formatIn,
                   isAdult: false
                 ) {
                   {{BuildMediaFields(profile)}}
@@ -310,7 +326,9 @@ namespace AniView.Structure.API.Querys
               $page: Int,
               $perPage: Int,
               $season: MediaSeason!,
-              $seasonYear: Int!
+              $seasonYear: Int!,
+              $search: String,
+              $formatIn: [MediaFormat]
             ) {
               Page(page: $page, perPage: $perPage) {
                 media(
@@ -318,6 +336,8 @@ namespace AniView.Structure.API.Querys
                   season: $season,
                   seasonYear: $seasonYear,
                   status: RELEASING,
+                  search: $search,
+                  format_in: $formatIn,
                   isAdult: false
                 ) {
                   id

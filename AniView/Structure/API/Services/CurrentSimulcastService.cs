@@ -33,13 +33,14 @@ namespace AniView.Structure.API.Services
             int itemsPerPage = DefaultItemsPerPage,
             CancellationToken cancellationToken = default)
         {
-            var page = await GetCurrentSimulcastPageAsync(pageIndex, itemsPerPage, cancellationToken);
+            var page = await GetCurrentSimulcastPageAsync(pageIndex, itemsPerPage, AnimeListOptions.Default, cancellationToken);
             return page.Items;
         }
 
         public async Task<PageResult<AnimeSummary>> GetCurrentSimulcastPageAsync(
-            int page = DefaultPageIndex,
-            int pageSize = DefaultItemsPerPage,
+            int page,
+            int pageSize,
+            AnimeListOptions options,
             CancellationToken cancellationToken = default)
         {
             int indexOfPage = ApiPaging.GetPageIndex(page);
@@ -47,8 +48,8 @@ namespace AniView.Structure.API.Services
 
             var (season, seasonYear) = GetCurrentSeason();
 
-            var pageTask = GetPageAsync(indexOfPage, perPage, season, seasonYear, cancellationToken);
-            var totalTask = GetTotalAsync(season, seasonYear, cancellationToken);
+            var pageTask = GetPageAsync(indexOfPage, perPage, season, seasonYear, options, cancellationToken);
+            var totalTask = GetTotalAsync(season, seasonYear, options, cancellationToken);
             await Task.WhenAll(pageTask, totalTask);
 
             var total = totalTask.Result;
@@ -67,11 +68,12 @@ namespace AniView.Structure.API.Services
             int perPage,
             string season,
             int seasonYear,
+            AnimeListOptions options,
             CancellationToken cancellationToken)
         {
-            // Season, Jahr, Pagination und Profil müssen Teil des Cache-Keys sein.
+            // Season, Jahr, Pagination, Profil sowie Sortierung und Filter müssen Teil des Cache-Keys sein.
             var cacheKey =
-                $"anilist:simulcast:{season}:{seasonYear}:{indexOfPage}:{perPage}:{Profile.CacheKey}";
+                $"anilist:simulcast:{season}:{seasonYear}:{indexOfPage}:{perPage}:{Profile.CacheKey}:{options.CacheKey}";
 
             if (_cache.TryGetValue(
                 cacheKey,
@@ -81,14 +83,9 @@ namespace AniView.Structure.API.Services
                 return cached;
             }
 
-            var variables = new
-            {
-                page = indexOfPage,
-                perPage,
-                season,
-                seasonYear,
-                sort = new[] { "POPULARITY_DESC" }
-            };
+            var variables = options.ToVariables(indexOfPage, perPage);
+            variables["season"] = season;
+            variables["seasonYear"] = seasonYear;
 
             var data = await _client.SendAsync<MediaPageData>(
                 ApiQueries.CurrentSimulcast(Profile),
@@ -106,9 +103,14 @@ namespace AniView.Structure.API.Services
         /// Zählt die laufenden Animes der Season exakt, indem die Seiten (nur IDs) durchlaufen werden,
         /// bis eine Seite nicht mehr voll ist.
         /// </summary>
-        private async Task<int> GetTotalAsync(string season, int seasonYear, CancellationToken cancellationToken)
+        private async Task<int> GetTotalAsync(
+            string season,
+            int seasonYear,
+            AnimeListOptions options,
+            CancellationToken cancellationToken)
         {
-            var cacheKey = $"anilist:simulcast:total:{season}:{seasonYear}";
+            // Die Anzahl hängt nur vom Filter ab, nicht von der Sortierung.
+            var cacheKey = $"anilist:simulcast:total:{season}:{seasonYear}:{options.FilterKey}";
 
             if (_cache.TryGetValue(cacheKey, out int cached))
             {
@@ -120,7 +122,11 @@ namespace AniView.Structure.API.Services
 
             for (var pageIndex = ApiPaging.MIN_PAGE_NUMBER; pageIndex <= MaxCountPages; pageIndex++)
             {
-                var variables = new { page = pageIndex, perPage = countPageSize, season, seasonYear };
+                var variables = options.ToFilterVariables();
+                variables["page"] = pageIndex;
+                variables["perPage"] = countPageSize;
+                variables["season"] = season;
+                variables["seasonYear"] = seasonYear;
 
                 var data = await _client.SendAsync<MediaPageData>(
                     ApiQueries.CurrentSimulcastIds,

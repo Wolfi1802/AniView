@@ -14,6 +14,9 @@ namespace AniView.Components.Pages
         private string? _seasonString;
         private int? _totalItems;
 
+        // Sortierung und Filter. Ein neuer Wert setzt die Tabelle zurück (ResetKey) und lädt ab Seite 1 neu.
+        private AnimeListOptions _options = AnimeListOptions.Default;
+
         [Inject]
         private ICurrentSimulcastService simulcastAnimes { get; set; } = default!;
 
@@ -24,7 +27,7 @@ namespace AniView.Components.Pages
         protected override void OnInitialized() => _seasonString = GetCurrentSeasonString();
 
         private Task<PageResult<AnimeSummary>> LoadPageAsync(int page, int pageSize, CancellationToken token) =>
-            simulcastAnimes.GetCurrentSimulcastPageAsync(page, pageSize, token);
+            simulcastAnimes.GetCurrentSimulcastPageAsync(page, pageSize, _options, token);
 
         private static string? GetErrorMessage(Exception exception) => exception switch
         {

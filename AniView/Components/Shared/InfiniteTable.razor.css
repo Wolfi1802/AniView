@@ -21,3 +21,12 @@
     outline: 2px solid var(--mud-palette-primary);
     outline-offset: -2px;
 }
+
+/* position: sticky im Tabellenkopf funktioniert nur, wenn kein Vorfahr zum Scroll-Container wird.
+   MudSimpleTable setzt overflow-x: auto, deshalb gilt der klebende Kopf ab 600 px Breite.
+   Auf schmalen Bildschirmen bleibt das horizontale Scrollen der Tabelle erhalten. */
+@media (min-width: 600px) {
+    .av-infinite-table ::deep .mud-table-container {
+        overflow: visible;
+    }
+}

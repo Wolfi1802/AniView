@@ -6,13 +6,25 @@
 
 <MudText Typo="Typo.h4" Component="h1" GutterBottom="true">All Animes</MudText>
 
-<InfiniteTable TItem="AnimeSummary" LoadPage="LoadPopularPageAsync" ItemsPerPage="20" @bind-TotalItems="_requestTotal" OnRowClick="OpenDetailsAsync">
+<AnimeFilterBar @bind-Options="_options" />
+
+<InfiniteTable TItem="AnimeSummary"
+               LoadPage="LoadPopularPageAsync"
+               ItemsPerPage="20"
+               ResetKey="_options"
+               @bind-TotalItems="_requestTotal"
+               OnRowClick="OpenDetailsAsync">
     <HeaderContent>
-        <AnimeTableHeader />
+        <AnimeTableHeader @bind-Options="_options" />
     </HeaderContent>
     <RowTemplate Context="anime">
         <AnimeTableRow Anime="anime" />
     </RowTemplate>
+    <EmptyContent>
+        <StateMessage Title="Keine Animes gefunden"
+                      Message="Zu diesen Filtern gibt es keine Einträge."
+                      Icon="@Icons.Material.Filled.SearchOff" />
+    </EmptyContent>
 </InfiniteTable>
 
 @code {
@@ -22,6 +34,9 @@
     private bool _listError;
     private int? _requestTotal;
     private int? _listTotal;
+
+    // Sortierung und Filter. Ein neuer Wert setzt die Tabelle zurück (ResetKey) und lädt ab Seite 1 neu.
+    private AnimeListOptions _options = AnimeListOptions.Default;
 
     [Inject]
     private IPopularAnimeService PopularAnimes { get; set; } = default!;
@@ -34,7 +49,7 @@
     protected override Task OnInitializedAsync() => LoadListAsync();
 
     private Task<PageResult<AnimeSummary>> LoadPopularPageAsync(int page, int pageSize, CancellationToken token) =>
-        PopularAnimes.GetPopularPageAsync(page, pageSize, token);
+        PopularAnimes.GetPopularPageAsync(page, pageSize, _options, token);
 
     private async Task LoadListAsync()
     {

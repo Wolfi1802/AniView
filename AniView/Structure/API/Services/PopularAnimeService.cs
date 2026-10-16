@@ -45,10 +45,14 @@ namespace AniView.Structure.API.Services
             return result;
         }
 
-        public async Task<PageResult<AnimeSummary>> GetPopularPageAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PageResult<AnimeSummary>> GetPopularPageAsync(
+            int page,
+            int pageSize,
+            AnimeListOptions options,
+            CancellationToken cancellationToken = default)
         {
             int perPage = ApiPaging.GetPageCount(pageSize);
-            var variables = new { page = ApiPaging.GetPageIndex(page), perPage, sort = new[] { "POPULARITY_DESC" } };
+            var variables = options.ToVariables(ApiPaging.GetPageIndex(page), perPage);
             var data = await _client.SendAsync<MediaPageData>(ApiQueries.MediaPage(Profile), variables, cancellationToken);
 
             return AnimeSummaryMapper.MapPage(data, perPage);

@@ -1,0 +1,145 @@
+@using AniView.Structure.API
+@using AniView.Structure.API.Mapping
+@implements IAsyncDisposable
+
+@* Filter und Sortierung einer Anime-Liste. Die Leiste bleibt beim Scrollen unterhalb der Kopfzeile sichtbar (siehe AnimeFilterBar.razor.css). *@
+<div @ref="_bar" class="av-filter-bar" role="search" aria-label="Filter und Sortierung">
+    <div class="av-filter-bar__field av-filter-bar__field--search">
+        <MudTextField T="string"
+                      Value="@Options.Search"
+                      ValueChanged="OnSearchChangedAsync"
+                      Label="Titel suchen"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Immediate="true"
+                      DebounceInterval="400"
+                      MaxLength="100"
+                      Clearable="true"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" />
+    </div>
+
+    <div class="av-filter-bar__field">
+        <MudSelect T="AnimeFormat?"
+                   Value="@Options.Format"
+                   ValueChanged="OnFormatChangedAsync"
+                   Label="Format"
+                   Placeholder="Alle Formate"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Clearable="true">
+            @foreach (var format in Enum.GetValues<AnimeFormat>())
+            {
+                <MudSelectItem T="AnimeFormat?" Value="@((AnimeFormat?)format)">@GetFormatLabel(format)</MudSelectItem>
+            }
+        </MudSelect>
+    </div>
+
+    <div class="av-filter-bar__field av-filter-bar__field--sort">
+        <MudSelect T="AnimeSortField"
+                   Value="@Options.SortField"
+                   ValueChanged="OnSortFieldChangedAsync"
+                   Label="Sortieren nach"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense">
+            @foreach (var field in Enum.GetValues<AnimeSortField>())
+            {
+                <MudSelectItem T="AnimeSortField" Value="@field">@GetSortFieldLabel(field)</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudIconButton Icon="@(Options.Descending ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward)"
+                       Title="@DirectionTitle"
+                       AriaLabel="@DirectionTitle"
+                       OnClick="OnDirectionToggledAsync" />
+    </div>
+
+    @if (!Options.IsDefault)
+    {
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.FilterAltOff"
+                   OnClick="OnResetAsync">
+            Zurücksetzen
+        </MudButton>
+    }
+</div>
+
+@code {
+    private const string ModulePath = "./Components/Shared/AnimeFilterBar.razor.js";
+
+    private ElementReference _bar;
+    private IJSObjectReference? _module;
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
+
+    /// <summary>
+    /// Aktuelle Sortierung und Filter. Mit <c>@bind-Options</c> bindbar.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public AnimeListOptions Options { get; set; } = AnimeListOptions.Default;
+
+    [Parameter]
+    public EventCallback<AnimeListOptions> OptionsChanged { get; set; }
+
+    private string DirectionTitle => Options.Descending
+        ? "Absteigend sortiert, zum Umkehren klicken"
+        : "Aufsteigend sortiert, zum Umkehren klicken";
+
+    /// <summary>
+    /// Deutsche Bezeichnung einer Sortierspalte, einheitlich für Leiste und Tabellenkopf.
+    /// </summary>
+    internal static string GetSortFieldLabel(AnimeSortField field) => field switch
+    {
+        AnimeSortField.Popularity => "Beliebtheit",
+        AnimeSortField.Score => "Rating",
+        AnimeSortField.Title => "Titel",
+        AnimeSortField.Episodes => "Episoden",
+        AnimeSortField.Format => "Format",
+        _ => field.ToString()
+    };
+
+    private static string GetFormatLabel(AnimeFormat format) =>
+        AnimeSummaryMapper.GetFormatLabel(AnimeListOptionsMapping.ToApiFormat(format)) ?? format.ToString();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        // Höhe der Leiste bereitstellen, damit der Tabellenkopf darunter einrastet.
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", ModulePath);
+        await _module.InvokeVoidAsync("observe", _bar);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _module.InvokeVoidAsync("dispose", _bar);
+            await _module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // Die Verbindung ist bereits getrennt, es gibt nichts mehr aufzuräumen.
+        }
+    }
+
+    private Task OnSearchChangedAsync(string? search) => OptionsChanged.InvokeAsync(Options.WithSearch(search));
+
+    private Task OnFormatChangedAsync(AnimeFormat? format) => OptionsChanged.InvokeAsync(Options with { Format = format });
+
+    private Task OnSortFieldChangedAsync(AnimeSortField field) => OptionsChanged.InvokeAsync(Options.WithSortField(field));
+
+    private Task OnDirectionToggledAsync() => OptionsChanged.InvokeAsync(Options with { Descending = !Options.Descending });
+
+    private Task OnResetAsync() => OptionsChanged.InvokeAsync(AnimeListOptions.Default);
+}

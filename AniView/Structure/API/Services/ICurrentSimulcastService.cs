@@ -18,8 +18,9 @@ namespace AniView.Structure.API.Services
         /// </summary>
         /// <param name="page">Seitennummer ab 1.</param>
         /// <param name="pageSize">Elemente pro Seite (wird auf die Grenzen der API begrenzt).</param>
+        /// <param name="options">Sortierung und Filter. Die Gesamtanzahl zählt nur Animes, die dem Filter entsprechen.</param>
         /// <exception cref="ApiRateLimitException">Das Anfragelimit von AniList ist erreicht.</exception>
         /// <exception cref="ApiException">Die Anfrage ist fehlgeschlagen.</exception>
-        Task<PageResult<AnimeSummary>> GetCurrentSimulcastPageAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+        Task<PageResult<AnimeSummary>> GetCurrentSimulcastPageAsync(int page, int pageSize, AnimeListOptions options, CancellationToken cancellationToken = default);
     }
 }
