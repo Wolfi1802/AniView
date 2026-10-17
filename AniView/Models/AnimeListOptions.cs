@@ -44,6 +44,12 @@ namespace AniView.Models
         public AnimeFormat? Format { get; init; }
 
         /// <summary>
+        /// Name des Streaming-Dienstes (zum Beispiel "Crunchyroll"), bei dem der Anime lizenziert sein muss,
+        /// null für alle Dienste. Der Name entspricht dem Seitennamen bei AniList.
+        /// </summary>
+        public string? StreamingSite { get; init; }
+
+        /// <summary>
         /// Suchbegriff für den Titel, null oder leer für keine Einschränkung.
         /// </summary>
         public string? Search { get; init; }
@@ -74,7 +80,7 @@ namespace AniView.Models
         /// <summary>
         /// Schlüssel nur der Filter (ohne Sortierung), zum Beispiel für das Zwischenspeichern von Gesamtanzahlen.
         /// </summary>
-        public string FilterKey => $"{Format?.ToString() ?? "-"}|{Search?.ToLowerInvariant() ?? "-"}";
+        public string FilterKey => $"{Format?.ToString() ?? "-"}|{StreamingSite?.ToLowerInvariant() ?? "-"}|{Search?.ToLowerInvariant() ?? "-"}";
 
         /// <summary>
         /// Schlüssel aus Filter und Sortierung, zum Beispiel für das Zwischenspeichern von Seiten.

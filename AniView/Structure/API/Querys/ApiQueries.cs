@@ -253,6 +253,19 @@ namespace AniView.Structure.API.Querys
             }
             """;
 
+        /// <summary>
+        /// Streaming-Dienste, die AniList für Animes kennt (Grundlage des Filters "licensedBy").
+        /// </summary>
+        public const string StreamingSites = """
+            query {
+              ExternalLinkSourceCollection(type: STREAMING, mediaType: ANIME) {
+                id
+                site
+                isDisabled
+              }
+            }
+            """;
+
         private const string PageInfoFields = "pageInfo { total perPage currentPage lastPage hasNextPage }";
 
         public static string MediaPage(MediaFieldsProfile profile) => $$"""
@@ -261,7 +274,8 @@ namespace AniView.Structure.API.Querys
               $perPage: Int,
               $sort: [MediaSort],
               $search: String,
-              $formatIn: [MediaFormat]
+              $formatIn: [MediaFormat],
+              $licensedBy: String
             ) {
               Page(page: $page, perPage: $perPage) {
                 {{PageInfoFields}}
@@ -270,6 +284,7 @@ namespace AniView.Structure.API.Querys
                   sort: $sort,
                   search: $search,
                   format_in: $formatIn,
+                  licensedBy: $licensedBy,
                   isAdult: false
                 ) {
                   {{BuildMediaFields(profile)}}
@@ -286,7 +301,8 @@ namespace AniView.Structure.API.Querys
               $seasonYear: Int!,
               $sort: [MediaSort],
               $search: String,
-              $formatIn: [MediaFormat]
+              $formatIn: [MediaFormat],
+              $licensedBy: String
             ) {
               Page(page: $page, perPage: $perPage) {
                 {{PageInfoFields}}
@@ -298,6 +314,7 @@ namespace AniView.Structure.API.Querys
                   sort: $sort,
                   search: $search,
                   format_in: $formatIn,
+                  licensedBy: $licensedBy,
                   isAdult: false
                 ) {
                   {{BuildMediaFields(profile)}}
@@ -328,7 +345,8 @@ namespace AniView.Structure.API.Querys
               $season: MediaSeason!,
               $seasonYear: Int!,
               $search: String,
-              $formatIn: [MediaFormat]
+              $formatIn: [MediaFormat],
+              $licensedBy: String
             ) {
               Page(page: $page, perPage: $perPage) {
                 media(
@@ -338,6 +356,7 @@ namespace AniView.Structure.API.Querys
                   status: RELEASING,
                   search: $search,
                   format_in: $formatIn,
+                  licensedBy: $licensedBy,
                   isAdult: false
                 ) {
                   id

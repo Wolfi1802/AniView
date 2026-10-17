@@ -39,6 +39,7 @@ builder.Services.AddHttpClient<IAniListClient, AniListClient>(client =>
 builder.Services.AddTransient<IPopularAnimeService, PopularAnimeService>();
 builder.Services.AddTransient<ICurrentSimulcastService, CurrentSimulcastService>();
 builder.Services.AddTransient<IAnimeDetailService, AnimeDetailService>();
+builder.Services.AddTransient<IStreamingSiteService, StreamingSiteService>();
 
 var app = builder.Build();
 

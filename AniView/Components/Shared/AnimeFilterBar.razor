@@ -1,5 +1,6 @@
 @using AniView.Structure.API
 @using AniView.Structure.API.Mapping
+@using AniView.Structure.API.Services
 @implements IAsyncDisposable
 
 @* Filter und Sortierung einer Anime-Liste. Die Leiste bleibt beim Scrollen unterhalb der Kopfzeile sichtbar (siehe AnimeFilterBar.razor.css). *@
@@ -31,6 +32,22 @@
             @foreach (var format in Enum.GetValues<AnimeFormat>())
             {
                 <MudSelectItem T="AnimeFormat?" Value="@((AnimeFormat?)format)">@GetFormatLabel(format)</MudSelectItem>
+            }
+        </MudSelect>
+    </div>
+
+    <div class="av-filter-bar__field">
+        <MudSelect T="string"
+                   Value="@Options.StreamingSite"
+                   ValueChanged="OnStreamingSiteChangedAsync"
+                   Label="Streaming-Dienst"
+                   Placeholder="Alle Dienste"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Clearable="true">
+            @foreach (var site in _streamingSites)
+            {
+                <MudSelectItem T="string" Value="@site">@site</MudSelectItem>
             }
         </MudSelect>
     </div>
@@ -70,9 +87,13 @@
 
     private ElementReference _bar;
     private IJSObjectReference? _module;
+    private IReadOnlyList<string> _streamingSites = [];
 
     [Inject]
     private IJSRuntime JS { get; set; } = default!;
+
+    [Inject]
+    private IStreamingSiteService StreamingSites { get; set; } = default!;
 
     /// <summary>
     /// Aktuelle Sortierung und Filter. Mit <c>@bind-Options</c> bindbar.
@@ -102,6 +123,22 @@
 
     private static string GetFormatLabel(AnimeFormat format) =>
         AnimeSummaryMapper.GetFormatLabel(AnimeListOptionsMapping.ToApiFormat(format)) ?? format.ToString();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _streamingSites = await StreamingSites.GetStreamingSitesAsync();
+        EnsureSelectedSiteListed();
+    }
+
+    // Ein aktiver Filter muss auswählbar bleiben, auch wenn der Dienst nicht in der geladenen Liste steht.
+    private void EnsureSelectedSiteListed()
+    {
+        var selected = Options.StreamingSite;
+        if (selected is not null && !_streamingSites.Contains(selected, StringComparer.OrdinalIgnoreCase))
+        {
+            _streamingSites = [.. _streamingSites, selected];
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -136,6 +173,8 @@
     private Task OnSearchChangedAsync(string? search) => OptionsChanged.InvokeAsync(Options.WithSearch(search));
 
     private Task OnFormatChangedAsync(AnimeFormat? format) => OptionsChanged.InvokeAsync(Options with { Format = format });
+
+    private Task OnStreamingSiteChangedAsync(string? site) => OptionsChanged.InvokeAsync(Options with { StreamingSite = site });
 
     private Task OnSortFieldChangedAsync(AnimeSortField field) => OptionsChanged.InvokeAsync(Options.WithSortField(field));
 

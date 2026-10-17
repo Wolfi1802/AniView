@@ -38,6 +38,12 @@ namespace AniView.Structure.API
                 variables["formatIn"] = new[] { ToApiFormat(format) };
             }
 
+            if (!string.IsNullOrWhiteSpace(options.StreamingSite))
+            {
+                // Seiten mit Streaming- oder Lese-Lizenz für den Anime (AniList-Argument "licensedBy").
+                variables["licensedBy"] = options.StreamingSite;
+            }
+
             return variables;
         }
 

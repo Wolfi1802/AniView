@@ -24,6 +24,11 @@ namespace AniView.Structure.API.Dtos
         public MediaPageDto? Page { get; init; }
     }
 
+    internal sealed class ExternalLinkSourceData
+    {
+        public List<MediaExternalLinkDto?>? ExternalLinkSourceCollection { get; init; }
+    }
+
     internal sealed class MediaByIdData
     {
         public MediaDto? Media { get; init; }
