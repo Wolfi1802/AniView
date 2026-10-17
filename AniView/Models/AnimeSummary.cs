@@ -28,12 +28,6 @@ namespace AniView.Models
         public int? Episodes { get; init; }
 
         /// <summary>
-        /// Zeitspanne der Erscheinung als Text, zum Beispiel "10.2023 – 12.2023" oder "seit 04.2025" bei laufenden
-        /// Serien. Null, wenn AniList kein Startdatum kennt.
-        /// </summary>
-        public string? AiredText { get; init; }
-
-        /// <summary>
         /// Nummer der nächsten Episode.
         /// </summary>
         public int? NextEpisodeNumber { get; init; }

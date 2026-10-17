@@ -77,44 +77,11 @@ namespace AniView.Structure.API.Mapping
             {
                 IsFinished = string.Equals(media.Status, "FINISHED", StringComparison.OrdinalIgnoreCase),
                 Episodes = media.Episodes,
-                AiredText = FormatAiredRange(
-                    media.StartDate,
-                    media.EndDate,
-                    string.Equals(media.Status, "FINISHED", StringComparison.OrdinalIgnoreCase)),
                 NextEpisodeNumber = airing?.Episode,
                 NextEpisodeAiringAt = airingAt,
                 TimeUntilNextEpisode = timeUntilAiring
             };
         }
-
-        /// <summary>
-        /// Bildet die Zeitspanne der Erscheinung ab. Ohne Enddatum gilt eine laufende Serie als "seit ...",
-        /// ein beendeter Anime zeigt nur den Start.
-        /// </summary>
-        internal static string? FormatAiredRange(FuzzyDateDto? start, FuzzyDateDto? end, bool isFinished)
-        {
-            var from = FormatMonth(start);
-            if (from is null)
-            {
-                return null;
-            }
-
-            var to = FormatMonth(end);
-            if (to is null)
-            {
-                return isFinished ? from : $"seit {from}";
-            }
-
-            return to == from ? from : $"{from} – {to}";
-        }
-
-        // Monat und Jahr (zum Beispiel 10.2023), bei unbekanntem Monat nur das Jahr.
-        private static string? FormatMonth(FuzzyDateDto? date) => date switch
-        {
-            { Year: { } year, Month: { } month } => $"{month:00}.{year}",
-            { Year: { } year } => year.ToString(),
-            _ => null
-        };
 
         /// <summary>
         /// Übersetzt das AniList-Format (zum Beispiel MOVIE) in die Anzeige; unbekannte Werte bleiben unverändert.

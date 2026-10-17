@@ -58,13 +58,6 @@
                 <p class="av-meta__value">-</p>
             }
         </div>
-        @if (ShowAired)
-        {
-            <div class="av-meta">
-                <p>Erscheinung:</p>
-                <p class="av-meta__value">@(Anime.AiredText ?? "-")</p>
-            </div>
-        }
         @if (ShowPopularity)
         {
             <div class="av-meta">
@@ -153,12 +146,6 @@
     /// </summary>
     [Parameter]
     public bool ShowPopularity { get; set; }
-
-    /// <summary>
-    /// Zeigt die Zeitspanne der Erscheinung (zum Beispiel "10.2023 – 12.2023").
-    /// </summary>
-    [Parameter]
-    public bool ShowAired { get; set; }
 
     /// <summary>
     /// Zeigt oben rechts im Bild ein Info-Symbol, das den Detail-Dialog mit allen Informationen zum Anime öffnet.

@@ -50,8 +50,6 @@ namespace AniView.Structure.API.Querys
         public static MediaFieldsProfile Summary { get; } = new()
         {
             Title = true,
-            StartDate = true,
-            EndDate = true,
             CoverImage = true,
             NextAiringEpisode = true
         };

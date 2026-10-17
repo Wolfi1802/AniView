@@ -9,11 +9,6 @@ namespace AniView.Models
         Score,
         Title,
         Episodes,
-
-        /// <summary>
-        /// Erscheinung anhand der Zeitspanne (Startdatum, bei gleichem Start das Enddatum).
-        /// </summary>
-        Release,
         Format
     }
 
