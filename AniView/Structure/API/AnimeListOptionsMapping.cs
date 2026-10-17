@@ -63,6 +63,9 @@ namespace AniView.Structure.API
                 AnimeSortField.Title => [$"TITLE_ROMAJI{suffix}", "ID"],
                 AnimeSortField.Episodes => [$"EPISODES{suffix}", "POPULARITY_DESC", "ID"],
                 AnimeSortField.Format => [$"FORMAT{suffix}", "POPULARITY_DESC", "ID"],
+                // AniList kann nicht nach der nächsten Episode sortieren. Diese Sortierung übernimmt der Service,
+                // die API liefert nur eine stabile Reihenfolge.
+                AnimeSortField.NextEpisode => ["POPULARITY_DESC", "ID"],
                 _ => ["POPULARITY_DESC", "ID"]
             };
         }

@@ -59,7 +59,7 @@
                    Label="Sortieren nach"
                    Variant="Variant.Outlined"
                    Margin="Margin.Dense">
-            @foreach (var field in Enum.GetValues<AnimeSortField>())
+            @foreach (var field in Enum.GetValues<AnimeSortField>().Where(IsSortFieldOffered))
             {
                 <MudSelectItem T="AnimeSortField" Value="@field">@GetSortFieldLabel(field)</MudSelectItem>
             }
@@ -104,6 +104,15 @@
     [Parameter]
     public EventCallback<AnimeListOptions> OptionsChanged { get; set; }
 
+    /// <summary>
+    /// Bietet die Sortierung nach dem Zeitpunkt der nächsten Folge an. Sinnvoll nur für laufende Serien (Simulcast).
+    /// </summary>
+    [Parameter]
+    public bool ShowNextEpisodeSort { get; set; }
+
+    private bool IsSortFieldOffered(AnimeSortField field) =>
+        field != AnimeSortField.NextEpisode || ShowNextEpisodeSort || Options.SortField == AnimeSortField.NextEpisode;
+
     private string DirectionTitle => Options.Descending
         ? "Absteigend sortiert, zum Umkehren klicken"
         : "Aufsteigend sortiert, zum Umkehren klicken";
@@ -117,6 +126,7 @@
         AnimeSortField.Score => "Rating",
         AnimeSortField.Title => "Titel",
         AnimeSortField.Episodes => "Episoden",
+        AnimeSortField.NextEpisode => "Nächste Folge",
         AnimeSortField.Format => "Format",
         _ => field.ToString()
     };

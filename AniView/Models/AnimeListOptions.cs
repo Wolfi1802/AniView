@@ -9,7 +9,13 @@ namespace AniView.Models
         Score,
         Title,
         Episodes,
-        Format
+        Format,
+
+        /// <summary>
+        /// Zeitpunkt der nächsten Episode, also die verbleibende Zeit bis zur Veröffentlichung.
+        /// Nur für laufende Serien sinnvoll.
+        /// </summary>
+        NextEpisode
     }
 
     /// <summary>
@@ -69,7 +75,7 @@ namespace AniView.Models
                 : this with { SortField = field, Descending = GetDefaultDescending(field) };
 
         /// <summary>
-        /// Wählt die Spalte und deren Standardrichtung (Titel aufsteigend, alle anderen absteigend).
+        /// Wählt die Spalte und deren Standardrichtung (Titel und nächste Episode aufsteigend, alle anderen absteigend).
         /// </summary>
         public AnimeListOptions WithSortField(AnimeSortField field) =>
             this with { SortField = field, Descending = GetDefaultDescending(field) };
@@ -87,6 +93,7 @@ namespace AniView.Models
         /// </summary>
         public string CacheKey => $"{FilterKey}|{SortField}|{(Descending ? "desc" : "asc")}";
 
-        private static bool GetDefaultDescending(AnimeSortField field) => field != AnimeSortField.Title;
+        private static bool GetDefaultDescending(AnimeSortField field) =>
+            field is not (AnimeSortField.Title or AnimeSortField.NextEpisode);
     }
 }
