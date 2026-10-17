@@ -62,6 +62,7 @@ namespace AniView.Structure.API
                 AnimeSortField.Score => [$"SCORE{suffix}", "POPULARITY_DESC", "ID"],
                 AnimeSortField.Title => [$"TITLE_ROMAJI{suffix}", "ID"],
                 AnimeSortField.Episodes => [$"EPISODES{suffix}", "POPULARITY_DESC", "ID"],
+                AnimeSortField.Release => [$"START_DATE{suffix}", $"END_DATE{suffix}", "POPULARITY_DESC", "ID"],
                 AnimeSortField.Format => [$"FORMAT{suffix}", "POPULARITY_DESC", "ID"],
                 _ => ["POPULARITY_DESC", "ID"]
             };
