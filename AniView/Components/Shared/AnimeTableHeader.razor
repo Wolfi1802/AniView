@@ -1,6 +1,40 @@
 <th scope="col">Cover</th>
-<th scope="col">Titel</th>
-<th scope="col">Format</th>
-<th scope="col">Episoden</th>
-<th scope="col">Rating</th>
-<th scope="col">Beliebtheit</th>
+@foreach (var field in SortableFields)
+{
+    var isActive = Options.SortField == field;
+    var ariaSort = isActive ? (Options.Descending ? "descending" : "ascending") : "none";
+
+    <th scope="col" aria-sort="@ariaSort">
+        <button type="button"
+                class="av-sort-button @(isActive ? "av-sort-button--active" : null)"
+                @onclick="() => OptionsChanged.InvokeAsync(Options.SortedBy(field))">
+            <span>@AnimeFilterBar.GetSortFieldLabel(field)</span>
+            @if (isActive)
+            {
+                <MudIcon Icon="@(Options.Descending ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward)"
+                         Size="Size.Small" />
+            }
+        </button>
+    </th>
+}
+
+@code {
+    // Reihenfolge entspricht den Spalten in AnimeTableRow.
+    private static readonly AnimeSortField[] SortableFields =
+    [
+        AnimeSortField.Title,
+        AnimeSortField.Format,
+        AnimeSortField.Episodes,
+        AnimeSortField.Score,
+        AnimeSortField.Popularity
+    ];
+
+    /// <summary>
+    /// Aktuelle Sortierung. Ein Klick auf eine Spaltenüberschrift sortiert danach, ein weiterer Klick kehrt die Richtung um.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public AnimeListOptions Options { get; set; } = AnimeListOptions.Default;
+
+    [Parameter]
+    public EventCallback<AnimeListOptions> OptionsChanged { get; set; }
+}

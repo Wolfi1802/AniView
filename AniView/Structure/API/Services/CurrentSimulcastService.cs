@@ -33,13 +33,14 @@ namespace AniView.Structure.API.Services
             int itemsPerPage = DefaultItemsPerPage,
             CancellationToken cancellationToken = default)
         {
-            var page = await GetCurrentSimulcastPageAsync(pageIndex, itemsPerPage, cancellationToken);
+            var page = await GetCurrentSimulcastPageAsync(pageIndex, itemsPerPage, AnimeListOptions.Default, cancellationToken);
             return page.Items;
         }
 
         public async Task<PageResult<AnimeSummary>> GetCurrentSimulcastPageAsync(
-            int page = DefaultPageIndex,
-            int pageSize = DefaultItemsPerPage,
+            int page,
+            int pageSize,
+            AnimeListOptions options,
             CancellationToken cancellationToken = default)
         {
             int indexOfPage = ApiPaging.GetPageIndex(page);
@@ -47,8 +48,13 @@ namespace AniView.Structure.API.Services
 
             var (season, seasonYear) = GetCurrentSeason();
 
-            var pageTask = GetPageAsync(indexOfPage, perPage, season, seasonYear, cancellationToken);
-            var totalTask = GetTotalAsync(season, seasonYear, cancellationToken);
+            if (options.SortField == AnimeSortField.NextEpisode)
+            {
+                return await GetPageByNextEpisodeAsync(page, perPage, season, seasonYear, options, cancellationToken);
+            }
+
+            var pageTask = GetPageAsync(indexOfPage, perPage, season, seasonYear, options, cancellationToken);
+            var totalTask = GetTotalAsync(season, seasonYear, options, cancellationToken);
             await Task.WhenAll(pageTask, totalTask);
 
             var total = totalTask.Result;
@@ -62,16 +68,91 @@ namespace AniView.Structure.API.Services
             };
         }
 
+        /// <summary>
+        /// AniList kann nicht nach der nächsten Episode sortieren. Der Simulcast ist begrenzt, deshalb wird er mit dem
+        /// Filter vollständig geladen, nach dem Zeitpunkt der nächsten Episode sortiert und seitenweise ausgeliefert.
+        /// </summary>
+        private async Task<PageResult<AnimeSummary>> GetPageByNextEpisodeAsync(
+            int page,
+            int perPage,
+            string season,
+            int seasonYear,
+            AnimeListOptions options,
+            CancellationToken cancellationToken)
+        {
+            var all = await GetAllByNextEpisodeAsync(season, seasonYear, options, cancellationToken);
+
+            var skip = (long)(ApiPaging.GetPageIndex(page) - 1) * perPage;
+            IReadOnlyList<AnimeSummary> items = all
+                .Skip((int)Math.Min(skip, all.Count))
+                .Take(perPage)
+                .ToList();
+
+            return new PageResult<AnimeSummary>(items, skip + items.Count < all.Count, all.Count, perPage);
+        }
+
+        private async Task<IReadOnlyList<AnimeSummary>> GetAllByNextEpisodeAsync(
+            string season,
+            int seasonYear,
+            AnimeListOptions options,
+            CancellationToken cancellationToken)
+        {
+            // Die Reihenfolge hängt von der Richtung ab, die geladene Liste nur vom Filter.
+            var cacheKey =
+                $"anilist:simulcast:next-episode:{season}:{seasonYear}:{Profile.CacheKey}:{options.FilterKey}:{(options.Descending ? "desc" : "asc")}";
+
+            if (_cache.TryGetValue(cacheKey, out IReadOnlyList<AnimeSummary>? cached) && cached is not null)
+            {
+                return cached;
+            }
+
+            const int pageSize = ApiPaging.MAX_PAGE_NUMBER;
+            var animes = new List<AnimeSummary>();
+
+            for (var pageIndex = ApiPaging.MIN_PAGE_NUMBER; pageIndex <= MaxCountPages; pageIndex++)
+            {
+                var variables = options.ToVariables(pageIndex, pageSize);
+                variables["season"] = season;
+                variables["seasonYear"] = seasonYear;
+
+                var data = await _client.SendAsync<MediaPageData>(
+                    ApiQueries.CurrentSimulcast(Profile),
+                    variables,
+                    cancellationToken);
+
+                var items = AnimeSummaryMapper.MapAll(data);
+                animes.AddRange(items);
+
+                if (items.Count < pageSize)
+                {
+                    break;
+                }
+            }
+
+            // Ohne bekannten Termin steht ein Anime immer am Ende, unabhängig von der Richtung.
+            var withDate = animes.Where(anime => anime.NextEpisodeAiringAt is not null);
+            var ordered = (options.Descending
+                    ? withDate.OrderByDescending(anime => anime.NextEpisodeAiringAt)
+                    : withDate.OrderBy(anime => anime.NextEpisodeAiringAt))
+                .Concat(animes.Where(anime => anime.NextEpisodeAiringAt is null))
+                .ToList();
+
+            _cache.Set(cacheKey, (IReadOnlyList<AnimeSummary>)ordered, CacheDuration);
+
+            return ordered;
+        }
+
         private async Task<PageResult<AnimeSummary>> GetPageAsync(
             int indexOfPage,
             int perPage,
             string season,
             int seasonYear,
+            AnimeListOptions options,
             CancellationToken cancellationToken)
         {
-            // Season, Jahr, Pagination und Profil müssen Teil des Cache-Keys sein.
+            // Season, Jahr, Pagination, Profil sowie Sortierung und Filter müssen Teil des Cache-Keys sein.
             var cacheKey =
-                $"anilist:simulcast:{season}:{seasonYear}:{indexOfPage}:{perPage}:{Profile.CacheKey}";
+                $"anilist:simulcast:{season}:{seasonYear}:{indexOfPage}:{perPage}:{Profile.CacheKey}:{options.CacheKey}";
 
             if (_cache.TryGetValue(
                 cacheKey,
@@ -81,14 +162,9 @@ namespace AniView.Structure.API.Services
                 return cached;
             }
 
-            var variables = new
-            {
-                page = indexOfPage,
-                perPage,
-                season,
-                seasonYear,
-                sort = new[] { "POPULARITY_DESC" }
-            };
+            var variables = options.ToVariables(indexOfPage, perPage);
+            variables["season"] = season;
+            variables["seasonYear"] = seasonYear;
 
             var data = await _client.SendAsync<MediaPageData>(
                 ApiQueries.CurrentSimulcast(Profile),
@@ -106,9 +182,14 @@ namespace AniView.Structure.API.Services
         /// Zählt die laufenden Animes der Season exakt, indem die Seiten (nur IDs) durchlaufen werden,
         /// bis eine Seite nicht mehr voll ist.
         /// </summary>
-        private async Task<int> GetTotalAsync(string season, int seasonYear, CancellationToken cancellationToken)
+        private async Task<int> GetTotalAsync(
+            string season,
+            int seasonYear,
+            AnimeListOptions options,
+            CancellationToken cancellationToken)
         {
-            var cacheKey = $"anilist:simulcast:total:{season}:{seasonYear}";
+            // Die Anzahl hängt nur vom Filter ab, nicht von der Sortierung.
+            var cacheKey = $"anilist:simulcast:total:{season}:{seasonYear}:{options.FilterKey}";
 
             if (_cache.TryGetValue(cacheKey, out int cached))
             {
@@ -120,7 +201,11 @@ namespace AniView.Structure.API.Services
 
             for (var pageIndex = ApiPaging.MIN_PAGE_NUMBER; pageIndex <= MaxCountPages; pageIndex++)
             {
-                var variables = new { page = pageIndex, perPage = countPageSize, season, seasonYear };
+                var variables = options.ToFilterVariables();
+                variables["page"] = pageIndex;
+                variables["perPage"] = countPageSize;
+                variables["season"] = season;
+                variables["seasonYear"] = seasonYear;
 
                 var data = await _client.SendAsync<MediaPageData>(
                     ApiQueries.CurrentSimulcastIds,

@@ -1,0 +1,31 @@
+.av-sort-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.av-sort-button:hover,
+.av-sort-button--active {
+    color: var(--mud-palette-primary);
+}
+
+.av-sort-button:focus-visible {
+    outline: 2px solid var(--mud-palette-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Der Kopf klebt direkt unter der Filterleiste (Höhe kommt aus AnimeFilterBar.razor.js).
+   Unterhalb der Leiste (z-index 5), über den Tabellenzeilen. */
+th {
+    position: sticky;
+    top: calc(var(--mud-appbar-height, 64px) + var(--av-filter-bar-height, 0px));
+    z-index: 4;
+    background-color: var(--mud-palette-surface);
+}
