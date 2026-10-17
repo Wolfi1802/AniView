@@ -15,7 +15,7 @@ namespace AniView.Components.Pages
         private int? _totalItems;
 
         // Sortierung und Filter. Ein neuer Wert setzt die Tabelle zurück (ResetKey) und lädt ab Seite 1 neu.
-        private AnimeListOptions _options = AnimeListOptions.Default;
+        private AnimeListOptions _options = AnimeListOptions.SimulcastDefault;
 
         [Inject]
         private ICurrentSimulcastService simulcastAnimes { get; set; } = default!;

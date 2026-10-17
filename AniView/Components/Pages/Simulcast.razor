@@ -6,7 +6,7 @@
 <MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Aktueller Simulcast</MudText>
 <MudText Class="mud-text-secondary mb-6">@SubTitle</MudText>
 
-<AnimeFilterBar @bind-Options="_options" ShowNextEpisodeSort="true" />
+<AnimeFilterBar @bind-Options="_options" DefaultOptions="AnimeListOptions.SimulcastDefault" ShowNextEpisodeSort="true" />
 
 <InfiniteTable TItem="AnimeSummary"
                ViewType="InfiniteViewType.Cards"

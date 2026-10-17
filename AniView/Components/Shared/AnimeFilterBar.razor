@@ -71,7 +71,7 @@
                        OnClick="OnDirectionToggledAsync" />
     </div>
 
-    @if (!Options.IsDefault)
+    @if (Options != DefaultOptions)
     {
         <MudButton Variant="Variant.Text"
                    Color="Color.Primary"
@@ -103,6 +103,12 @@
 
     [Parameter]
     public EventCallback<AnimeListOptions> OptionsChanged { get; set; }
+
+    /// <summary>
+    /// Standard der jeweiligen Liste. Darauf setzt "Zurücksetzen" zurück, und die Schaltfläche erscheint nur bei Abweichung.
+    /// </summary>
+    [Parameter]
+    public AnimeListOptions DefaultOptions { get; set; } = AnimeListOptions.Default;
 
     /// <summary>
     /// Bietet die Sortierung nach dem Zeitpunkt der nächsten Folge an. Sinnvoll nur für laufende Serien (Simulcast).
@@ -190,5 +196,5 @@
 
     private Task OnDirectionToggledAsync() => OptionsChanged.InvokeAsync(Options with { Descending = !Options.Descending });
 
-    private Task OnResetAsync() => OptionsChanged.InvokeAsync(AnimeListOptions.Default);
+    private Task OnResetAsync() => OptionsChanged.InvokeAsync(DefaultOptions);
 }

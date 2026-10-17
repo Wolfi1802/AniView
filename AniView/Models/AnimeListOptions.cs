@@ -40,6 +40,15 @@ namespace AniView.Models
     {
         public static AnimeListOptions Default { get; } = new();
 
+        /// <summary>
+        /// Standard des Simulcasts: Die Serie mit der nächsten Folge steht ganz oben.
+        /// </summary>
+        public static AnimeListOptions SimulcastDefault { get; } = new()
+        {
+            SortField = AnimeSortField.NextEpisode,
+            Descending = false
+        };
+
         public AnimeSortField SortField { get; init; } = AnimeSortField.Popularity;
 
         public bool Descending { get; init; } = true;
@@ -61,7 +70,7 @@ namespace AniView.Models
         public string? Search { get; init; }
 
         /// <summary>
-        /// Gibt an, ob Sortierung und Filter dem Standard entsprechen.
+        /// Gibt an, ob Sortierung und Filter dem allgemeinen Standard entsprechen.
         /// </summary>
         public bool IsDefault => this == Default;
 
