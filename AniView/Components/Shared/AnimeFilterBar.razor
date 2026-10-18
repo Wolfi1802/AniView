@@ -36,10 +36,28 @@
         </MudSelect>
     </div>
 
+    <div class="av-filter-bar__field av-filter-bar__field--genre">
+        <MudSelect T="string"
+                   MultiSelection="true"
+                   SelectedValues="@Options.Genres"
+                   SelectedValuesChanged="OnGenresChangedAsync"
+                   Label="Genre"
+                   Placeholder="Alle Genres"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Clearable="true">
+            @foreach (var genre in _genres)
+            {
+                <MudSelectItem T="string" Value="@genre">@genre</MudSelectItem>
+            }
+        </MudSelect>
+    </div>
+
     <div class="av-filter-bar__field">
         <MudSelect T="string"
-                   Value="@Options.StreamingSite"
-                   ValueChanged="OnStreamingSiteChangedAsync"
+                   MultiSelection="true"
+                   SelectedValues="@Options.StreamingSites"
+                   SelectedValuesChanged="OnStreamingSitesChangedAsync"
                    Label="Streaming-Dienst"
                    Placeholder="Alle Dienste"
                    Variant="Variant.Outlined"
@@ -88,12 +106,16 @@
     private ElementReference _bar;
     private IJSObjectReference? _module;
     private IReadOnlyList<string> _streamingSites = [];
+    private IReadOnlyList<string> _genres = [];
 
     [Inject]
     private IJSRuntime JS { get; set; } = default!;
 
     [Inject]
     private IStreamingSiteService StreamingSites { get; set; } = default!;
+
+    [Inject]
+    private IGenreService GenreService { get; set; } = default!;
 
     /// <summary>
     /// Aktuelle Sortierung und Filter. Mit <c>@bind-Options</c> bindbar.
@@ -143,16 +165,29 @@
     protected override async Task OnInitializedAsync()
     {
         _streamingSites = await StreamingSites.GetStreamingSitesAsync();
-        EnsureSelectedSiteListed();
+        EnsureSelectedSitesListed();
+
+        _genres = await GenreService.GetGenresAsync();
+        EnsureSelectedGenresListed();
+    }
+
+    // Ein aktiver Filter muss auswählbar bleiben, auch wenn das Genre nicht in der geladenen Liste steht.
+    private void EnsureSelectedGenresListed()
+    {
+        var missing = Options.Genres.Where(genre => !_genres.Contains(genre, StringComparer.OrdinalIgnoreCase)).ToList();
+        if (missing.Count > 0)
+        {
+            _genres = [.. _genres, .. missing];
+        }
     }
 
     // Ein aktiver Filter muss auswählbar bleiben, auch wenn der Dienst nicht in der geladenen Liste steht.
-    private void EnsureSelectedSiteListed()
+    private void EnsureSelectedSitesListed()
     {
-        var selected = Options.StreamingSite;
-        if (selected is not null && !_streamingSites.Contains(selected, StringComparer.OrdinalIgnoreCase))
+        var missing = Options.StreamingSites.Where(site => !_streamingSites.Contains(site, StringComparer.OrdinalIgnoreCase)).ToList();
+        if (missing.Count > 0)
         {
-            _streamingSites = [.. _streamingSites, selected];
+            _streamingSites = [.. _streamingSites, .. missing];
         }
     }
 
@@ -190,7 +225,9 @@
 
     private Task OnFormatChangedAsync(AnimeFormat? format) => OptionsChanged.InvokeAsync(Options with { Format = format });
 
-    private Task OnStreamingSiteChangedAsync(string? site) => OptionsChanged.InvokeAsync(Options with { StreamingSite = site });
+    private Task OnGenresChangedAsync(IEnumerable<string>? genres) => OptionsChanged.InvokeAsync(Options.WithGenres(genres));
+
+    private Task OnStreamingSitesChangedAsync(IEnumerable<string>? sites) => OptionsChanged.InvokeAsync(Options.WithStreamingSites(sites));
 
     private Task OnSortFieldChangedAsync(AnimeSortField field) => OptionsChanged.InvokeAsync(Options.WithSortField(field));
 
