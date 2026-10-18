@@ -1,6 +1,7 @@
 <section class="av-whats-new" aria-labelledby="whats-new-title">
     <MudText Typo="Typo.h5" Component="h2" id="whats-new-title" GutterBottom="true">What's new</MudText>
 
+    <div class="av-whats-new__scroll">
     <MudExpansionPanels MultiExpansion="true" Elevation="0" Class="av-whats-new__panels">
         @foreach (var group in _groups)
         {
@@ -24,16 +25,17 @@
                     <div class="av-whats-new__cards">
                         @foreach (var entry in group.Entries)
                         {
-                            <MudPaper Outlined="true" Elevation="0" Class="av-whats-new__card">
+                            <div class="av-whats-new__card">
                                 <p class="av-whats-new__title">@entry.Title</p>
                                 <p class="av-whats-new__text">@entry.Description</p>
-                            </MudPaper>
+                            </div>
                         }
                     </div>
                 </ChildContent>
             </MudExpansionPanel>
         }
     </MudExpansionPanels>
+    </div>
 </section>
 
 @code {
