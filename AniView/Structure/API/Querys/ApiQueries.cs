@@ -293,12 +293,15 @@ namespace AniView.Structure.API.Querys
             }
             """;
 
+        /// <summary>
+        /// Medien, die im Simulcast liegen. Welche das sind, bestimmen die IDs aus
+        /// <see cref="AiringScheduleMediaIds"/> und <see cref="SeasonMediaIds"/>.
+        /// </summary>
         public static string CurrentSimulcast(MediaFieldsProfile profile) => $$"""
             query (
               $page: Int,
               $perPage: Int,
-              $season: MediaSeason!,
-              $seasonYear: Int!,
+              $ids: [Int],
               $sort: [MediaSort],
               $search: String,
               $formatIn: [MediaFormat],
@@ -308,9 +311,7 @@ namespace AniView.Structure.API.Querys
                 {{PageInfoFields}}
                 media(
                   type: ANIME,
-                  season: $season,
-                  seasonYear: $seasonYear,
-                  status: RELEASING,
+                  id_in: $ids,
                   sort: $sort,
                   search: $search,
                   format_in: $formatIn,
@@ -335,15 +336,14 @@ namespace AniView.Structure.API.Querys
             """;
 
         /// <summary>
-        /// Nur die IDs der laufenden Animes der Season. Dient dazu, die Gesamtanzahl exakt zu zählen,
+        /// Nur die IDs der Simulcast-Animes (mit Filter). Dient dazu, die Gesamtanzahl exakt zu zählen,
         /// weil "pageInfo.total" von AniList eine Schätzung ist.
         /// </summary>
         public const string CurrentSimulcastIds = """
             query (
               $page: Int,
               $perPage: Int,
-              $season: MediaSeason!,
-              $seasonYear: Int!,
+              $ids: [Int],
               $search: String,
               $formatIn: [MediaFormat],
               $licensedBy: String
@@ -351,12 +351,60 @@ namespace AniView.Structure.API.Querys
               Page(page: $page, perPage: $perPage) {
                 media(
                   type: ANIME,
-                  season: $season,
-                  seasonYear: $seasonYear,
-                  status: RELEASING,
+                  id_in: $ids,
                   search: $search,
                   format_in: $formatIn,
                   licensedBy: $licensedBy,
+                  isAdult: false
+                ) {
+                  id
+                }
+              }
+            }
+            """;
+
+        /// <summary>
+        /// Media-IDs aller Folgen, die im Zeitfenster noch ausgestrahlt werden. Erfasst laufende Serien
+        /// unabhängig von ihrer Season (zum Beispiel Fortsetzungen aus dem Vorquartal) und Serien,
+        /// die erst in diesem Zeitfenster starten.
+        /// </summary>
+        public const string AiringScheduleMediaIds = """
+            query (
+              $page: Int,
+              $perPage: Int,
+              $from: Int,
+              $to: Int
+            ) {
+              Page(page: $page, perPage: $perPage) {
+                airingSchedules(
+                  airingAt_greater: $from,
+                  airingAt_lesser: $to,
+                  notYetAired: true,
+                  sort: [TIME]
+                ) {
+                  mediaId
+                }
+              }
+            }
+            """;
+
+        /// <summary>
+        /// Media-IDs der Season, die laufen oder noch nicht gestartet sind.
+        /// Ergänzt den Sendeplan um Serien, für die AniList noch keine Termine kennt.
+        /// </summary>
+        public const string SeasonMediaIds = """
+            query (
+              $page: Int,
+              $perPage: Int,
+              $season: MediaSeason!,
+              $seasonYear: Int!
+            ) {
+              Page(page: $page, perPage: $perPage) {
+                media(
+                  type: ANIME,
+                  season: $season,
+                  seasonYear: $seasonYear,
+                  status_in: [RELEASING, NOT_YET_RELEASED],
                   isAdult: false
                 ) {
                   id

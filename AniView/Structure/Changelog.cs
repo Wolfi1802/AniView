@@ -9,6 +9,9 @@ namespace AniView.Structure
     {
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
+            new(new DateOnly(2026, 10, 18),
+                "Vollständiger Simulcast",
+                "Der Simulcast zeigt jetzt alle Animes, die aktuell laufen oder bald starten, auch Fortsetzungen aus früheren Seasons."),
             new(new DateOnly(2026, 10, 16),
                 "Filterung und Sortierung",
                 "In den Tabellen gibt es jetzt die Möglichkeit einer Filterung und Sortierung."),

@@ -24,6 +24,16 @@ namespace AniView.Structure.API.Dtos
         public MediaPageDto? Page { get; init; }
     }
 
+    internal sealed class AiringSchedulePageData
+    {
+        public AiringSchedulePageDto? Page { get; init; }
+    }
+
+    internal sealed class AiringSchedulePageDto
+    {
+        public List<MediaAiringScheduleDto?>? AiringSchedules { get; init; }
+    }
+
     internal sealed class ExternalLinkSourceData
     {
         public List<MediaExternalLinkDto?>? ExternalLinkSourceCollection { get; init; }
