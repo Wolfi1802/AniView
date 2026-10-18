@@ -1,25 +1,63 @@
 <section class="av-whats-new" aria-labelledby="whats-new-title">
     <MudText Typo="Typo.h5" Component="h2" id="whats-new-title" GutterBottom="true">What's new</MudText>
 
-    <ul class="av-whats-new__list">
-        @foreach (var entry in Entries)
+    <div class="av-whats-new__scroll">
+    <MudExpansionPanels MultiExpansion="true" Elevation="0" Class="av-whats-new__panels">
+        @foreach (var group in _groups)
         {
-            <li class="av-whats-new__item">
-                <time class="av-whats-new__date" datetime="@entry.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">
-                    @entry.Date.ToString("dd.MM.yyyy", GermanCulture)
-                </time>
-                <div>
-                    <p class="av-whats-new__title">@entry.Title</p>
-                    <p class="av-whats-new__text">@entry.Description</p>
-                </div>
-            </li>
+            <MudExpansionPanel @key="group.Date"
+                               Expanded="false"
+                               Class="av-whats-new__panel">
+                <TitleContent>
+                    <div class="av-whats-new__header">
+                        <div class="av-whats-new__header-top">
+                            <time class="av-whats-new__date" datetime="@group.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">
+                                @group.Date.ToString("dd.MM.yyyy", GermanCulture)
+                            </time>
+                            <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Primary" Class="av-whats-new__count">
+                                @(group.Entries.Count == 1 ? "1 Änderung" : $"{group.Entries.Count} Änderungen")
+                            </MudChip>
+                        </div>
+                        <p class="av-whats-new__summary">@group.Summary</p>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <div class="av-whats-new__cards">
+                        @foreach (var entry in group.Entries)
+                        {
+                            <div class="av-whats-new__card">
+                                <p class="av-whats-new__title">@entry.Title</p>
+                                <p class="av-whats-new__text">@entry.Description</p>
+                            </div>
+                        }
+                    </div>
+                </ChildContent>
+            </MudExpansionPanel>
         }
-    </ul>
+    </MudExpansionPanels>
+    </div>
 </section>
 
 @code {
     private static readonly CultureInfo GermanCulture = CultureInfo.GetCultureInfo("de-DE");
 
+    private IReadOnlyList<ChangelogDay> _groups = [];
+
     [Parameter, EditorRequired]
     public IReadOnlyList<ChangelogEntry> Entries { get; set; } = [];
+
+    protected override void OnParametersSet()
+    {
+        _groups = Entries
+            .GroupBy(entry => entry.Date)
+            .OrderByDescending(group => group.Key)
+            .Select(group => new ChangelogDay(group.Key, group.ToList()))
+            .ToList();
+    }
+
+    private sealed record ChangelogDay(DateOnly Date, IReadOnlyList<ChangelogEntry> Entries)
+    {
+        /// <summary>Kurzfassung aller Änderungen des Tages, aus den Titeln zusammengesetzt.</summary>
+        public string Summary => string.Join(" · ", Entries.Select(entry => entry.Title));
+    }
 }
