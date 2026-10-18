@@ -59,10 +59,10 @@ namespace AniView.Models
         public AnimeFormat? Format { get; init; }
 
         /// <summary>
-        /// Name des Streaming-Dienstes (zum Beispiel "Crunchyroll"), bei dem der Anime lizenziert sein muss,
-        /// null für alle Dienste. Der Name entspricht dem Seitennamen bei AniList.
+        /// Gewählte Streaming-Dienste (zum Beispiel "Crunchyroll"), leer für alle Dienste. Der Anime muss bei mindestens
+        /// einem davon lizenziert sein. Die Namen entsprechen den Seitennamen bei AniList.
         /// </summary>
-        public string? StreamingSite { get; init; }
+        public IReadOnlyList<string> StreamingSites { get; init; } = [];
 
         /// <summary>
         /// Suchbegriff für den Titel, null oder leer für keine Einschränkung.
@@ -81,19 +81,25 @@ namespace AniView.Models
         public bool IsDefault => this == Default;
 
         /// <summary>
+        /// Setzt die gewählten Streaming-Dienste. Leere und doppelte Einträge entfallen, die Reihenfolge ist alphabetisch.
+        /// </summary>
+        public AnimeListOptions WithStreamingSites(IEnumerable<string>? sites) =>
+            this with { StreamingSites = Normalize(sites) };
+
+        /// <summary>
         /// Setzt die gewählten Genres. Leere und doppelte Einträge entfallen, die Reihenfolge ist alphabetisch,
         /// damit gleiche Auswahlen gleich sind.
         /// </summary>
         public AnimeListOptions WithGenres(IEnumerable<string>? genres) =>
-            this with
-            {
-                Genres = (genres ?? [])
-                    .Where(genre => !string.IsNullOrWhiteSpace(genre))
-                    .Select(genre => genre.Trim())
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .Order(StringComparer.OrdinalIgnoreCase)
-                    .ToList()
-            };
+            this with { Genres = Normalize(genres) };
+
+        private static List<string> Normalize(IEnumerable<string>? values) =>
+            (values ?? [])
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Select(value => value.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Order(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
         // Eine Liste wird in einem Record nur per Referenz verglichen. Damit zwei Optionen mit gleicher Genre-Auswahl
         // gleich sind (Zurücksetzen-Schaltfläche, Neuladen der Liste), vergleicht diese Methode den Inhalt.
@@ -102,7 +108,7 @@ namespace AniView.Models
             && SortField == other.SortField
             && Descending == other.Descending
             && Format == other.Format
-            && string.Equals(StreamingSite, other.StreamingSite, StringComparison.Ordinal)
+            && StreamingSites.SequenceEqual(other.StreamingSites, StringComparer.Ordinal)
             && string.Equals(Search, other.Search, StringComparison.Ordinal)
             && Genres.SequenceEqual(other.Genres, StringComparer.Ordinal);
 
@@ -112,8 +118,12 @@ namespace AniView.Models
             hash.Add(SortField);
             hash.Add(Descending);
             hash.Add(Format);
-            hash.Add(StreamingSite, StringComparer.Ordinal);
             hash.Add(Search, StringComparer.Ordinal);
+
+            foreach (var site in StreamingSites)
+            {
+                hash.Add(site, StringComparer.Ordinal);
+            }
 
             foreach (var genre in Genres)
             {
@@ -145,7 +155,7 @@ namespace AniView.Models
         /// Schlüssel nur der Filter (ohne Sortierung), zum Beispiel für das Zwischenspeichern von Gesamtanzahlen.
         /// </summary>
         public string FilterKey =>
-            $"{Format?.ToString() ?? "-"}|{StreamingSite?.ToLowerInvariant() ?? "-"}|{Search?.ToLowerInvariant() ?? "-"}|{(Genres.Count == 0 ? "-" : string.Join(',', Genres.Select(genre => genre.ToLowerInvariant())))}";
+            $"{Format?.ToString() ?? "-"}|{(StreamingSites.Count == 0 ? "-" : string.Join(',', StreamingSites.Select(site => site.ToLowerInvariant())))}|{Search?.ToLowerInvariant() ?? "-"}|{(Genres.Count == 0 ? "-" : string.Join(',', Genres.Select(genre => genre.ToLowerInvariant())))}";
 
         /// <summary>
         /// Schlüssel aus Filter und Sortierung, zum Beispiel für das Zwischenspeichern von Seiten.

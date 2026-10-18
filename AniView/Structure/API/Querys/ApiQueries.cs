@@ -254,7 +254,7 @@ namespace AniView.Structure.API.Querys
             """;
 
         /// <summary>
-        /// Streaming-Dienste, die AniList für Animes kennt (Grundlage des Filters "licensedBy").
+        /// Streaming-Dienste, die AniList für Animes kennt (Grundlage des Filters "licensedBy_in").
         /// </summary>
         public const string StreamingSites = """
             query {
@@ -284,7 +284,7 @@ namespace AniView.Structure.API.Querys
               $sort: [MediaSort],
               $search: String,
               $formatIn: [MediaFormat],
-              $licensedBy: String,
+              $licensedByIn: [String],
               $genreIn: [String]
             ) {
               Page(page: $page, perPage: $perPage) {
@@ -294,7 +294,7 @@ namespace AniView.Structure.API.Querys
                   sort: $sort,
                   search: $search,
                   format_in: $formatIn,
-                  licensedBy: $licensedBy,
+                  licensedBy_in: $licensedByIn,
                   genre_in: $genreIn,
                   isAdult: false
                 ) {
@@ -316,7 +316,7 @@ namespace AniView.Structure.API.Querys
               $sort: [MediaSort],
               $search: String,
               $formatIn: [MediaFormat],
-              $licensedBy: String,
+              $licensedByIn: [String],
               $genreIn: [String]
             ) {
               Page(page: $page, perPage: $perPage) {
@@ -327,7 +327,7 @@ namespace AniView.Structure.API.Querys
                   sort: $sort,
                   search: $search,
                   format_in: $formatIn,
-                  licensedBy: $licensedBy,
+                  licensedBy_in: $licensedByIn,
                   genre_in: $genreIn,
                   isAdult: false
                 ) {
@@ -359,7 +359,7 @@ namespace AniView.Structure.API.Querys
               $ids: [Int],
               $search: String,
               $formatIn: [MediaFormat],
-              $licensedBy: String,
+              $licensedByIn: [String],
               $genreIn: [String]
             ) {
               Page(page: $page, perPage: $perPage) {
@@ -368,7 +368,7 @@ namespace AniView.Structure.API.Querys
                   id_in: $ids,
                   search: $search,
                   format_in: $formatIn,
-                  licensedBy: $licensedBy,
+                  licensedBy_in: $licensedByIn,
                   genre_in: $genreIn,
                   isAdult: false
                 ) {
