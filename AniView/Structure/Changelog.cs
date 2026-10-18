@@ -10,11 +10,8 @@ namespace AniView.Structure
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
             new(new DateOnly(2026, 10, 18),
-                "Mehrere Streaming-Dienste",
-                "Beim Streaming-Dienst kannst du jetzt mehrere Dienste ankreuzen. Es erscheinen Animes, die bei mindestens einem davon laufen."),
-            new(new DateOnly(2026, 10, 18),
-                "Filter nach Genre",
-                "In den Tabellen kannst du jetzt nach einem oder mehreren Genres wie Action, Comedy oder Romance filtern."),
+                "Erweiterte Filter",
+                "Neben dem Streaming-Dienst kannst du jetzt auch nach Genres wie Action, Comedy oder Romance filtern. Bei beiden Filtern lassen sich mehrere Einträge gleichzeitig ankreuzen."),
             new(new DateOnly(2026, 10, 18),
                 "Vollständiger Simulcast",
                 "Der Simulcast zeigt jetzt alle Animes, die aktuell laufen oder bald starten, auch Fortsetzungen aus früheren Seasons."),
