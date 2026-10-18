@@ -1,18 +1,23 @@
 .av-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
     gap: 20px;
 }
 
+/* Platzhalter in der Form der horizontalen Karte: links Cover, rechts Textzeilen. */
 .av-skeleton-card {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    display: grid;
+    grid-template-columns: clamp(112px, 38%, 176px) minmax(0, 1fr);
+    gap: 16px;
+    padding-right: 16px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--mud-palette-lines-default);
+    background: var(--mud-palette-surface);
 }
 
 .av-skeleton-cover {
     aspect-ratio: 2 / 3;
-    border-radius: 16px;
     overflow: hidden;
 }
 
@@ -20,4 +25,11 @@
     display: block;
     width: 100%;
     height: 100%;
+}
+
+.av-skeleton-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 16px;
 }

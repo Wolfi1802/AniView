@@ -77,6 +77,11 @@ namespace AniView.Structure.API.Mapping
             {
                 IsFinished = string.Equals(media.Status, "FINISHED", StringComparison.OrdinalIgnoreCase),
                 Episodes = media.Episodes,
+                Genres = (media.Genres ?? [])
+                    .Where(genre => !string.IsNullOrWhiteSpace(genre))
+                    .Select(genre => genre!.Trim())
+                    .ToList(),
+                Description = AnimeDetailsMapper.CleanDescription(media.Description),
                 NextEpisodeNumber = airing?.Episode,
                 NextEpisodeAiringAt = airingAt,
                 TimeUntilNextEpisode = timeUntilAiring

@@ -8,8 +8,13 @@
                 <div class="av-skeleton-cover">
                     <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="100%" />
                 </div>
-                <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="85%" />
-                <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="45%" />
+                <div class="av-skeleton-text">
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="55%" />
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="35%" />
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="100%" />
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="90%" />
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Wave" Width="75%" />
+                </div>
             </div>
         }
     }
@@ -47,7 +52,7 @@
     public int SkeletonCount { get; set; } = 10;
 
     /// <summary>
-    /// Feste Spaltenzahl nach verfügbarer Breite: 5, 2 oder 1 Karte pro Zeile (siehe app.css).
+    /// Feste Spaltenzahl nach verfügbarer Breite: 2 oder 1 Karte pro Zeile (siehe app.css).
     /// Ohne Angabe füllt das Raster die Zeile automatisch.
     /// </summary>
     [Parameter]

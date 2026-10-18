@@ -10,6 +10,9 @@ namespace AniView.Structure
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
             new(new DateOnly(2026, 10, 18),
+                "Neues Kartendesign",
+                "Die Karten zeigen jetzt Cover, Countdown bis zur nächsten Folge, Bewertung, Beschreibung und Genres im Querformat. Ein Klick auf das Bild öffnet alle Details. Die Top 10 stehen dadurch zu zweit nebeneinander."),
+            new(new DateOnly(2026, 10, 18),
                 "Erweiterte Filter",
                 "Neben dem Streaming-Dienst kannst du jetzt auch nach Genres wie Action, Comedy oder Romance filtern. Bei beiden Filtern lassen sich mehrere Einträge gleichzeitig ankreuzen."),
             new(new DateOnly(2026, 10, 18),
