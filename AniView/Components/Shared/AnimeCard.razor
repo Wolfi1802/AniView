@@ -103,31 +103,21 @@
 
     /// <summary>
     /// Cover beziehungsweise Platzhalter. Wird je nach <see cref="ShowDetails"/> mit oder ohne Klickfläche ausgegeben.
+    /// Als Razor-Vorlage geschrieben, damit die Elemente das Scope-Attribut der Komponenten-CSS erhalten
+    /// (per RenderTreeBuilder erzeugte Elemente bekämen es nicht, das Cover würde dann unskaliert angezeigt).
     /// </summary>
-    private RenderFragment CoverContent => builder =>
-    {
-        if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
+    private RenderFragment CoverContent => @<text>
+        @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
         {
-            builder.OpenElement(0, "img");
-            builder.AddAttribute(1, "class", "av-cover");
-            builder.AddAttribute(2, "src", Anime.CoverUrl);
-            builder.AddAttribute(3, "alt", $"Cover von {Anime.Title}");
-            builder.AddAttribute(4, "loading", "lazy");
-            builder.CloseElement();
+            <img class="av-cover" src="@Anime.CoverUrl" alt="Cover von @Anime.Title" loading="lazy" />
         }
         else
         {
-            builder.OpenElement(5, "div");
-            builder.AddAttribute(6, "class", "av-cover-fallback");
-            builder.AddAttribute(7, "role", "img");
-            builder.AddAttribute(8, "aria-label", "Kein Cover verfügbar");
-            builder.OpenComponent<MudIcon>(9);
-            builder.AddComponentParameter(10, nameof(MudIcon.Icon), Icons.Material.Filled.ImageNotSupported);
-            builder.AddComponentParameter(11, nameof(MudIcon.Size), Size.Large);
-            builder.CloseComponent();
-            builder.CloseElement();
+            <div class="av-cover-fallback" role="img" aria-label="Kein Cover verfügbar">
+                <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Large" />
+            </div>
         }
-    };
+    </text>;
 
     private string ScoreCssClass => Anime.AverageScore switch
     {
