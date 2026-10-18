@@ -44,6 +44,11 @@ namespace AniView.Structure.API
                 variables["licensedBy"] = options.StreamingSite;
             }
 
+            if (options.Genres.Count > 0)
+            {
+                variables["genreIn"] = options.Genres;
+            }
+
             return variables;
         }
 

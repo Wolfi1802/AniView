@@ -10,6 +10,9 @@ namespace AniView.Structure
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
             new(new DateOnly(2026, 10, 18),
+                "Filter nach Genre",
+                "In den Tabellen kannst du jetzt nach einem oder mehreren Genres wie Action, Comedy oder Romance filtern."),
+            new(new DateOnly(2026, 10, 18),
                 "Vollständiger Simulcast",
                 "Der Simulcast zeigt jetzt alle Animes, die aktuell laufen oder bald starten, auch Fortsetzungen aus früheren Seasons."),
             new(new DateOnly(2026, 10, 16),

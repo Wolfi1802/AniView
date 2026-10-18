@@ -19,6 +19,10 @@
     min-width: 160px;
 }
 
+.av-filter-bar__field--genre {
+    flex-basis: 240px;
+}
+
 .av-filter-bar__field--search {
     flex: 1 1 260px;
     max-width: 420px;

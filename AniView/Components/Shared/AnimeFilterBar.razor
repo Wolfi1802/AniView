@@ -36,6 +36,23 @@
         </MudSelect>
     </div>
 
+    <div class="av-filter-bar__field av-filter-bar__field--genre">
+        <MudSelect T="string"
+                   MultiSelection="true"
+                   SelectedValues="@Options.Genres"
+                   SelectedValuesChanged="OnGenresChangedAsync"
+                   Label="Genre"
+                   Placeholder="Alle Genres"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Clearable="true">
+            @foreach (var genre in _genres)
+            {
+                <MudSelectItem T="string" Value="@genre">@genre</MudSelectItem>
+            }
+        </MudSelect>
+    </div>
+
     <div class="av-filter-bar__field">
         <MudSelect T="string"
                    Value="@Options.StreamingSite"
@@ -88,12 +105,16 @@
     private ElementReference _bar;
     private IJSObjectReference? _module;
     private IReadOnlyList<string> _streamingSites = [];
+    private IReadOnlyList<string> _genres = [];
 
     [Inject]
     private IJSRuntime JS { get; set; } = default!;
 
     [Inject]
     private IStreamingSiteService StreamingSites { get; set; } = default!;
+
+    [Inject]
+    private IGenreService GenreService { get; set; } = default!;
 
     /// <summary>
     /// Aktuelle Sortierung und Filter. Mit <c>@bind-Options</c> bindbar.
@@ -144,6 +165,19 @@
     {
         _streamingSites = await StreamingSites.GetStreamingSitesAsync();
         EnsureSelectedSiteListed();
+
+        _genres = await GenreService.GetGenresAsync();
+        EnsureSelectedGenresListed();
+    }
+
+    // Ein aktiver Filter muss auswählbar bleiben, auch wenn das Genre nicht in der geladenen Liste steht.
+    private void EnsureSelectedGenresListed()
+    {
+        var missing = Options.Genres.Where(genre => !_genres.Contains(genre, StringComparer.OrdinalIgnoreCase)).ToList();
+        if (missing.Count > 0)
+        {
+            _genres = [.. _genres, .. missing];
+        }
     }
 
     // Ein aktiver Filter muss auswählbar bleiben, auch wenn der Dienst nicht in der geladenen Liste steht.
@@ -189,6 +223,8 @@
     private Task OnSearchChangedAsync(string? search) => OptionsChanged.InvokeAsync(Options.WithSearch(search));
 
     private Task OnFormatChangedAsync(AnimeFormat? format) => OptionsChanged.InvokeAsync(Options with { Format = format });
+
+    private Task OnGenresChangedAsync(IEnumerable<string>? genres) => OptionsChanged.InvokeAsync(Options.WithGenres(genres));
 
     private Task OnStreamingSiteChangedAsync(string? site) => OptionsChanged.InvokeAsync(Options with { StreamingSite = site });
 
