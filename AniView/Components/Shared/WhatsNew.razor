@@ -5,7 +5,7 @@
         @foreach (var group in _groups)
         {
             <MudExpansionPanel @key="group.Date"
-                               Expanded="@group.IsInitiallyExpanded"
+                               Expanded="false"
                                Class="av-whats-new__panel">
                 <TitleContent>
                     <div class="av-whats-new__header">
@@ -49,11 +49,11 @@
         _groups = Entries
             .GroupBy(entry => entry.Date)
             .OrderByDescending(group => group.Key)
-            .Select((group, index) => new ChangelogDay(group.Key, group.ToList(), index == 0))
+            .Select(group => new ChangelogDay(group.Key, group.ToList()))
             .ToList();
     }
 
-    private sealed record ChangelogDay(DateOnly Date, IReadOnlyList<ChangelogEntry> Entries, bool IsInitiallyExpanded)
+    private sealed record ChangelogDay(DateOnly Date, IReadOnlyList<ChangelogEntry> Entries)
     {
         /// <summary>Kurzfassung aller Änderungen des Tages, aus den Titeln zusammengesetzt.</summary>
         public string Summary => string.Join(" · ", Entries.Select(entry => entry.Title));
