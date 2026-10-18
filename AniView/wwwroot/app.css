@@ -38,8 +38,9 @@ h1:focus {
 }
 
 /* Top-10-Raster: Spaltenzahl richtet sich nach der Breite des Inhaltsbereichs (nicht des Fensters),
-   damit sie auch mit eingeblendeter Seitenleiste stimmt. Hohe Spezifität, weil AnimeGrid.razor.css
-   die Spalten sonst per Scope-Selektor überschreibt. */
+   damit sie auch mit eingeblendeter Seitenleiste stimmt. Die Karten sind horizontal und brauchen
+   mindestens rund 440 px Breite: 1 Karte pro Zeile, ab 900 px zwei. Hohe Spezifität, weil
+   AnimeGrid.razor.css die Spalten sonst per Scope-Selektor überschreibt. */
 .av-grid-host {
     container-type: inline-size;
 }
@@ -48,14 +49,8 @@ h1:focus {
     grid-template-columns: minmax(0, 1fr);
 }
 
-@container (min-width: 480px) {
+@container (min-width: 900px) {
     .av-grid-host .av-grid.av-grid--ranking {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@container (min-width: 960px) {
-    .av-grid-host .av-grid.av-grid--ranking {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 }

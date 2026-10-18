@@ -3,133 +3,75 @@
 
 <article class="av-card">
     <div class="av-cover-wrap">
-        @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
-        {
-            <img class="av-cover" src="@Anime.CoverUrl" alt="Cover von @Anime.Title" loading="lazy" />
-        }
-        else
-        {
-            <div class="av-cover-fallback" role="img" aria-label="Kein Cover verfügbar">
-                <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Large" />
-            </div>
-        }
-
-        @if (Rank is { } rank)
-        {
-            <span class="av-rank" title="Platz @rank">@rank</span>
-        }
-
         @if (ShowDetails)
         {
             <button type="button"
-                    class="av-info-btn"
+                    class="av-cover-btn"
                     title="Weitere Informationen"
                     aria-label="Weitere Informationen zu @Anime.Title"
                     aria-haspopup="dialog"
                     @onclick="OpenDetailsAsync">
-                <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" />
+                @CoverContent
             </button>
-        }
-    </div>
-
-    <div class="av-body">
-        <h3 class="av-title" title="@Anime.Title">@Anime.Title</h3>
-        <div class="av-meta">
-            <p>Format:</p>
-
-            @if (!string.IsNullOrWhiteSpace(Anime.Format))
-            {
-                <p class="av-meta__value">@Anime.Format</p>
-            }
-            else
-            {
-                <p class="av-meta__value">-</p>
-            }
-        </div>
-        <div class="av-meta">
-            <p>Rating:</p>
-
-            @if (Anime.ScoreOutOfTen is { } score)
-            {
-                <p class="av-meta__value">★ @score.ToString("0.0")</p>
-            }           
-            else
-            {
-                <p class="av-meta__value">-</p>
-            }
-        </div>
-        @if (ShowPopularity)
-        {
-            <div class="av-meta">
-                <p>Beliebtheit:</p>
-
-                @if (Anime.Popularity is { } popularity)
-                {
-                    <p class="av-meta__value">@popularity.ToString("N0", CultureInfo.GetCultureInfo("de-DE"))</p>
-                }
-                else
-                {
-                    <p class="av-meta__value">-</p>
-                }
-            </div>
-        }
-        @if (Anime.IsFinished)
-        {
-            <div class="av-meta">
-                <p class="av-meta__value">@FinishedText</p>
-            </div>
         }
         else
         {
-        <div class="av-meta">
-            <p>Nummer der nächsten Episode:</p>
+            @CoverContent
+        }
 
-            @if (Anime.NextEpisodeNumber  is { } nextEpisodeNumber)
+        <h3 class="av-title" title="@Anime.Title"><span class="av-title__text">@Anime.Title</span></h3>
+    </div>
+
+    <div class="av-content">
+        <div class="av-main">
+            <div class="av-head">
+                <div class="av-airing">
+                    <span class="av-airing__label">@AiringLabel</span>
+                    <span class="av-airing__value" title="@AiringDateText">@AiringValue</span>
+                    @if (!string.IsNullOrWhiteSpace(Anime.Format))
+                    {
+                        <span class="av-airing__format">@Anime.Format</span>
+                    }
+                </div>
+
+                <ul class="av-stats">
+                    <li class="av-stat @ScoreCssClass" title="Durchschnittliche Bewertung">
+                        <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfiedAlt" Size="Size.Small" />
+                        <span>@(Anime.AverageScore is > 0 ? $"{Anime.AverageScore}%" : "-")</span>
+                    </li>
+                    @if (Rank is { } rank)
+                    {
+                        <li class="av-stat av-stat--rank" title="Platz @rank">
+                            <MudIcon Icon="@Icons.Material.Filled.Favorite" Size="Size.Small" />
+                            <span>#@rank</span>
+                        </li>
+                    }
+                    @if (ShowPopularity)
+                    {
+                        <li class="av-stat av-stat--popularity" title="Nutzer, die den Anime in ihrer Liste haben">
+                            <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Small" />
+                            <span>@(Anime.Popularity is { } popularity ? popularity.ToString("N0", De) : "-")</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Anime.Description))
             {
-                <p class="av-meta__value">@nextEpisodeNumber.ToString()</p>
-            }
-            else
-            {
-                <p class="av-meta__value">-</p>
+                <p class="av-description">@Anime.Description</p>
             }
         </div>
-        <div class="av-meta">
-            <p>Erscheint am:<br></p>
 
-            @if (Anime.NextEpisodeAiringAt  is { } airingAt)
-            {
-                <p class="av-meta__value">@airingAt.ToLocalTime().ToString("dddd, 'den' dd.MM.yyyy", CultureInfo.GetCultureInfo("de-DE"))</p>
-            }
-            else
-            {
-                <p class="av-meta__value">-</p>
-            }
-        </div>
-        <div class="av-meta">
-            <p>Erscheint in:</p>
-
-            @if (Anime.NextEpisodeAiringAt  is { } nextEpisodeAt)
-            {
-                var remaining = nextEpisodeAt - _now;
-                
-                @if (remaining > TimeSpan.Zero)
-                {
-                    <p class="av-meta__value">
-                        @((int)remaining.TotalDays) Tage,
-                        @remaining.Hours Stunden,
-                        @remaining.Minutes Minuten
-                    </p>
-                }
-                else
-                {
-                    <p class="av-meta__value">Die Folge sollte bereits erschienen sein.</p>
-                }
-            }
-            else
-            {
-                <p class="av-meta__value">-</p>
-            }
-        </div>
+        @if (Anime.Genres.Count > 0)
+        {
+            <div class="av-footer">
+                <ul class="av-genres">
+                    @foreach (var genre in Anime.Genres.Take(MaxGenres))
+                    {
+                        <li class="av-genre">@genre</li>
+                    }
+                </ul>
+            </div>
         }
     </div>
 </article>
@@ -153,11 +95,121 @@
     [Parameter]
     public bool ShowDetails { get; set; }
 
+    private const int MaxGenres = 3;
+
+    private static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
+
     private Task OpenDetailsAsync() => AnimeDetailDialog.ShowAsync(DialogService, Anime);
 
-    private string FinishedText => Anime.Episodes is { } episodes
-        ? $"Anime ist beendet, er hat {episodes} {(episodes == 1 ? "Folge" : "Folgen")}"
-        : "Anime ist beendet";
+    /// <summary>
+    /// Cover beziehungsweise Platzhalter. Wird je nach <see cref="ShowDetails"/> mit oder ohne Klickfläche ausgegeben.
+    /// </summary>
+    private RenderFragment CoverContent => builder =>
+    {
+        if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
+        {
+            builder.OpenElement(0, "img");
+            builder.AddAttribute(1, "class", "av-cover");
+            builder.AddAttribute(2, "src", Anime.CoverUrl);
+            builder.AddAttribute(3, "alt", $"Cover von {Anime.Title}");
+            builder.AddAttribute(4, "loading", "lazy");
+            builder.CloseElement();
+        }
+        else
+        {
+            builder.OpenElement(5, "div");
+            builder.AddAttribute(6, "class", "av-cover-fallback");
+            builder.AddAttribute(7, "role", "img");
+            builder.AddAttribute(8, "aria-label", "Kein Cover verfügbar");
+            builder.OpenComponent<MudIcon>(9);
+            builder.AddComponentParameter(10, nameof(MudIcon.Icon), Icons.Material.Filled.ImageNotSupported);
+            builder.AddComponentParameter(11, nameof(MudIcon.Size), Size.Large);
+            builder.CloseComponent();
+            builder.CloseElement();
+        }
+    };
+
+    private string ScoreCssClass => Anime.AverageScore switch
+    {
+        >= 70 => "av-stat--good",
+        >= 50 => "av-stat--mid",
+        > 0 => "av-stat--low",
+        _ => "av-stat--none"
+    };
+
+    /// <summary>
+    /// Kopfzeile der Erscheinungsangabe, zum Beispiel "Folge 4 von 12 erscheint in".
+    /// </summary>
+    private string AiringLabel
+    {
+        get
+        {
+            if (Anime.IsFinished)
+            {
+                return "Beendet";
+            }
+
+            if (Anime.NextEpisodeNumber is not { } number)
+            {
+                return "Nächste Folge";
+            }
+
+            return Anime.Episodes is { } total && total >= number
+                ? $"Folge {number} von {total} erscheint in"
+                : $"Folge {number} erscheint in";
+        }
+    }
+
+    private string AiringValue
+    {
+        get
+        {
+            if (Anime.IsFinished)
+            {
+                return Anime.Episodes is { } episodes
+                    ? $"{episodes} {(episodes == 1 ? "Folge" : "Folgen")}"
+                    : "Alle Folgen erschienen";
+            }
+
+            if (Anime.NextEpisodeAiringAt is not { } airingAt)
+            {
+                return "Noch kein Termin";
+            }
+
+            var remaining = airingAt - _now;
+
+            if (remaining <= TimeSpan.Zero)
+            {
+                return "Bereits erschienen";
+            }
+
+            return FormatRemaining(remaining);
+        }
+    }
+
+    /// <summary>
+    /// Genauer Erscheinungstermin als Tooltip des Countdowns.
+    /// </summary>
+    private string? AiringDateText => !Anime.IsFinished && Anime.NextEpisodeAiringAt is { } airingAt
+        ? airingAt.ToLocalTime().ToString("dddd, 'den' dd.MM.yyyy", De)
+        : null;
+
+    private static string FormatRemaining(TimeSpan remaining)
+    {
+        var days = (int)remaining.TotalDays;
+
+        if (days > 0)
+        {
+            return $"{days} {(days == 1 ? "Tag" : "Tage")}, {remaining.Hours} {(remaining.Hours == 1 ? "Stunde" : "Stunden")}";
+        }
+
+        if (remaining.Hours > 0)
+        {
+            return $"{remaining.Hours} {(remaining.Hours == 1 ? "Stunde" : "Stunden")}, {remaining.Minutes} {(remaining.Minutes == 1 ? "Minute" : "Minuten")}";
+        }
+
+        return $"{remaining.Minutes} {(remaining.Minutes == 1 ? "Minute" : "Minuten")}";
+    }
 
     private DateTimeOffset _now = DateTimeOffset.Now;
     private readonly CancellationTokenSource _timerCts = new();

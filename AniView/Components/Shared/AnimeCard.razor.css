@@ -1,110 +1,225 @@
+/* Horizontale Karte: links das Cover mit Titel, rechts Erscheinung, Bewertung, Beschreibung und Genres. */
 .av-card {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: clamp(112px, 38%, 176px) minmax(0, 1fr);
     height: 100%;
     overflow: hidden;
-    border-radius: 16px;
+    border-radius: 12px;
     background: var(--mud-palette-surface);
     border: 1px solid var(--mud-palette-lines-default);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
+
+/* ---------- Cover ---------- */
 
 .av-cover-wrap {
     position: relative;
-    aspect-ratio: 2 / 3;
+    min-width: 0;
+    overflow: hidden;
     background: var(--mud-palette-background-gray);
 }
 
-.av-cover {
+/* Mindesthöhe im Seitenverhältnis 2:3. Das Cover wächst mit, falls der Textbereich höher ist. */
+.av-cover-wrap::before {
+    content: "";
+    display: block;
+    padding-top: 150%;
+}
+
+.av-cover-wrap > .av-cover,
+.av-cover-wrap > .av-cover-fallback,
+.av-cover-wrap > .av-cover-btn {
+    position: absolute;
+    inset: 0;
+}
+
+.av-cover-btn > .av-cover,
+.av-cover-btn > .av-cover-fallback {
+    position: static;
+}
+
+.av-cover,
+.av-cover-fallback {
     display: block;
     width: 100%;
     height: 100%;
+}
+
+.av-cover {
     object-fit: cover;
+    transition: filter 0.15s ease;
 }
 
 .av-cover-fallback {
     display: grid;
     place-items: center;
-    width: 100%;
-    height: 100%;
     color: var(--mud-palette-text-secondary);
 }
 
-.av-rank {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    display: grid;
-    place-items: center;
-    min-width: 32px;
-    height: 32px;
-    padding: 0 8px;
-    border-radius: 16px;
-    font-weight: 700;
-    background: var(--mud-palette-primary);
-    color: var(--mud-palette-primary-text);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-}
-
-.av-info-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
+/* Klickfläche des Bildes (öffnet den Detail-Dialog). */
+.av-cover-btn {
+    display: block;
+    width: 100%;
+    height: 100%;
     padding: 0;
     border: 0;
-    border-radius: 50%;
+    background: none;
     cursor: pointer;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.6);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-    transition: background-color 0.15s ease;
 }
 
-.av-info-btn:hover {
-    background: var(--mud-palette-primary);
+.av-cover-btn:hover .av-cover,
+.av-cover-btn:focus-visible .av-cover {
+    filter: brightness(1.12);
 }
 
-.av-info-btn:focus-visible {
-    outline: 2px solid var(--mud-palette-primary);
-    outline-offset: 2px;
+.av-cover-btn:focus-visible {
+    outline: 3px solid var(--mud-palette-primary);
+    outline-offset: -3px;
 }
 
-.av-body {
-    padding: 12px 14px 14px;
-}
-
+/* Titel liegt auf einem abgedunkelten Streifen am unteren Bildrand. Klicks gehen durch auf das Bild. */
 .av-title {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
     margin: 0;
+    padding: 28px 12px 12px;
     font-size: 0.95rem;
     font-weight: 600;
     line-height: 1.3;
-    color: var(--mud-palette-text-primary);
+    color: #fff;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.6) 65%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+}
+
+/* Zeilenbegrenzung auf dem inneren Element, weil das Padding des Streifens sonst weitere Zeilen durchlässt. */
+.av-title__text {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.av-meta {
+/* ---------- Inhalt ---------- */
+
+.av-content {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: 6px;
-    row-gap: 2px;
-    margin: 6px 0 0;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.av-main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    padding: 14px 16px 10px;
+}
+
+.av-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.av-airing {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.av-airing__label {
     font-size: 0.8rem;
     color: var(--mud-palette-text-secondary);
 }
 
-.av-meta__value {
-    font-weight: 700;
+.av-airing__value {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--mud-palette-text-primary);
 }
 
-.av-meta p {
-    margin: 0;
+.av-airing__format {
+    margin-top: 2px;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--mud-palette-text-secondary);
+}
 
+/* Bewertung, Platz und (optional) Beliebtheit. */
+.av-stats {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.av-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--mud-palette-text-secondary);
+}
+
+.av-stat--good {
+    color: var(--mud-palette-success);
+}
+
+.av-stat--mid {
+    color: var(--mud-palette-warning);
+}
+
+.av-stat--low {
+    color: var(--mud-palette-error);
+}
+
+.av-stat--rank {
+    color: var(--mud-palette-primary);
+}
+
+.av-description {
+    margin: 0;
+    overflow: hidden;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--mud-palette-text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+}
+
+/* ---------- Genres ---------- */
+
+.av-footer {
+    padding: 10px 16px;
+    background: color-mix(in srgb, var(--mud-palette-text-primary) 5%, transparent);
+}
+
+.av-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.av-genre {
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+    color: #4A3200;
+    background: #F2B632;
 }

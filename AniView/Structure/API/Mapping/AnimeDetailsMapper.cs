@@ -286,7 +286,7 @@ namespace AniView.Structure.API.Mapping
         /// AniList liefert die Beschreibung auch ohne HTML-Modus mit einzelnen Tags (zum Beispiel br oder i).
         /// Zeilenumbrüche bleiben erhalten, alle anderen Tags werden entfernt, damit nie Markup angezeigt wird.
         /// </summary>
-        private static string? CleanDescription(string? description)
+        internal static string? CleanDescription(string? description)
         {
             if (string.IsNullOrWhiteSpace(description))
             {

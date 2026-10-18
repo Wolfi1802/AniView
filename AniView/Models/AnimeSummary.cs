@@ -28,6 +28,16 @@ namespace AniView.Models
         public int? Episodes { get; init; }
 
         /// <summary>
+        /// Genres des Animes, zum Beispiel Action oder Romance.
+        /// </summary>
+        public IReadOnlyList<string> Genres { get; init; } = [];
+
+        /// <summary>
+        /// Kurzbeschreibung als reiner Text (ohne Markup).
+        /// </summary>
+        public string? Description { get; init; }
+
+        /// <summary>
         /// Nummer der nächsten Episode.
         /// </summary>
         public int? NextEpisodeNumber { get; init; }
