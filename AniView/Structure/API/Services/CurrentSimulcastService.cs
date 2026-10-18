@@ -14,6 +14,14 @@ namespace AniView.Structure.API.Services
         // Obergrenze beim Zählen, damit eine fehlerhafte Antwort nie endlos weiterblättert.
         private const int MaxCountPages = 20;
 
+        // Der Sendeplan enthält jede Folge einzeln. Eine Woche umfasst je laufender Serie etwa eine Folge,
+        // die Obergrenze verhindert endloses Blättern bei fehlerhaften Antworten.
+        private const int MaxSchedulePages = 30;
+
+        // Zeitfenster, in dem eine Folge ausgestrahlt werden muss, damit die Serie als Simulcast gilt.
+        // Eine Woche erfasst alle wöchentlichen Serien; eine Reserve fängt leicht verschobene Termine ab.
+        private static readonly TimeSpan AiringWindow = TimeSpan.FromDays(8);
+
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
 
         // Bestimmt, welche Objekte der zweiten Ebene diese Abfrage lädt.
@@ -48,13 +56,21 @@ namespace AniView.Structure.API.Services
 
             var (season, seasonYear) = GetCurrentSeason();
 
-            if (options.SortField == AnimeSortField.NextEpisode)
+            // Die IDs werden einmal vorab bestimmt, damit Seite und Anzahl nicht beide die Abfragen auslösen.
+            var ids = await GetSimulcastIdsAsync(season, seasonYear, cancellationToken);
+
+            if (ids.Count == 0)
             {
-                return await GetPageByNextEpisodeAsync(page, perPage, season, seasonYear, options, cancellationToken);
+                return new PageResult<AnimeSummary>([], false, 0, perPage);
             }
 
-            var pageTask = GetPageAsync(indexOfPage, perPage, season, seasonYear, options, cancellationToken);
-            var totalTask = GetTotalAsync(season, seasonYear, options, cancellationToken);
+            if (options.SortField == AnimeSortField.NextEpisode)
+            {
+                return await GetPageByNextEpisodeAsync(page, perPage, season, seasonYear, ids, options, cancellationToken);
+            }
+
+            var pageTask = GetPageAsync(indexOfPage, perPage, season, seasonYear, ids, options, cancellationToken);
+            var totalTask = GetTotalAsync(season, seasonYear, ids, options, cancellationToken);
             await Task.WhenAll(pageTask, totalTask);
 
             var total = totalTask.Result;
@@ -77,10 +93,11 @@ namespace AniView.Structure.API.Services
             int perPage,
             string season,
             int seasonYear,
+            IReadOnlyList<int> ids,
             AnimeListOptions options,
             CancellationToken cancellationToken)
         {
-            var all = await GetAllByNextEpisodeAsync(season, seasonYear, options, cancellationToken);
+            var all = await GetAllByNextEpisodeAsync(season, seasonYear, ids, options, cancellationToken);
 
             var skip = (long)(ApiPaging.GetPageIndex(page) - 1) * perPage;
             IReadOnlyList<AnimeSummary> items = all
@@ -94,6 +111,7 @@ namespace AniView.Structure.API.Services
         private async Task<IReadOnlyList<AnimeSummary>> GetAllByNextEpisodeAsync(
             string season,
             int seasonYear,
+            IReadOnlyList<int> ids,
             AnimeListOptions options,
             CancellationToken cancellationToken)
         {
@@ -112,8 +130,7 @@ namespace AniView.Structure.API.Services
             for (var pageIndex = ApiPaging.MIN_PAGE_NUMBER; pageIndex <= MaxCountPages; pageIndex++)
             {
                 var variables = options.ToVariables(pageIndex, pageSize);
-                variables["season"] = season;
-                variables["seasonYear"] = seasonYear;
+                variables["ids"] = ids;
 
                 var data = await _client.SendAsync<MediaPageData>(
                     ApiQueries.CurrentSimulcast(Profile),
@@ -147,6 +164,7 @@ namespace AniView.Structure.API.Services
             int perPage,
             string season,
             int seasonYear,
+            IReadOnlyList<int> ids,
             AnimeListOptions options,
             CancellationToken cancellationToken)
         {
@@ -163,8 +181,7 @@ namespace AniView.Structure.API.Services
             }
 
             var variables = options.ToVariables(indexOfPage, perPage);
-            variables["season"] = season;
-            variables["seasonYear"] = seasonYear;
+            variables["ids"] = ids;
 
             var data = await _client.SendAsync<MediaPageData>(
                 ApiQueries.CurrentSimulcast(Profile),
@@ -179,12 +196,13 @@ namespace AniView.Structure.API.Services
         }
 
         /// <summary>
-        /// Zählt die laufenden Animes der Season exakt, indem die Seiten (nur IDs) durchlaufen werden,
+        /// Zählt die Simulcast-Animes exakt, indem die Seiten (nur IDs) durchlaufen werden,
         /// bis eine Seite nicht mehr voll ist.
         /// </summary>
         private async Task<int> GetTotalAsync(
             string season,
             int seasonYear,
+            IReadOnlyList<int> ids,
             AnimeListOptions options,
             CancellationToken cancellationToken)
         {
@@ -204,8 +222,7 @@ namespace AniView.Structure.API.Services
                 var variables = options.ToFilterVariables();
                 variables["page"] = pageIndex;
                 variables["perPage"] = countPageSize;
-                variables["season"] = season;
-                variables["seasonYear"] = seasonYear;
+                variables["ids"] = ids;
 
                 var data = await _client.SendAsync<MediaPageData>(
                     ApiQueries.CurrentSimulcastIds,
@@ -224,6 +241,124 @@ namespace AniView.Structure.API.Services
             _cache.Set(cacheKey, total, CacheDuration);
 
             return total;
+        }
+
+        /// <summary>
+        /// Ermittelt die IDs aller Animes im Simulcast, unabhängig von Filter und Sortierung.
+        /// Das sind alle Animes mit einer Folge im Zeitfenster (laufende Serien, auch aus früheren Seasons,
+        /// sowie Serien, die gerade starten) und alle laufenden oder noch nicht gestarteten Animes der Season.
+        /// </summary>
+        private async Task<IReadOnlyList<int>> GetSimulcastIdsAsync(
+            string season,
+            int seasonYear,
+            CancellationToken cancellationToken)
+        {
+            var cacheKey = $"anilist:simulcast:ids:{season}:{seasonYear}";
+
+            if (_cache.TryGetValue(cacheKey, out IReadOnlyList<int>? cached) && cached is not null)
+            {
+                return cached;
+            }
+
+            var scheduleTask = GetAiringScheduleIdsAsync(cancellationToken);
+            var seasonTask = GetSeasonIdsAsync(season, seasonYear, cancellationToken);
+            await Task.WhenAll(scheduleTask, seasonTask);
+
+            IReadOnlyList<int> ids = scheduleTask.Result
+                .Union(seasonTask.Result)
+                .Order()
+                .ToList();
+
+            _cache.Set(cacheKey, ids, CacheDuration);
+
+            return ids;
+        }
+
+        private async Task<IReadOnlyCollection<int>> GetAiringScheduleIdsAsync(CancellationToken cancellationToken)
+        {
+            const int pageSize = ApiPaging.MAX_PAGE_NUMBER;
+
+            var now = DateTimeOffset.UtcNow;
+            var from = (int)now.ToUnixTimeSeconds();
+            var to = (int)now.Add(AiringWindow).ToUnixTimeSeconds();
+
+            var ids = new HashSet<int>();
+
+            for (var pageIndex = ApiPaging.MIN_PAGE_NUMBER; pageIndex <= MaxSchedulePages; pageIndex++)
+            {
+                var variables = new Dictionary<string, object?>
+                {
+                    ["page"] = pageIndex,
+                    ["perPage"] = pageSize,
+                    ["from"] = from,
+                    ["to"] = to
+                };
+
+                var data = await _client.SendAsync<AiringSchedulePageData>(
+                    ApiQueries.AiringScheduleMediaIds,
+                    variables,
+                    cancellationToken);
+
+                var entries = data.Page?.AiringSchedules ?? [];
+
+                foreach (var entry in entries)
+                {
+                    if (entry?.MediaId is int mediaId)
+                    {
+                        ids.Add(mediaId);
+                    }
+                }
+
+                if (entries.Count < pageSize)
+                {
+                    break;
+                }
+            }
+
+            return ids;
+        }
+
+        private async Task<IReadOnlyCollection<int>> GetSeasonIdsAsync(
+            string season,
+            int seasonYear,
+            CancellationToken cancellationToken)
+        {
+            const int pageSize = ApiPaging.MAX_PAGE_NUMBER;
+
+            var ids = new HashSet<int>();
+
+            for (var pageIndex = ApiPaging.MIN_PAGE_NUMBER; pageIndex <= MaxCountPages; pageIndex++)
+            {
+                var variables = new Dictionary<string, object?>
+                {
+                    ["page"] = pageIndex,
+                    ["perPage"] = pageSize,
+                    ["season"] = season,
+                    ["seasonYear"] = seasonYear
+                };
+
+                var data = await _client.SendAsync<MediaPageData>(
+                    ApiQueries.SeasonMediaIds,
+                    variables,
+                    cancellationToken);
+
+                var media = data.Page?.Media ?? [];
+
+                foreach (var item in media)
+                {
+                    if (item is not null)
+                    {
+                        ids.Add(item.Id);
+                    }
+                }
+
+                if (media.Count < pageSize)
+                {
+                    break;
+                }
+            }
+
+            return ids;
         }
 
         private static (string Season, int Year) GetCurrentSeason()

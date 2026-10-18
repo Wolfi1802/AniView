@@ -4,7 +4,8 @@ using AniView.Structure.API.Exceptions;
 namespace AniView.Structure.API.Services
 {
     /// <summary>
-    /// Fragt die aktuell laufenden Animes der laufenden Season bei AniList ab.
+    /// Fragt die Animes des Simulcasts bei AniList ab: alle Animes mit einer Folge in den nächsten Tagen
+    /// (auch Fortsetzungen aus früheren Seasons) sowie die laufenden oder noch nicht gestarteten Animes der aktuellen Season.
     /// </summary>
     public interface ICurrentSimulcastService
     {
