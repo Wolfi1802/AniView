@@ -40,9 +40,17 @@
         max-height: calc(100dvh - var(--av-appbar-height, var(--mud-appbar-height, 56px)) - var(--av-filter-bar-height, 0px) - 16px);
     }
 
+    /* Das Paper (Hintergrund, Rahmen, Zeilenlinien) wächst mit der Tabelle mit. Sonst endet es an der Breite des
+       sichtbaren Bereichs, und der herausgescrollte Teil der Tabelle hätte keinen Hintergrund. */
+    .av-infinite-table--table ::deep .mud-simple-table {
+        width: max-content;
+        min-width: 100%;
+    }
+
     .av-infinite-table--table ::deep table {
         width: 100%;
         min-width: max-content;
+        background-color: var(--mud-palette-surface);
     }
 
     .av-infinite-table--table ::deep th,
