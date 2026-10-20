@@ -22,11 +22,40 @@
     outline-offset: -2px;
 }
 
-/* position: sticky im Tabellenkopf funktioniert nur, wenn kein Vorfahr zum Scroll-Container wird.
-   MudSimpleTable setzt overflow-x: auto, deshalb gilt der klebende Kopf ab 600 px Breite.
-   Auf schmalen Bildschirmen bleibt das horizontale Scrollen der Tabelle erhalten. */
-@media (min-width: 600px) {
-    .av-infinite-table ::deep .mud-table-container {
-        overflow: visible;
+/* Breakpoints entsprechen MudBlazor: xs < 600, sm >= 600, md >= 960, lg >= 1280, xl >= 1920.
+
+   Ab 600 px klebt der Tabellenkopf am Viewport. Das funktioniert nur, wenn kein Vorfahr zum Scroll-Container wird.
+   MudSimpleTable setzt am .mud-table-container overflow-x: auto, daher ist overflow auf allen Breiten sichtbar. */
+.av-infinite-table ::deep .mud-table-container {
+    overflow: visible;
+}
+
+/* Unter 600 px haben nicht alle Spalten Platz. Dort scrollt die Tabelle in einem eigenen Bereich, horizontal
+   und vertikal. Der Kopf klebt am oberen Rand dieses Bereichs (top: 0, siehe AnimeTableHeader), und die Zeilen
+   werden am Rand abgeschnitten, sodass nie Inhalt über Kopf oder Filterleiste sichtbar ist.
+   Der Sentinel für das Nachladen liegt innerhalb des Bereichs. Die Höhe füllt den Rest unter der Filterleiste. */
+@media (max-width: 599.95px) {
+    .av-infinite-table--table {
+        overflow: auto;
+        max-height: calc(100dvh - var(--av-appbar-height, var(--mud-appbar-height, 56px)) - var(--av-filter-bar-height, 0px) - 16px);
+    }
+
+    /* Das Paper (Hintergrund, Rahmen, Zeilenlinien) wächst mit der Tabelle mit. Sonst endet es an der Breite des
+       sichtbaren Bereichs, und der herausgescrollte Teil der Tabelle hätte keinen Hintergrund. */
+    .av-infinite-table--table ::deep .mud-simple-table {
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .av-infinite-table--table ::deep table {
+        width: 100%;
+        min-width: max-content;
+        background-color: var(--mud-palette-surface);
+    }
+
+    .av-infinite-table--table ::deep th,
+    .av-infinite-table--table ::deep td {
+        padding: 8px 12px;
+        white-space: nowrap;
     }
 }
