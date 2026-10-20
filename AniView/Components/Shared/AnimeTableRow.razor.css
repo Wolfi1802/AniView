@@ -6,9 +6,11 @@
     border-radius: 6px;
 }
 
-/* Unter 600 px (MudBlazor xs) passen nicht alle Spalten in den Viewport, siehe AnimeTableHeader. */
+/* Unter 600 px (MudBlazor xs) scrollt die Tabelle horizontal, die Spalten behalten eine Mindestbreite (siehe AnimeTableHeader). */
 @media (max-width: 599.95px) {
-    .av-col-hide-xs {
-        display: none;
-    }
+    .av-col-title { min-width: 160px; }
+    .av-col-format { min-width: 80px; }
+    .av-col-episodes { min-width: 100px; }
+    .av-col-score { min-width: 90px; }
+    .av-col-popularity { min-width: 130px; }
 }

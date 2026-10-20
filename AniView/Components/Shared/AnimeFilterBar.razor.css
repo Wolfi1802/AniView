@@ -2,7 +2,7 @@
    mit ihrem Hintergrund die darunter durchlaufenden Inhalte. Unter dem Dialog- und Popover-Layer, über der Tabelle. */
 .av-filter-bar {
     position: sticky;
-    top: var(--mud-appbar-height, 64px);
+    top: var(--av-appbar-height, var(--mud-appbar-height, 64px));
     z-index: 5;
     display: flex;
     flex-wrap: wrap;

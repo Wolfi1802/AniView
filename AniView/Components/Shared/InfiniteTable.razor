@@ -1,7 +1,7 @@
 @typeparam TItem
 @implements IAsyncDisposable
 
-<div class="av-infinite-table" aria-busy="@(_isLoading ? "true" : "false")">
+<div class="av-infinite-table @(ViewType == InfiniteViewType.Table ? "av-infinite-table--table" : null)" aria-busy="@(_isLoading ? "true" : "false")">
     @if (_error is not null && _rows.Count == 0)
     {
         <StateMessage Title="@ErrorTitle" Message="@_error" OnRetry="RetryAsync" />

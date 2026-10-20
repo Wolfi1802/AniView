@@ -3,9 +3,8 @@
 {
     var isActive = Options.SortField == field;
     var ariaSort = isActive ? (Options.Descending ? "descending" : "ascending") : "none";
-    var hideOnXs = field is AnimeSortField.Episodes or AnimeSortField.Popularity;
 
-    <th scope="col" aria-sort="@ariaSort" class="@(hideOnXs ? "av-col-hide-xs" : null)">
+    <th scope="col" aria-sort="@ariaSort" class="av-col-@(field.ToString().ToLowerInvariant())">
         <button type="button"
                 class="av-sort-button @(isActive ? "av-sort-button--active" : null)"
                 @onclick="() => OptionsChanged.InvokeAsync(Options.SortedBy(field))">

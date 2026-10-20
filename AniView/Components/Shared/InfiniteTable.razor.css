@@ -22,30 +22,32 @@
     outline-offset: -2px;
 }
 
-/* position: sticky im Tabellenkopf funktioniert nur, wenn kein Vorfahr zum Scroll-Container wird.
-   MudSimpleTable setzt am .mud-table-container overflow-x: auto. Dadurch wird der Container zum Scroll-Container,
-   der Kopf klebt dann an ihm statt am Viewport und rutscht um den top-Wert in die Liste.
-   Deshalb ist overflow auf ALLEN Breiten sichtbar. Damit die Tabelle auf schmalen Bildschirmen nicht breiter als
-   der Viewport wird, blenden AnimeTableHeader und AnimeTableRow dort die Spalten Episoden und Beliebtheit aus
-   (Sortierung danach bleibt über die Filterleiste möglich).
+/* Breakpoints entsprechen MudBlazor: xs < 600, sm >= 600, md >= 960, lg >= 1280, xl >= 1920.
 
-   Breakpoints entsprechen MudBlazor: xs < 600, sm >= 600, md >= 960, lg >= 1280, xl >= 1920. */
+   Ab 600 px klebt der Tabellenkopf am Viewport. Das funktioniert nur, wenn kein Vorfahr zum Scroll-Container wird.
+   MudSimpleTable setzt am .mud-table-container overflow-x: auto, daher ist overflow auf allen Breiten sichtbar. */
 .av-infinite-table ::deep .mud-table-container {
     overflow: visible;
 }
 
+/* Unter 600 px haben nicht alle Spalten Platz. Dort scrollt die Tabelle in einem eigenen Bereich, horizontal
+   und vertikal. Der Kopf klebt am oberen Rand dieses Bereichs (top: 0, siehe AnimeTableHeader), und die Zeilen
+   werden am Rand abgeschnitten, sodass nie Inhalt über Kopf oder Filterleiste sichtbar ist.
+   Der Sentinel für das Nachladen liegt innerhalb des Bereichs. Die Höhe füllt den Rest unter der Filterleiste. */
 @media (max-width: 599.95px) {
-    .av-infinite-table ::deep table {
+    .av-infinite-table--table {
+        overflow: auto;
+        max-height: calc(100dvh - var(--av-appbar-height, var(--mud-appbar-height, 56px)) - var(--av-filter-bar-height, 0px) - 16px);
+    }
+
+    .av-infinite-table--table ::deep table {
         width: 100%;
+        min-width: max-content;
     }
 
-    .av-infinite-table ::deep th,
-    .av-infinite-table ::deep td {
-        padding: 8px 6px;
-    }
-
-    .av-infinite-table ::deep th:first-child,
-    .av-infinite-table ::deep td:first-child {
-        padding-left: 12px;
+    .av-infinite-table--table ::deep th,
+    .av-infinite-table--table ::deep td {
+        padding: 8px 12px;
+        white-space: nowrap;
     }
 }

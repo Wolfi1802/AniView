@@ -26,14 +26,21 @@
    unter die Leiste und schließt so jeden Spalt, durch den sonst Zeilen sichtbar wären. */
 th {
     position: sticky;
-    top: calc(var(--mud-appbar-height, 64px) + var(--av-filter-bar-height, 0px) - 4px);
+    top: calc(var(--av-appbar-height, var(--mud-appbar-height, 64px)) + var(--av-filter-bar-height, 0px) - 4px);
     z-index: 4;
     background-color: var(--mud-palette-surface);
 }
 
-/* Unter 600 px (MudBlazor xs) passen nicht alle Spalten in den Viewport. */
+/* Unter 600 px (MudBlazor xs) scrollt die Tabelle in einem eigenen Bereich (siehe InfiniteTable.razor.css),
+   der Kopf klebt dort an dessen oberem Rand. Die Spalten behalten eine Mindestbreite. */
 @media (max-width: 599.95px) {
-    .av-col-hide-xs {
-        display: none;
+    th {
+        top: 0;
     }
+
+    .av-col-title { min-width: 160px; }
+    .av-col-format { min-width: 80px; }
+    .av-col-episodes { min-width: 100px; }
+    .av-col-score { min-width: 90px; }
+    .av-col-popularity { min-width: 130px; }
 }
