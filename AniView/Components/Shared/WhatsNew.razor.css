@@ -44,6 +44,23 @@
     box-sizing: border-box;
 }
 
+/* Der Titelbereich darf schrumpfen, sonst drückt der lange Text den Pfeil aus dem Kopf (min-width: auto der
+   Flex-Kinder). Der Pfeil behält seine Größe und bleibt immer sichtbar, die Zusammenfassung kürzt sich mit "…". */
+.av-whats-new__scroll ::deep .mud-expand-panel-header {
+    gap: 8px;
+    min-width: 0;
+}
+
+.av-whats-new__scroll ::deep .mud-expand-panel-text {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.av-whats-new__scroll ::deep .mud-expand-panel-icon {
+    flex: 0 0 auto;
+}
+
 .av-whats-new__scroll ::deep .mud-expand-panel-content {
     padding: 0 16px 16px;
 }
@@ -54,13 +71,15 @@
     flex-direction: column;
     gap: 4px;
     min-width: 0;
-    flex: 1;
+    flex: 1 1 0;
+    overflow: hidden;
 }
 
 .av-whats-new__header-top {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
 }
 
 .av-whats-new__date {
