@@ -9,6 +9,12 @@ namespace AniView.Structure
     {
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
+            new(new DateOnly(2026, 10, 20),
+                "Neue Akzentfarbe",
+                "Logo, aktive Menüpunkte, Sortierung und Buttons erscheinen jetzt in Gold statt Türkis und passen damit zu den Labels."),
+            new(new DateOnly(2026, 10, 20),
+                "All Animes heißt jetzt Entdecken",
+                "Die Seite mit allen Animes hat einen neuen Namen, der besser zum Stöbern mit Filtern und Sortierung passt."),
             new(new DateOnly(2026, 10, 18),
                 "Neues Kartendesign",
                 "Die Karten zeigen jetzt Cover, Countdown bis zur nächsten Folge, Bewertung, Beschreibung und Genres im Querformat. Ein Klick auf das Bild öffnet alle Details. Die Top 10 stehen dadurch zu zweit nebeneinander."),
