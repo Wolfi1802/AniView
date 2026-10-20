@@ -10,9 +10,9 @@
 </td>
 <td>@Anime.Title</td>
 <td>@(Anime.Format ?? "-")</td>
-<td>@(Anime.Episodes?.ToString("N0", CultureInfo.CurrentCulture) ?? "-")</td>
+<td class="av-col-hide-xs">@(Anime.Episodes?.ToString("N0", CultureInfo.CurrentCulture) ?? "-")</td>
 <td>@(Anime.ScoreOutOfTen is { } score ? $"★ {score.ToString("0.0", CultureInfo.CurrentCulture)}" : "-")</td>
-<td>@(Anime.Popularity?.ToString("N0", CultureInfo.CurrentCulture) ?? "-")</td>
+<td class="av-col-hide-xs">@(Anime.Popularity?.ToString("N0", CultureInfo.CurrentCulture) ?? "-")</td>
 
 @code {
     [Parameter, EditorRequired]

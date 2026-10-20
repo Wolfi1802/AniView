@@ -23,10 +23,29 @@
 }
 
 /* position: sticky im Tabellenkopf funktioniert nur, wenn kein Vorfahr zum Scroll-Container wird.
-   MudSimpleTable setzt overflow-x: auto, deshalb gilt der klebende Kopf ab 600 px Breite.
-   Auf schmalen Bildschirmen bleibt das horizontale Scrollen der Tabelle erhalten. */
-@media (min-width: 600px) {
-    .av-infinite-table ::deep .mud-table-container {
-        overflow: visible;
+   MudSimpleTable setzt am .mud-table-container overflow-x: auto. Dadurch wird der Container zum Scroll-Container,
+   der Kopf klebt dann an ihm statt am Viewport und rutscht um den top-Wert in die Liste.
+   Deshalb ist overflow auf ALLEN Breiten sichtbar. Damit die Tabelle auf schmalen Bildschirmen nicht breiter als
+   der Viewport wird, blenden AnimeTableHeader und AnimeTableRow dort die Spalten Episoden und Beliebtheit aus
+   (Sortierung danach bleibt über die Filterleiste möglich).
+
+   Breakpoints entsprechen MudBlazor: xs < 600, sm >= 600, md >= 960, lg >= 1280, xl >= 1920. */
+.av-infinite-table ::deep .mud-table-container {
+    overflow: visible;
+}
+
+@media (max-width: 599.95px) {
+    .av-infinite-table ::deep table {
+        width: 100%;
+    }
+
+    .av-infinite-table ::deep th,
+    .av-infinite-table ::deep td {
+        padding: 8px 6px;
+    }
+
+    .av-infinite-table ::deep th:first-child,
+    .av-infinite-table ::deep td:first-child {
+        padding-left: 12px;
     }
 }

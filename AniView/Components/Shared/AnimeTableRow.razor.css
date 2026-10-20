@@ -5,3 +5,10 @@
     object-fit: cover;
     border-radius: 6px;
 }
+
+/* Unter 600 px (MudBlazor xs) passen nicht alle Spalten in den Viewport, siehe AnimeTableHeader. */
+@media (max-width: 599.95px) {
+    .av-col-hide-xs {
+        display: none;
+    }
+}

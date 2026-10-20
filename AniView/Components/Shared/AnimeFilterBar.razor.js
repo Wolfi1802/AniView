@@ -7,7 +7,7 @@ const observers = new WeakMap();
 export function observe(bar) {
     dispose(bar);
 
-    const update = () => document.documentElement.style.setProperty(VARIABLE, `${bar.offsetHeight}px`);
+    const update = () => document.documentElement.style.setProperty(VARIABLE, `${bar.getBoundingClientRect().height}px`);
     const observer = new ResizeObserver(update);
 
     observer.observe(bar);

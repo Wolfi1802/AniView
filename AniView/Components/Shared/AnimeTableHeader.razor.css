@@ -22,10 +22,18 @@
 }
 
 /* Der Kopf klebt direkt unter der Filterleiste (Höhe kommt aus AnimeFilterBar.razor.js).
-   Unterhalb der Leiste (z-index 5), über den Tabellenzeilen. */
+   Unterhalb der Leiste (z-index 5), über den Tabellenzeilen. Die Überlappung von 4 px schiebt den Kopf
+   unter die Leiste und schließt so jeden Spalt, durch den sonst Zeilen sichtbar wären. */
 th {
     position: sticky;
-    top: calc(var(--mud-appbar-height, 64px) + var(--av-filter-bar-height, 0px));
+    top: calc(var(--mud-appbar-height, 64px) + var(--av-filter-bar-height, 0px) - 4px);
     z-index: 4;
     background-color: var(--mud-palette-surface);
+}
+
+/* Unter 600 px (MudBlazor xs) passen nicht alle Spalten in den Viewport. */
+@media (max-width: 599.95px) {
+    .av-col-hide-xs {
+        display: none;
+    }
 }

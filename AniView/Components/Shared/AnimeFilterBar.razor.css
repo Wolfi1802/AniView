@@ -37,7 +37,7 @@
 
 /* Auf schmalen Bildschirmen belegt die Suche die ganze Zeile, Format und Sortierung teilen sich die nächste,
    damit die dauerhaft sichtbare Leiste möglichst wenig Höhe braucht. */
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
     .av-filter-bar {
         gap: 8px 12px;
         padding: 8px 0;
