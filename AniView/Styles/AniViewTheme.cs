@@ -12,7 +12,7 @@ namespace AniView.Theme
         {
             PaletteLight = new PaletteLight
             {
-                Primary = "#0E7C86",
+                Primary = "#8A5A00",
                 PrimaryContrastText = "#FFFFFF",
                 Secondary = "#6D4AFF",
                 Background = "#F4F6F9",
@@ -25,8 +25,8 @@ namespace AniView.Theme
             },
             PaletteDark = new PaletteDark
             {
-                Primary = "#4DD0C8",
-                PrimaryContrastText = "#06201F",
+                Primary = "#F2B632",
+                PrimaryContrastText = "#1A1200",
                 Secondary = "#A590FF",
                 Background = "#0F1720",
                 Surface = "#17212B",
