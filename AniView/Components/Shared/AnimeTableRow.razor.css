@@ -1,7 +1,29 @@
+/* Cover wächst mit dem Breakpoint (MudBlazor): xs 56 px, ab sm (600) 72 px, ab md (960) 88 px, ab lg (1280) 96 px. */
 .av-table-cover {
     display: block;
-    width: 40px;
+    width: 56px;
     aspect-ratio: 2 / 3;
     object-fit: cover;
     border-radius: 6px;
+}
+
+@media (min-width: 600px) {
+    .av-table-cover { width: 72px; }
+}
+
+@media (min-width: 960px) {
+    .av-table-cover { width: 88px; }
+}
+
+@media (min-width: 1280px) {
+    .av-table-cover { width: 96px; }
+}
+
+/* Unter 600 px (MudBlazor xs) scrollt die Tabelle horizontal, die Spalten behalten eine Mindestbreite (siehe AnimeTableHeader). */
+@media (max-width: 599.95px) {
+    .av-col-title { min-width: 160px; }
+    .av-col-format { min-width: 80px; }
+    .av-col-episodes { min-width: 100px; }
+    .av-col-score { min-width: 90px; }
+    .av-col-popularity { min-width: 130px; }
 }

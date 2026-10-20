@@ -2,7 +2,7 @@
    mit ihrem Hintergrund die darunter durchlaufenden Inhalte. Unter dem Dialog- und Popover-Layer, über der Tabelle. */
 .av-filter-bar {
     position: sticky;
-    top: var(--mud-appbar-height, 64px);
+    top: var(--av-appbar-height, var(--mud-appbar-height, 64px));
     z-index: 5;
     display: flex;
     flex-wrap: wrap;
@@ -37,7 +37,7 @@
 
 /* Auf schmalen Bildschirmen belegt die Suche die ganze Zeile, Format und Sortierung teilen sich die nächste,
    damit die dauerhaft sichtbare Leiste möglichst wenig Höhe braucht. */
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
     .av-filter-bar {
         gap: 8px 12px;
         padding: 8px 0;
