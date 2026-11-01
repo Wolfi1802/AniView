@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -10,14 +10,19 @@
     <link rel="stylesheet" href="@Assets["AniView.styles.css"]" />
     <link href="_content/MudBlazor/MudBlazor.min.css?v=@(MudBlazor.Metadata.Version)" rel="stylesheet" />
     <ImportMap />
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <HeadOutlet @rendermode="RenderModeWithoutPrerendering" />
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveServer" />
+    <Routes @rendermode="RenderModeWithoutPrerendering" />
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js?v=@(MudBlazor.Metadata.Version)"></script>
 </body>
 
 </html>
+
+@code {
+    // Without prerendering the stored language is known before the first render (no flicker from English to German).
+    private static readonly IComponentRenderMode RenderModeWithoutPrerendering = new InteractiveServerRenderMode(prerender: false);
+}

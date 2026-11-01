@@ -1,7 +1,8 @@
 namespace AniView.Models
 {
     /// <summary>
-    /// Kompakte Darstellung eines Animes für Karten und Ranglisten.
+    /// Kompakte Darstellung eines Animes für Karten und Ranglisten. <c>Format</c> ist der unübersetzte API-Code
+    /// (zum Beispiel TV_SHORT), <c>Title</c> ist leer, wenn die API keinen Titel liefert.
     /// </summary>
     public sealed record AnimeSummary(
         int Id,

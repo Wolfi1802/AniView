@@ -34,7 +34,7 @@ namespace AniView.Components.Shared
         private bool _hasMore = true;
         private bool _isLoading;
         private bool _needsRefresh;
-        private string? _error;
+        private Exception? _error;
 
         /// <summary>
         /// Vorhandene Liste, die seitenweise angezeigt wird. Wird die Referenz ausgetauscht, beginnt die Tabelle von vorn.
@@ -98,8 +98,8 @@ namespace AniView.Components.Shared
         public RenderFragment<InfiniteEntry<TItem>>? CardTemplate { get; set; }
 
         /// <summary>
-        /// Optional: wandelt einen Ladefehler in eine Meldung für den Nutzer um.
-        /// Ohne Angabe oder bei null wird ein allgemeiner Hinweis angezeigt.
+        /// Optional: wandelt einen Ladefehler in eine Meldung für den Nutzer um. Wird beim Rendern aufgerufen,
+        /// damit die Meldung der gewählten Sprache folgt. Ohne Angabe oder bei null wird ein allgemeiner Hinweis angezeigt.
         /// </summary>
         [Parameter]
         public Func<Exception, string?>? ErrorMessageProvider { get; set; }
@@ -126,14 +126,21 @@ namespace AniView.Components.Shared
         [Parameter]
         public int PreloadDistance { get; set; } = 400;
 
+        /// <summary>
+        /// Überschrift der Fehleranzeige. Ohne Angabe gilt der allgemeine Text der gewählten Sprache.
+        /// </summary>
         [Parameter]
-        public string ErrorTitle { get; set; } = "Die Einträge konnten nicht geladen werden";
+        public string? ErrorTitle { get; set; }
 
         [Inject]
         private IJSRuntime JS { get; set; } = default!;
 
         [Inject]
         private ILogger<InfiniteTable<TItem>> Logger { get; set; } = default!;
+
+        // Built when rendering (not when the error happens), so the text follows a language change.
+        private string ErrorText =>
+            (_error is null ? null : ErrorMessageProvider?.Invoke(_error)) ?? L["Error.Connection"];
 
         private bool IsEmpty => !_isLoading && !_hasMore && _error is null && _rows.Count == 0;
 
@@ -260,8 +267,7 @@ namespace AniView.Components.Shared
             catch (Exception ex)
             {
                 Logger.LogWarning(ex, "Seite {Page} der Tabelle konnte nicht geladen werden.", _nextPage);
-                _error = ErrorMessageProvider?.Invoke(ex)
-                    ?? "Bitte prüfe deine Verbindung und versuche es erneut.";
+                _error = ex;
             }
             finally
             {

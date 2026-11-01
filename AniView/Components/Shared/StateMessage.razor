@@ -8,7 +8,7 @@
     @if (OnRetry.HasDelegate)
     {
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => OnRetry.InvokeAsync())">
-            Erneut versuchen
+            @L["State.Retry"]
         </MudButton>
     }
 </MudStack>

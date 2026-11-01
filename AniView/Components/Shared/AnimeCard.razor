@@ -7,8 +7,8 @@
         {
             <button type="button"
                     class="av-cover-btn"
-                    title="Weitere Informationen"
-                    aria-label="Weitere Informationen zu @Anime.Title"
+                    title="@L["Card.MoreInfo"]"
+                    aria-label="@L.Format("Card.MoreInfoAbout", DisplayTitle)"
                     aria-haspopup="dialog"
                     @onclick="OpenDetailsAsync">
                 @CoverContent
@@ -19,7 +19,7 @@
             @CoverContent
         }
 
-        <h3 class="av-title" title="@Anime.Title"><span class="av-title__text">@Anime.Title</span></h3>
+        <h3 class="av-title" title="@DisplayTitle"><span class="av-title__text">@DisplayTitle</span></h3>
     </div>
 
     <div class="av-content">
@@ -30,27 +30,27 @@
                     <span class="av-airing__value" title="@AiringDateText">@AiringValue</span>
                     @if (!string.IsNullOrWhiteSpace(Anime.Format))
                     {
-                        <span class="av-airing__format">@Anime.Format</span>
+                        <span class="av-airing__format">@L.Label("Format", Anime.Format)</span>
                     }
                 </div>
 
                 <ul class="av-stats">
-                    <li class="av-stat @ScoreCssClass" title="Durchschnittliche Bewertung">
+                    <li class="av-stat @ScoreCssClass" title="@L["Card.AverageScore"]">
                         <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfiedAlt" Size="Size.Small" />
                         <span>@(Anime.AverageScore is > 0 ? $"{Anime.AverageScore}%" : "-")</span>
                     </li>
                     @if (Rank is { } rank)
                     {
-                        <li class="av-stat av-stat--rank" title="Platz @rank">
+                        <li class="av-stat av-stat--rank" title="@L.Format("Card.Rank", rank)">
                             <MudIcon Icon="@Icons.Material.Filled.Favorite" Size="Size.Small" />
                             <span>#@rank</span>
                         </li>
                     }
                     @if (ShowPopularity)
                     {
-                        <li class="av-stat av-stat--popularity" title="Nutzer, die den Anime in ihrer Liste haben">
+                        <li class="av-stat av-stat--popularity" title="@L["Card.Popularity"]">
                             <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Small" />
-                            <span>@(Anime.Popularity is { } popularity ? popularity.ToString("N0", De) : "-")</span>
+                            <span>@(Anime.Popularity is { } popularity ? popularity.ToString("N0", L.Culture) : "-")</span>
                         </li>
                     }
                 </ul>
@@ -97,7 +97,7 @@
 
     private const int MaxGenres = 3;
 
-    private static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
+    private string DisplayTitle => L.DisplayTitle(Anime.Title);
 
     private Task OpenDetailsAsync() => AnimeDetailDialog.ShowAsync(DialogService, Anime);
 
@@ -109,11 +109,11 @@
     private RenderFragment CoverContent => @<text>
         @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
         {
-            <img class="av-cover" src="@Anime.CoverUrl" alt="Cover von @Anime.Title" loading="lazy" />
+            <img class="av-cover" src="@Anime.CoverUrl" alt="@L.Format("Common.CoverAlt", DisplayTitle)" loading="lazy" />
         }
         else
         {
-            <div class="av-cover-fallback" role="img" aria-label="Kein Cover verfügbar">
+            <div class="av-cover-fallback" role="img" aria-label="@L["Common.NoCover"]">
                 <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Large" />
             </div>
         }
@@ -128,7 +128,7 @@
     };
 
     /// <summary>
-    /// Kopfzeile der Erscheinungsangabe, zum Beispiel "Folge 4 von 12 erscheint in".
+    /// Kopfzeile der Erscheinungsangabe, zum Beispiel "Folge 4 von 12 erscheint in" (je nach Sprache).
     /// </summary>
     private string AiringLabel
     {
@@ -136,17 +136,17 @@
         {
             if (Anime.IsFinished)
             {
-                return "Beendet";
+                return L["Card.Finished"];
             }
 
             if (Anime.NextEpisodeNumber is not { } number)
             {
-                return "Nächste Folge";
+                return L["Card.NextEpisode"];
             }
 
             return Anime.Episodes is { } total && total >= number
-                ? $"Folge {number} von {total} erscheint in"
-                : $"Folge {number} erscheint in";
+                ? L.Format("Card.EpisodeOfTotal", number, total)
+                : L.Format("Card.EpisodeAirs", number);
         }
     }
 
@@ -157,20 +157,20 @@
             if (Anime.IsFinished)
             {
                 return Anime.Episodes is { } episodes
-                    ? $"{episodes} {(episodes == 1 ? "Folge" : "Folgen")}"
-                    : "Alle Folgen erschienen";
+                    ? L.Plural("Card.Episodes", episodes)
+                    : L["Card.AllEpisodes"];
             }
 
             if (Anime.NextEpisodeAiringAt is not { } airingAt)
             {
-                return "Noch kein Termin";
+                return L["Card.NoDate"];
             }
 
             var remaining = airingAt - _now;
 
             if (remaining <= TimeSpan.Zero)
             {
-                return "Bereits erschienen";
+                return L["Card.AlreadyAired"];
             }
 
             return FormatRemaining(remaining);
@@ -181,24 +181,24 @@
     /// Genauer Erscheinungstermin als Tooltip des Countdowns.
     /// </summary>
     private string? AiringDateText => !Anime.IsFinished && Anime.NextEpisodeAiringAt is { } airingAt
-        ? airingAt.ToLocalTime().ToString("dddd, 'den' dd.MM.yyyy", De)
+        ? L.FormatDate(airingAt, "Format.WeekdayDate")
         : null;
 
-    private static string FormatRemaining(TimeSpan remaining)
+    private string FormatRemaining(TimeSpan remaining)
     {
         var days = (int)remaining.TotalDays;
 
         if (days > 0)
         {
-            return $"{days} {(days == 1 ? "Tag" : "Tage")}, {remaining.Hours} {(remaining.Hours == 1 ? "Stunde" : "Stunden")}";
+            return $"{L.Plural("Time.Day", days)}, {L.Plural("Time.Hour", remaining.Hours)}";
         }
 
         if (remaining.Hours > 0)
         {
-            return $"{remaining.Hours} {(remaining.Hours == 1 ? "Stunde" : "Stunden")}, {remaining.Minutes} {(remaining.Minutes == 1 ? "Minute" : "Minuten")}";
+            return $"{L.Plural("Time.Hour", remaining.Hours)}, {L.Plural("Time.Minute", remaining.Minutes)}";
         }
 
-        return $"{remaining.Minutes} {(remaining.Minutes == 1 ? "Minute" : "Minuten")}";
+        return L.Plural("Time.Minute", remaining.Minutes);
     }
 
     private DateTimeOffset _now = DateTimeOffset.Now;

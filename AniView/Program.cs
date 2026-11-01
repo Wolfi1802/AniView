@@ -26,6 +26,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<UiMessageService>();
 builder.Services.AddScoped<ThemeService>();
+builder.Services.AddScoped<LanguageService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<ApiResponseInterceptor>();

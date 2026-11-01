@@ -2,7 +2,8 @@ namespace AniView.Models
 {
     /// <summary>
     /// Alle Informationen zu einem Anime, die AniList liefert. Wird erst beim Öffnen des Detail-Dialogs nachgeladen.
-    /// Werte wie Status, Quelle oder Rollen sind bereits ins Deutsche übersetzt.
+    /// Status, Quelle, Land, Format, Season und Rollen sind unübersetzte API-Codes (zum Beispiel FINISHED);
+    /// die Anzeige übersetzt sie über den LanguageService, damit zwischengespeicherte Objekte sprachunabhängig bleiben.
     /// </summary>
     public sealed record AnimeDetails(int Id, string Title)
     {
@@ -28,9 +29,11 @@ namespace AniView.Models
 
         public string? Season { get; init; }
 
-        public string? StartDateText { get; init; }
+        public int? SeasonYear { get; init; }
 
-        public string? EndDateText { get; init; }
+        public AnimePartialDate? StartDate { get; init; }
+
+        public AnimePartialDate? EndDate { get; init; }
 
         public int? Episodes { get; init; }
 
@@ -89,6 +92,9 @@ namespace AniView.Models
 
         public double? ScoreOutOfTen => AverageScore is > 0 ? AverageScore / 10.0 : null;
     }
+
+    /// <summary>Ein Datum, so genau wie AniList es kennt: Jahr, Jahr und Monat oder vollständig.</summary>
+    public sealed record AnimePartialDate(int Year, int? Month, int? Day);
 
     public sealed record AnimeTrailer(string Id, string Site, string? ThumbnailUrl)
     {

@@ -2,9 +2,9 @@
 @using AniView.Components.Shared
 @using AniView.Structure.API.Services
 
-<PageTitle>Entdecken</PageTitle>
+<PageTitle>@L["Nav.Discover"]</PageTitle>
 
-<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Entdecken</MudText>
+<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">@L["Nav.Discover"]</MudText>
 
 <AnimeFilterBar @bind-Options="_options" />
 
@@ -21,8 +21,8 @@
         <AnimeTableRow Anime="anime" />
     </RowTemplate>
     <EmptyContent>
-        <StateMessage Title="Keine Animes gefunden"
-                      Message="Zu diesen Filtern gibt es keine Einträge."
+        <StateMessage Title="@L["Table.Empty.Title"]"
+                      Message="@L["Table.Empty.Message"]"
                       Icon="@Icons.Material.Filled.SearchOff" />
     </EmptyContent>
 </InfiniteTable>
