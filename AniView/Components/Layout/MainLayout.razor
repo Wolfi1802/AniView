@@ -1,50 +1,54 @@
 @inherits LayoutComponentBase
 
-<MudThemeProvider @ref="_themeProvider"
-                  Theme="AniViewTheme.Default"
-                  @bind-IsDarkMode="_isDarkMode" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+@* The cascading value re-renders every component (see LocalizedComponentBase) when the language changes. *@
+<CascadingValue Name="@LocalizedComponentBase.LanguageCascadeName" Value="@L.Code">
+    <MudThemeProvider @ref="_themeProvider"
+                      Theme="AniViewTheme.Default"
+                      @bind-IsDarkMode="_isDarkMode" />
+    <MudPopoverProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="0" Class="border-b">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                       Color="Color.Inherit"
-                       Edge="Edge.Start"
-                       Class="d-md-none"
-                       AriaLabel="Navigation öffnen oder schließen"
-                       OnClick="ToggleDrawer" />
-        <MudSpacer />
-        <ThemeToggle IsDarkMode="_isDarkMode" IsDarkModeChanged="OnDarkModeChangedAsync" />
-    </MudAppBar>
+    <MudLayout>
+        <MudAppBar Elevation="0" Class="border-b">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                           Color="Color.Inherit"
+                           Edge="Edge.Start"
+                           Class="d-md-none"
+                           AriaLabel="@L["Layout.ToggleNavigation"]"
+                           OnClick="ToggleDrawer" />
+            <MudSpacer />
+            <ThemeToggle IsDarkMode="_isDarkMode" IsDarkModeChanged="OnDarkModeChangedAsync" />
+        </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen"
-               Variant="DrawerVariant.Responsive"
-               Breakpoint="Breakpoint.Md"
-               ClipMode="DrawerClipMode.Never"
-               Elevation="0"
-               Class="border-e">
-        <MudDrawerHeader>
-            <MudLink Href="/home" Underline="Underline.None" Color="Color.Inherit" Typo="Typo.h6" aria-label="AniView – zur Startseite">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                    <MudIcon Icon="@Icons.Material.Filled.Movie" Color="Color.Primary" />
-                    <span>AniView</span>
-                </MudStack>
-            </MudLink>
-        </MudDrawerHeader>
-        <NavMenu />
-    </MudDrawer>
+        <MudDrawer @bind-Open="_drawerOpen"
+                   Variant="DrawerVariant.Responsive"
+                   Breakpoint="Breakpoint.Md"
+                   ClipMode="DrawerClipMode.Never"
+                   Elevation="0"
+                   Class="border-e">
+            <MudDrawerHeader>
+                <MudLink Href="/home" Underline="Underline.None" Color="Color.Inherit" Typo="Typo.h6" aria-label="@L["Layout.HomeLink"]">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Movie" Color="Color.Primary" />
+                        <span>AniView</span>
+                    </MudStack>
+                </MudLink>
+            </MudDrawerHeader>
+            <LanguageSwitcher />
+            <NavMenu />
+        </MudDrawer>
 
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pt-6 pb-12 px-6">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pt-6 pb-12 px-6">
+                @Body
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
 
-<div id="blazor-error-ui" data-nosnippet>
-    Es ist ein unerwarteter Fehler aufgetreten.
-    <a href="." class="reload">Neu laden</a>
-    <span class="dismiss">🗙</span>
-</div>
+    <div id="blazor-error-ui" data-nosnippet>
+        @L["Layout.UnexpectedError"]
+        <a href="." class="reload">@L["Layout.Reload"]</a>
+        <span class="dismiss">🗙</span>
+    </div>
+</CascadingValue>

@@ -1,15 +1,14 @@
 @using AniView.Structure.API
-@using AniView.Structure.API.Mapping
 @using AniView.Structure.API.Services
 @implements IAsyncDisposable
 
 @* Filter und Sortierung einer Anime-Liste. Die Leiste bleibt beim Scrollen unterhalb der Kopfzeile sichtbar (siehe AnimeFilterBar.razor.css). *@
-<div @ref="_bar" class="av-filter-bar" role="search" aria-label="Filter und Sortierung">
+<div @ref="_bar" class="av-filter-bar" role="search" aria-label="@L["Filter.AriaLabel"]">
     <div class="av-filter-bar__field av-filter-bar__field--search">
         <MudTextField T="string"
                       Value="@Options.Search"
                       ValueChanged="OnSearchChangedAsync"
-                      Label="Titel suchen"
+                      Label="@L["Filter.Search"]"
                       Variant="Variant.Outlined"
                       Margin="Margin.Dense"
                       Immediate="true"
@@ -24,8 +23,8 @@
         <MudSelect T="AnimeFormat?"
                    Value="@Options.Format"
                    ValueChanged="OnFormatChangedAsync"
-                   Label="Format"
-                   Placeholder="Alle Formate"
+                   Label="@L["Filter.Format"]"
+                   Placeholder="@L["Filter.Format.All"]"
                    Variant="Variant.Outlined"
                    Margin="Margin.Dense"
                    Clearable="true">
@@ -41,8 +40,8 @@
                    MultiSelection="true"
                    SelectedValues="@Options.Genres"
                    SelectedValuesChanged="OnGenresChangedAsync"
-                   Label="Genre"
-                   Placeholder="Alle Genres"
+                   Label="@L["Filter.Genre"]"
+                   Placeholder="@L["Filter.Genre.All"]"
                    Variant="Variant.Outlined"
                    Margin="Margin.Dense"
                    Clearable="true">
@@ -58,8 +57,8 @@
                    MultiSelection="true"
                    SelectedValues="@Options.StreamingSites"
                    SelectedValuesChanged="OnStreamingSitesChangedAsync"
-                   Label="Streaming-Dienst"
-                   Placeholder="Alle Dienste"
+                   Label="@L["Filter.Streaming"]"
+                   Placeholder="@L["Filter.Streaming.All"]"
                    Variant="Variant.Outlined"
                    Margin="Margin.Dense"
                    Clearable="true">
@@ -74,12 +73,12 @@
         <MudSelect T="AnimeSortField"
                    Value="@Options.SortField"
                    ValueChanged="OnSortFieldChangedAsync"
-                   Label="Sortieren nach"
+                   Label="@L["Filter.SortBy"]"
                    Variant="Variant.Outlined"
                    Margin="Margin.Dense">
             @foreach (var field in Enum.GetValues<AnimeSortField>().Where(IsSortFieldOffered))
             {
-                <MudSelectItem T="AnimeSortField" Value="@field">@GetSortFieldLabel(field)</MudSelectItem>
+                <MudSelectItem T="AnimeSortField" Value="@field">@L.SortFieldLabel(field)</MudSelectItem>
             }
         </MudSelect>
 
@@ -95,7 +94,7 @@
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.FilterAltOff"
                    OnClick="OnResetAsync">
-            Zurücksetzen
+            @L["Filter.Reset"]
         </MudButton>
     }
 </div>
@@ -141,26 +140,10 @@
     private bool IsSortFieldOffered(AnimeSortField field) =>
         field != AnimeSortField.NextEpisode || ShowNextEpisodeSort || Options.SortField == AnimeSortField.NextEpisode;
 
-    private string DirectionTitle => Options.Descending
-        ? "Absteigend sortiert, zum Umkehren klicken"
-        : "Aufsteigend sortiert, zum Umkehren klicken";
+    private string DirectionTitle => Options.Descending ? L["Filter.Direction.Desc"] : L["Filter.Direction.Asc"];
 
-    /// <summary>
-    /// Deutsche Bezeichnung einer Sortierspalte, einheitlich für Leiste und Tabellenkopf.
-    /// </summary>
-    internal static string GetSortFieldLabel(AnimeSortField field) => field switch
-    {
-        AnimeSortField.Popularity => "Beliebtheit",
-        AnimeSortField.Score => "Rating",
-        AnimeSortField.Title => "Titel",
-        AnimeSortField.Episodes => "Episoden",
-        AnimeSortField.NextEpisode => "Nächste Folge",
-        AnimeSortField.Format => "Format",
-        _ => field.ToString()
-    };
-
-    private static string GetFormatLabel(AnimeFormat format) =>
-        AnimeSummaryMapper.GetFormatLabel(AnimeListOptionsMapping.ToApiFormat(format)) ?? format.ToString();
+    private string GetFormatLabel(AnimeFormat format) =>
+        L.Label("Format", AnimeListOptionsMapping.ToApiFormat(format)) ?? format.ToString();
 
     protected override async Task OnInitializedAsync()
     {

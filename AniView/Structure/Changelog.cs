@@ -4,47 +4,25 @@ namespace AniView.Structure
 {
     /// <summary>
     /// Neuigkeiten zur Anwendung für den Bereich "What's new" der Startseite. Neueste Einträge zuerst.
+    /// Neuer Eintrag: Id hier ergänzen und die Schlüssel "Changelog.{Id}.Title" und "Changelog.{Id}.Description"
+    /// in allen Dateien unter Resources/SharedResource*.resx anlegen.
     /// </summary>
     public static class Changelog
     {
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
-            new(new DateOnly(2026, 10, 20),
-                "Neue Akzentfarbe",
-                "Logo, aktive Menüpunkte, Sortierung und Buttons erscheinen jetzt in Gold statt Türkis und passen damit zu den Labels."),
-            new(new DateOnly(2026, 10, 20),
-                "All Animes heißt jetzt Entdecken",
-                "Die Seite mit allen Animes hat einen neuen Namen, der besser zum Stöbern mit Filtern und Sortierung passt."),
-            new(new DateOnly(2026, 10, 18),
-                "Neues Kartendesign",
-                "Die Karten zeigen jetzt Cover, Countdown bis zur nächsten Folge, Bewertung, Beschreibung und Genres im Querformat. Ein Klick auf das Bild öffnet alle Details. Die Top 10 stehen dadurch zu zweit nebeneinander."),
-            new(new DateOnly(2026, 10, 18),
-                "Erweiterte Filter",
-                "Neben dem Streaming-Dienst kannst du jetzt auch nach Genres wie Action, Comedy oder Romance filtern. Bei beiden Filtern lassen sich mehrere Einträge gleichzeitig ankreuzen."),
-            new(new DateOnly(2026, 10, 18),
-                "Vollständiger Simulcast",
-                "Der Simulcast zeigt jetzt alle Animes, die aktuell laufen oder bald starten, auch Fortsetzungen aus früheren Seasons."),
-            new(new DateOnly(2026, 10, 16),
-                "Filterung und Sortierung",
-                "In den Tabellen gibt es jetzt die Möglichkeit einer Filterung und Sortierung."),
-            new(new DateOnly(2026, 10, 11),
-                "Mehr Informationen zu jedem Anime",
-                "In Simulcast und Top 10 öffnet das Info-Symbol oben rechts im Bild alle Details zu einem Anime, bei All Animes ein Klick auf die Zeile. Die Informationen werden erst beim Öffnen geladen."),
-            new(new DateOnly(2026, 10, 11),
-                "Beliebtheit in den Top 10",
-                "Die Top 10 zeigen jetzt auch, wie beliebt ein Anime ist. Bei beendeten Animes steht statt der nächsten Folge, wie viele Folgen es gibt."),
-            new(new DateOnly(2026, 10, 11),
-                "Neue Startseite",
-                "Hier siehst du zuerst die Neuigkeiten und darunter die zehn beliebtesten Animes."),
-            new(new DateOnly(2026, 10, 11),
-                "Neue Seite All Animes",
-                "Auf dieser Seite sind nun alle Animes in tabellarischer Auflistung zu finden, auch mit der Anzahl ihrer Folgen."),
-            new(new DateOnly(2026, 10, 11),
-                "Simulcast mit Gesamtzahl",
-                "Auf der Simulcast-Seite siehst du jetzt, wie viele Animes in der aktuellen Season laufen."),
-            new(new DateOnly(2026, 10, 11),
-                "Mehr Platz auf allen Seiten",
-                "Die Seiten nutzen jetzt die volle Breite deines Bildschirms.")
+            new(new DateOnly(2026, 10, 20), "AccentColor"),
+            new(new DateOnly(2026, 10, 20), "Discover"),
+            new(new DateOnly(2026, 10, 18), "CardDesign"),
+            new(new DateOnly(2026, 10, 18), "ExtendedFilters"),
+            new(new DateOnly(2026, 10, 18), "FullSimulcast"),
+            new(new DateOnly(2026, 10, 16), "FilterSort"),
+            new(new DateOnly(2026, 10, 11), "MoreInfo"),
+            new(new DateOnly(2026, 10, 11), "TopTenPopularity"),
+            new(new DateOnly(2026, 10, 11), "NewHome"),
+            new(new DateOnly(2026, 10, 11), "NewAllAnimes"),
+            new(new DateOnly(2026, 10, 11), "SimulcastCount"),
+            new(new DateOnly(2026, 10, 11), "MorePadding")
         ];
     }
 }

@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace AniView.Components.Layout
 {
-    public partial class MainLayout
+    public partial class MainLayout : IDisposable
     {
         private MudThemeProvider? _themeProvider;
         private bool _isDarkMode;
@@ -12,6 +12,18 @@ namespace AniView.Components.Layout
 
         [Inject]
         private ThemeService ThemeService { get; set; } = default!;
+
+        // The layout derives from LayoutComponentBase, so it gets the language service explicitly.
+        [Inject]
+        private LanguageService L { get; set; } = default!;
+
+        protected override async Task OnInitializedAsync()
+        {
+            L.LanguageChanged += OnLanguageChanged;
+
+            // Without prerendering the browser is already connected, so the stored language is known before the first render.
+            await L.InitializeAsync();
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -35,5 +47,9 @@ namespace AniView.Components.Layout
             _isDarkMode = isDarkMode;
             await ThemeService.StorePreferenceAsync(isDarkMode);
         }
+
+        private void OnLanguageChanged() => _ = InvokeAsync(StateHasChanged);
+
+        public void Dispose() => L.LanguageChanged -= OnLanguageChanged;
     }
 }

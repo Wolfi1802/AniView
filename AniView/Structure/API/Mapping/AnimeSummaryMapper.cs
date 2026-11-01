@@ -8,17 +8,6 @@ namespace AniView.Structure.API.Mapping
     /// </summary>
     internal static class AnimeSummaryMapper
     {
-        private static readonly Dictionary<string, string> FormatLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["TV"] = "TV",
-            ["TV_SHORT"] = "TV-Kurzserie",
-            ["MOVIE"] = "Film",
-            ["SPECIAL"] = "Special",
-            ["OVA"] = "OVA",
-            ["ONA"] = "ONA",
-            ["MUSIC"] = "Musik"
-        };
-
         public static IReadOnlyList<AnimeSummary> MapAll(MediaPageData data) =>
             (data.Page?.Media ?? [])
                 .Where(media => media is not null)
@@ -48,14 +37,14 @@ namespace AniView.Structure.API.Mapping
                 media.Title?.English,
                 media.Title?.Romaji,
                 media.Title?.UserPreferred,
-                media.Title?.Native) ?? "Unbekannter Titel";
+                media.Title?.Native) ?? string.Empty;
 
             var cover = FirstNonEmpty(
                 media.CoverImage?.ExtraLarge,
                 media.CoverImage?.Large,
                 media.CoverImage?.Medium);
 
-            var format = GetFormatLabel(media.Format);
+            var format = string.IsNullOrWhiteSpace(media.Format) ? null : media.Format.Trim();
 
             var airing = media.NextAiringEpisode;
 
@@ -86,19 +75,6 @@ namespace AniView.Structure.API.Mapping
                 NextEpisodeAiringAt = airingAt,
                 TimeUntilNextEpisode = timeUntilAiring
             };
-        }
-
-        /// <summary>
-        /// Übersetzt das AniList-Format (zum Beispiel MOVIE) in die Anzeige; unbekannte Werte bleiben unverändert.
-        /// </summary>
-        internal static string? GetFormatLabel(string? format)
-        {
-            if (string.IsNullOrWhiteSpace(format))
-            {
-                return null;
-            }
-
-            return FormatLabels.TryGetValue(format, out var label) ? label : format;
         }
 
         internal static string? FirstNonEmpty(params string?[] values) =>

@@ -1,0 +1,38 @@
+.av-lang {
+    display: flex;
+    margin: 0 16px 12px;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.av-lang__btn {
+    flex: 1 1 0;
+    padding: 6px 0;
+    border: 0;
+    background: transparent;
+    color: var(--mud-palette-text-primary);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+}
+
+.av-lang__btn + .av-lang__btn {
+    border-left: 1px solid var(--mud-palette-lines-default);
+}
+
+.av-lang__btn:hover {
+    background: var(--mud-palette-background-gray);
+}
+
+.av-lang__btn[aria-pressed="true"] {
+    background: var(--mud-palette-primary);
+    color: var(--mud-palette-primary-text);
+}
+
+.av-lang__btn:focus-visible {
+    outline: 2px solid var(--mud-palette-primary);
+    outline-offset: -2px;
+}
