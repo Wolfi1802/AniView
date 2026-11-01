@@ -4,7 +4,7 @@
 <div class="av-infinite-table @(ViewType == InfiniteViewType.Table ? "av-infinite-table--table" : null)" aria-busy="@(_isLoading ? "true" : "false")">
     @if (_error is not null && _rows.Count == 0)
     {
-        <StateMessage Title="@ErrorTitle" Message="@_error" OnRetry="RetryAsync" />
+        <StateMessage Title="@(ErrorTitle ?? L["Infinite.ErrorTitle"])" Message="@ErrorText" OnRetry="RetryAsync" />
     }
     else if (IsEmpty)
     {
@@ -14,7 +14,7 @@
         }
         else
         {
-            <StateMessage Title="Keine Einträge gefunden"
+            <StateMessage Title="@L["Infinite.EmptyTitle"]"
                           Icon="@Icons.Material.Filled.SearchOff" />
         }
     }
@@ -54,12 +54,12 @@
     <div @ref="_sentinel" class="av-infinite-footer" role="status">
         @if (_isLoading || (_rows.Count == 0 && _hasMore && _error is null))
         {
-            <MudProgressCircular Indeterminate="true" Size="Size.Small" aria-label="Weitere Einträge werden geladen" />
+            <MudProgressCircular Indeterminate="true" Size="Size.Small" aria-label="@L["Infinite.LoadingMore"]" />
         }
         else if (_error is not null && _rows.Count > 0)
         {
-            <MudText Class="mud-text-secondary">@_error</MudText>
-            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="RetryAsync">Erneut versuchen</MudButton>
+            <MudText Class="mud-text-secondary">@ErrorText</MudText>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="RetryAsync">@L["State.Retry"]</MudButton>
         }
     </div>
 </div>

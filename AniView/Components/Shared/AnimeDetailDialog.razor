@@ -8,7 +8,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.Close"
                            Class="av-detail__close"
                            Size="Size.Medium"
-                           AriaLabel="Schließen"
+                           AriaLabel="@L["Dialog.Close"]"
                            OnClick="Close" />
 
             <div class="av-detail__scroll" aria-busy="@(_isLoading ? "true" : "false")">
@@ -17,18 +17,18 @@
                     <div class="av-detail__cover">
                         @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
                         {
-                            <img src="@Anime.CoverUrl" alt="Cover von @Anime.Title" />
+                            <img src="@Anime.CoverUrl" alt="@L.Format("Common.CoverAlt", DisplayTitle)" />
                         }
                         else
                         {
-                            <div class="av-detail__cover-fallback" role="img" aria-label="Kein Cover verfügbar">
+                            <div class="av-detail__cover-fallback" role="img" aria-label="@L["Common.NoCover"]">
                                 <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Large" />
                             </div>
                         }
                     </div>
 
                     <div class="av-detail__headline">
-                        <h2 class="av-detail__title">@Anime.Title</h2>
+                        <h2 class="av-detail__title">@DisplayTitle</h2>
 
                         @if (_isLoading)
                         {
@@ -38,7 +38,7 @@
                                 <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Pulse" Width="70%" />
                                 <MudSkeleton SkeletonType="SkeletonType.Text" Animation="Animation.Pulse" Width="40%" />
                             </div>
-                            <span class="av-detail__sr-only" role="status">Informationen werden geladen</span>
+                            <span class="av-detail__sr-only" role="status">@L["Dialog.Loading"]</span>
                         }
                         else if (_details is { } head)
                         {
@@ -58,12 +58,12 @@
                             }
 
                             <div class="av-facts">
-                                <AnimeFact Label="Format" Value="@head.Format" />
-                                <AnimeFact Label="Status" Value="@head.Status" />
-                                <AnimeFact Label="Season" Value="@head.Season" />
-                                <AnimeFact Label="Episoden" Value="@Number(head.Episodes)" />
-                                <AnimeFact Label="Dauer pro Folge" Value="@(head.DurationMinutes is { } minutes ? $"{minutes} Min." : null)" />
-                                <AnimeFact Label="Bewertung" Value="@(head.ScoreOutOfTen is { } score ? $"★ {score.ToString("0.0", De)}" : null)" />
+                                <AnimeFact Label="@L["Detail.Format"]" Value="@L.Label("Format", head.Format)" />
+                                <AnimeFact Label="@L["Detail.Status"]" Value="@L.Label("Status", head.Status)" />
+                                <AnimeFact Label="@L["Detail.Season"]" Value="@SeasonText(head)" />
+                                <AnimeFact Label="@L["Detail.Episodes"]" Value="@Number(head.Episodes)" />
+                                <AnimeFact Label="@L["Detail.Duration"]" Value="@(head.DurationMinutes is { } minutes ? L.Format("Detail.DurationValue", minutes) : null)" />
+                                <AnimeFact Label="@L["Detail.Score"]" Value="@(head.ScoreOutOfTen is { } score ? $"★ {score.ToString("0.0", L.Culture)}" : null)" />
                             </div>
                         }
                     </div>
@@ -97,52 +97,52 @@
                 }
                 else if (_error is not null)
                 {
-                    <StateMessage Title="Die Informationen konnten nicht geladen werden"
-                                  Message="@_error"
+                    <StateMessage Title="@L["Dialog.Error.Title"]"
+                                  Message="@ErrorText"
                                   OnRetry="LoadAsync" />
                 }
                 else if (_details is { } d)
                 {
                     @if (!string.IsNullOrWhiteSpace(d.Description))
                     {
-                        <AnimeDetailSection Title="Beschreibung">
+                        <AnimeDetailSection Title="@L["Section.Description"]">
                             <p class="av-detail__description">@d.Description</p>
                         </AnimeDetailSection>
                     }
 
-                    <AnimeDetailSection Title="Details">
+                    <AnimeDetailSection Title="@L["Section.Details"]">
                         <div class="av-facts av-facts--wide">
-                            <AnimeFact Label="Englischer Titel" Value="@d.EnglishTitle" />
-                            <AnimeFact Label="Romaji-Titel" Value="@d.RomajiTitle" />
-                            <AnimeFact Label="Japanischer Titel" Value="@d.NativeTitle" />
-                            <AnimeFact Label="Weitere Titel" Value="@(Joined(", ", d.Synonyms))" />
-                            <AnimeFact Label="Start" Value="@d.StartDateText" />
-                            <AnimeFact Label="Ende" Value="@d.EndDateText" />
-                            <AnimeFact Label="Quelle" Value="@d.Source" />
-                            <AnimeFact Label="Herkunftsland" Value="@d.CountryOfOrigin" />
-                            <AnimeFact Label="Lizenziert" Value="@(d.IsLicensed is { } licensed ? (licensed ? "Ja" : "Nein") : null)" />
-                            <AnimeFact Label="Hashtag" Value="@d.Hashtag" />
-                            <AnimeFact Label="Studios" Value="@StudioText(d)" />
-                            <AnimeFact Label="Ø-Bewertung" Value="@(d.AverageScore is { } average ? $"{average} / 100" : null)" />
-                            <AnimeFact Label="Mittlere Bewertung" Value="@(d.MeanScore is { } mean ? $"{mean} / 100" : null)" />
-                            <AnimeFact Label="Beliebtheit" Value="@Number(d.Popularity)" />
-                            <AnimeFact Label="Favoriten" Value="@Number(d.Favourites)" />
-                            <AnimeFact Label="Trend" Value="@Number(d.Trending)" />
-                            <AnimeFact Label="MyAnimeList-ID" Value="@(d.MalId?.ToString(De))" />
-                            <AnimeFact Label="Zuletzt aktualisiert" Value="@(d.UpdatedAt is { } updated ? updated.ToLocalTime().ToString("dd.MM.yyyy", De) : null)" />
+                            <AnimeFact Label="@L["Detail.EnglishTitle"]" Value="@d.EnglishTitle" />
+                            <AnimeFact Label="@L["Detail.RomajiTitle"]" Value="@d.RomajiTitle" />
+                            <AnimeFact Label="@L["Detail.NativeTitle"]" Value="@d.NativeTitle" />
+                            <AnimeFact Label="@L["Detail.Synonyms"]" Value="@(Joined(", ", d.Synonyms))" />
+                            <AnimeFact Label="@L["Detail.Start"]" Value="@DateText(d.StartDate)" />
+                            <AnimeFact Label="@L["Detail.End"]" Value="@DateText(d.EndDate)" />
+                            <AnimeFact Label="@L["Detail.Source"]" Value="@L.Label("Source", d.Source)" />
+                            <AnimeFact Label="@L["Detail.Country"]" Value="@L.Label("Country", d.CountryOfOrigin)" />
+                            <AnimeFact Label="@L["Detail.Licensed"]" Value="@(d.IsLicensed is { } licensed ? (licensed ? L["Common.Yes"] : L["Common.No"]) : null)" />
+                            <AnimeFact Label="@L["Detail.Hashtag"]" Value="@d.Hashtag" />
+                            <AnimeFact Label="@L["Detail.Studios"]" Value="@StudioText(d)" />
+                            <AnimeFact Label="@L["Detail.AverageScore"]" Value="@(d.AverageScore is { } average ? $"{average} / 100" : null)" />
+                            <AnimeFact Label="@L["Detail.MeanScore"]" Value="@(d.MeanScore is { } mean ? $"{mean} / 100" : null)" />
+                            <AnimeFact Label="@L["Detail.Popularity"]" Value="@Number(d.Popularity)" />
+                            <AnimeFact Label="@L["Detail.Favourites"]" Value="@Number(d.Favourites)" />
+                            <AnimeFact Label="@L["Detail.Trending"]" Value="@Number(d.Trending)" />
+                            <AnimeFact Label="@L["Detail.MalId"]" Value="@(d.MalId?.ToString(L.Culture))" />
+                            <AnimeFact Label="@L["Detail.Updated"]" Value="@(d.UpdatedAt is { } updated ? updated.ToLocalTime().ToString("d", L.Culture) : null)" />
                         </div>
 
                         @if (SafeUrl(d.SiteUrl) is { } siteUrl)
                         {
                             <p class="av-detail__link-row">
-                                <a class="av-chip av-chip--link" href="@siteUrl" target="_blank" rel="noopener noreferrer">Auf AniList ansehen</a>
+                                <a class="av-chip av-chip--link" href="@siteUrl" target="_blank" rel="noopener noreferrer">@L["Detail.ViewOnAniList"]</a>
                             </p>
                         }
                     </AnimeDetailSection>
 
                     @if (d.NextEpisode is { } next)
                     {
-                        <AnimeDetailSection Title="Nächste Folge">
+                        <AnimeDetailSection Title="@L["Section.NextEpisode"]">
                             <p class="av-detail__text">
                                 @NextEpisodeText(next)
                             </p>
@@ -162,27 +162,27 @@
 
                     @if (d.Trailer is { } trailer)
                     {
-                        <AnimeDetailSection Title="Trailer">
+                        <AnimeDetailSection Title="@L["Section.Trailer"]">
                             @if (SafeUrl(trailer.Url) is { } trailerUrl)
                             {
                                 <a class="av-trailer" href="@trailerUrl" target="_blank" rel="noopener noreferrer">
                                     @if (SafeUrl(trailer.ThumbnailUrl) is { } thumbnail)
                                     {
-                                        <img src="@thumbnail" alt="Vorschaubild des Trailers" loading="lazy" />
+                                        <img src="@thumbnail" alt="@L["Detail.Trailer.Thumbnail"]" loading="lazy" />
                                     }
-                                    <span class="av-chip av-chip--link">Trailer auf @trailer.Site ansehen</span>
+                                    <span class="av-chip av-chip--link">@L.Format("Detail.Trailer.Watch", trailer.Site)</span>
                                 </a>
                             }
                             else
                             {
-                                <p class="av-detail__text">Trailer auf @trailer.Site (ID: @trailer.Id)</p>
+                                <p class="av-detail__text">@L.Format("Detail.Trailer.Plain", trailer.Site, trailer.Id)</p>
                             }
                         </AnimeDetailSection>
                     }
 
                     @if (d.Rankings.Count > 0)
                     {
-                        <AnimeDetailSection Title="Platzierungen">
+                        <AnimeDetailSection Title="@L["Section.Rankings"]">
                             <ul class="av-list">
                                 @foreach (var ranking in d.Rankings)
                                 {
@@ -200,7 +200,7 @@
                         var visibleTags = d.Tags.Where(t => !t.IsSpoiler).ToList();
                         var spoilerTags = d.Tags.Where(t => t.IsSpoiler).ToList();
 
-                        <AnimeDetailSection Title="Tags">
+                        <AnimeDetailSection Title="@L["Section.Tags"]">
                             <div class="av-chips">
                                 @foreach (var tag in visibleTags)
                                 {
@@ -211,7 +211,7 @@
                             @if (spoilerTags.Count > 0)
                             {
                                 <details class="av-spoiler">
-                                    <summary>Spoiler-Tags anzeigen (@spoilerTags.Count)</summary>
+                                    <summary>@L.Format("Detail.SpoilerTags", spoilerTags.Count)</summary>
                                     <div class="av-chips">
                                         @foreach (var tag in spoilerTags)
                                         {
@@ -225,7 +225,7 @@
 
                     @if (d.Characters.Count > 0)
                     {
-                        <AnimeDetailSection Title="Charaktere">
+                        <AnimeDetailSection Title="@L["Section.Characters"]">
                             <div class="av-people">
                                 @foreach (var person in d.Characters)
                                 {
@@ -242,7 +242,7 @@
                                             }
                                             @if (!string.IsNullOrWhiteSpace(person.Role))
                                             {
-                                                <span class="av-person__role">@person.Role</span>
+                                                <span class="av-person__role">@L.Translate("Role", person.Role)</span>
                                             }
                                         </div>
                                     </div>
@@ -253,7 +253,7 @@
 
                     @if (d.Staff.Count > 0)
                     {
-                        <AnimeDetailSection Title="Mitarbeiter">
+                        <AnimeDetailSection Title="@L["Section.Staff"]">
                             <div class="av-people">
                                 @foreach (var person in d.Staff)
                                 {
@@ -270,7 +270,7 @@
                                             }
                                             @if (!string.IsNullOrWhiteSpace(person.Role))
                                             {
-                                                <span class="av-person__role">@person.Role</span>
+                                                <span class="av-person__role">@L.Translate("Role", person.Role)</span>
                                             }
                                         </div>
                                     </div>
@@ -281,7 +281,7 @@
 
                     @if (d.ExternalLinks.Count > 0)
                     {
-                        <AnimeDetailSection Title="Links und Streaming">
+                        <AnimeDetailSection Title="@L["Section.Links"]">
                             <div class="av-chips">
                                 @foreach (var link in d.ExternalLinks)
                                 {
@@ -299,13 +299,13 @@
 
                     @if (d.Reviews.Count > 0)
                     {
-                        <AnimeDetailSection Title="Reviews">
+                        <AnimeDetailSection Title="@L["Section.Reviews"]">
                             <div class="av-reviews">
                                 @foreach (var review in d.Reviews)
                                 {
                                     <article class="av-review">
                                         <p class="av-review__meta">
-                                            <strong>@(review.UserName ?? "Unbekannt")</strong>@ReviewMeta(review)
+                                            <strong>@(review.UserName ?? L["Detail.Review.Unknown"])</strong>@ReviewMeta(review)
                                         </p>
                                         <p class="av-detail__text">@review.Summary</p>
                                     </article>
@@ -316,29 +316,29 @@
 
                     @if (d.Trends.Count > 0)
                     {
-                        <AnimeDetailSection Title="Trends der letzten Tage">
+                        <AnimeDetailSection Title="@L["Section.Trends"]">
                             <div class="av-table-wrap">
                                 <table class="av-table">
                                     <thead>
                                         <tr>
-                                            <th>Datum</th>
-                                            <th>Trend</th>
-                                            <th>Beliebtheit</th>
-                                            <th>Ø-Bewertung</th>
-                                            <th>Schauen gerade</th>
-                                            <th>Folge</th>
+                                            <th>@L["Trend.Date"]</th>
+                                            <th>@L["Trend.Trend"]</th>
+                                            <th>@L["Trend.Popularity"]</th>
+                                            <th>@L["Trend.AverageScore"]</th>
+                                            <th>@L["Trend.Watching"]</th>
+                                            <th>@L["Trend.Episode"]</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach (var trend in d.Trends)
                                         {
                                             <tr>
-                                                <td>@(trend.Date?.ToLocalTime().ToString("dd.MM.yyyy", De) ?? "-")</td>
+                                                <td>@(trend.Date?.ToLocalTime().ToString("d", L.Culture) ?? "-")</td>
                                                 <td>@(Number(trend.Trending) ?? "-")</td>
                                                 <td>@(Number(trend.Popularity) ?? "-")</td>
-                                                <td>@(trend.AverageScore?.ToString(De) ?? "-")</td>
+                                                <td>@(trend.AverageScore?.ToString(L.Culture) ?? "-")</td>
                                                 <td>@(Number(trend.InProgress) ?? "-")</td>
-                                                <td>@(trend.Episode?.ToString(De) ?? "-")</td>
+                                                <td>@(trend.Episode?.ToString(L.Culture) ?? "-")</td>
                                             </tr>
                                         }
                                     </tbody>
@@ -353,13 +353,21 @@
 </MudDialog>
 
 @code {
-    private static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
-
     private readonly CancellationTokenSource _cts = new();
 
     private AnimeDetails? _details;
     private bool _isLoading = true;
-    private string? _error;
+    private Exception? _error;
+
+    private string DisplayTitle => L.DisplayTitle(Anime.Title);
+
+    // Built when rendering (not when the error happens), so the text follows a language change.
+    private string ErrorText => _error switch
+    {
+        ApiRateLimitException rateLimit => L.RateLimitMessage(rateLimit.RetryAfter),
+        ApiException => L["Error.Connection"],
+        _ => L["Error.Unexpected"]
+    };
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
@@ -394,19 +402,17 @@
         }
         catch (ApiRateLimitException ex)
         {
-            _error = ex.RetryAfter is { } wait
-                ? $"API bittet um etwas Geduld. Bitte versuche es in ca. {Math.Ceiling(wait.TotalSeconds)} Sekunden erneut."
-                : "API bittet um etwas Geduld. Bitte versuche es gleich noch einmal.";
+            _error = ex;
         }
         catch (ApiException ex)
         {
             Logger.LogWarning(ex, "Details zu Anime {AnimeId} konnten nicht geladen werden.", Anime.Id);
-            _error = "Bitte prüfe deine Verbindung und versuche es erneut.";
+            _error = ex;
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Unerwarteter Fehler beim Laden der Details zu Anime {AnimeId}.", Anime.Id);
-            _error = "Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es erneut.";
+            _error = ex;
         }
         finally
         {
@@ -441,7 +447,22 @@
 
     private void Close() => MudDialog.Close();
 
-    private static string? Number(int? value) => value?.ToString("N0", De);
+    private string? Number(int? value) => value?.ToString("N0", L.Culture);
+
+    private string? DateText(AnimePartialDate? date) => date is null ? null : L.FormatPartialDate(date);
+
+    private string? SeasonText(AnimeDetails details)
+    {
+        var label = L.Label("Season", details.Season);
+
+        return (label, details.SeasonYear) switch
+        {
+            (not null, not null) => $"{label} {details.SeasonYear}",
+            (not null, null) => label,
+            (null, not null) => details.SeasonYear.ToString(),
+            _ => null
+        };
+    }
 
     /// <summary>
     /// Externe Adressen stammen aus der API und werden nur als Link ausgegeben, wenn sie mit http oder https beginnen.
@@ -459,24 +480,24 @@
         return text.Length > 0 ? text : null;
     }
 
-    private static string? StudioText(AnimeDetails details) =>
-        Joined(", ", details.Studios.Select(studio => studio.IsMain ? $"{studio.Name} (Hauptstudio)" : studio.Name));
+    private string? StudioText(AnimeDetails details) =>
+        Joined(", ", details.Studios.Select(studio => studio.IsMain ? L.Format("Detail.MainStudio", studio.Name) : studio.Name));
 
-    private static string NextEpisodeText(AnimeAiring next) =>
+    private string NextEpisodeText(AnimeAiring next) =>
         next.AiringAt is { } at
-            ? $"Folge {next.Episode} erscheint am {at.ToLocalTime().ToString("dddd, 'den' dd.MM.yyyy 'um' HH:mm", De)} Uhr"
-            : $"Folge {next.Episode}";
+            ? L.Format("Detail.NextEpisode.At", next.Episode, L.FormatDate(at, "Format.WeekdayDateTime"))
+            : L.Format("Detail.NextEpisode.NoDate", next.Episode);
 
-    private static string UpcomingEpisodeText(AnimeAiring upcoming) =>
+    private string UpcomingEpisodeText(AnimeAiring upcoming) =>
         upcoming.AiringAt is { } at
-            ? $"Folge {upcoming.Episode} – {at.ToLocalTime().ToString("dddd, dd.MM.yyyy", De)}"
-            : $"Folge {upcoming.Episode}";
+            ? L.Format("Detail.Upcoming.At", upcoming.Episode, L.FormatDate(at, "Format.WeekdayDateCompact"))
+            : L.Format("Detail.Upcoming.NoDate", upcoming.Episode);
 
-    private static string RankingText(AnimeRanking ranking)
+    private string RankingText(AnimeRanking ranking)
     {
         var context = string.IsNullOrWhiteSpace(ranking.Context) ? string.Empty : $" – {ranking.Context}";
 
-        return $"{ranking.Type}{context}{RankingPeriod(ranking)}";
+        return $"{L.Label("RankingType", ranking.Type)}{context}{RankingPeriod(ranking)}";
     }
 
     private static string TagText(AnimeTag tag) =>
@@ -485,7 +506,7 @@
     private static string LinkText(AnimeExternalLink link) =>
         string.IsNullOrWhiteSpace(link.Language) ? link.Site : $"{link.Site} ({link.Language})";
 
-    private static string ReviewMeta(AnimeReview review)
+    private string ReviewMeta(AnimeReview review)
     {
         var parts = new List<string>();
 
@@ -496,25 +517,25 @@
 
         if (review.CreatedAt is { } created)
         {
-            parts.Add(created.ToLocalTime().ToString("dd.MM.yyyy", De));
+            parts.Add(created.ToLocalTime().ToString("d", L.Culture));
         }
 
         if (review is { Rating: { } helpful, RatingAmount: { } votes })
         {
-            parts.Add($"{helpful} von {votes} fanden das hilfreich");
+            parts.Add(L.Format("Detail.Review.Helpful", helpful, votes));
         }
 
         return parts.Count > 0 ? " · " + string.Join(" · ", parts) : string.Empty;
     }
 
-    private static string RankingPeriod(AnimeRanking ranking)
+    private string RankingPeriod(AnimeRanking ranking)
     {
         if (ranking.AllTime)
         {
-            return " (aller Zeiten)";
+            return $" ({L["Ranking.AllTime"]})";
         }
 
-        var period = string.Join(' ', new[] { ranking.Season, ranking.Year?.ToString() }.Where(v => !string.IsNullOrWhiteSpace(v)));
+        var period = string.Join(' ', new[] { L.Label("Season", ranking.Season), ranking.Year?.ToString() }.Where(v => !string.IsNullOrWhiteSpace(v)));
 
         return period.Length > 0 ? $" ({period})" : string.Empty;
     }

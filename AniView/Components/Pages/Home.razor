@@ -2,21 +2,21 @@
 @using AniView.Components.Shared
 @implements IDisposable
 
-<PageTitle>Home</PageTitle>
+<PageTitle>@L["Home.PageTitle"]</PageTitle>
 
 <WhatsNew Entries="Changelog.Entries" />
 
-<MudText Typo="Typo.h5" Component="h2" Class="mt-8" GutterBottom="true">Top 10 Animes</MudText>
-<MudText Class="mud-text-secondary mb-6">Top Animes gemessen anhand der community</MudText>
+<MudText Typo="Typo.h5" Component="h2" Class="mt-8" GutterBottom="true">@L["Home.Top10.Title"]</MudText>
+<MudText Class="mud-text-secondary mb-6">@L["Home.Top10.Subtitle"]</MudText>
 
-@if (_errorTitle is not null)
+@if (_error is not null)
 {
-    <StateMessage Title="@_errorTitle" Message="@_errorMessage" Icon="@_errorIcon" OnRetry="LoadAsync" />
+    <StateMessage Title="@ErrorTitle" Message="@ErrorMessage" Icon="@ErrorIcon" OnRetry="LoadAsync" />
 }
 else if (!_isLoading && _items is { Count: 0 })
 {
-    <StateMessage Title="Keine Animes gefunden"
-                  Message="API hat keine Einträge geliefert."
+    <StateMessage Title="@L["Home.Empty.Title"]"
+                  Message="@L["Home.Empty.Message"]"
                   Icon="@Icons.Material.Filled.SearchOff"
                   OnRetry="LoadAsync" />
 }

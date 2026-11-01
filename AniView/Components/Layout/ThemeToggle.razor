@@ -14,7 +14,7 @@
 
     private string Icon => IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode;
 
-    private string Label => IsDarkMode ? "Zum hellen Modus wechseln" : "Zum dunklen Modus wechseln";
+    private string Label => IsDarkMode ? L["Theme.ToLight"] : L["Theme.ToDark"];
 
     private Task ToggleAsync() => IsDarkModeChanged.InvokeAsync(!IsDarkMode);
 }

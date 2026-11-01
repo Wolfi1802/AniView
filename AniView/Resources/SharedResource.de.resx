@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Layout.HomeLink" xml:space="preserve">
+    <value>AniView – zur Startseite</value>
+  </data>
+  <data name="Layout.ToggleNavigation" xml:space="preserve">
+    <value>Navigation öffnen oder schließen</value>
+  </data>
+  <data name="Layout.UnexpectedError" xml:space="preserve">
+    <value>Es ist ein unerwarteter Fehler aufgetreten.</value>
+  </data>
+  <data name="Layout.Reload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="Nav.Simulcast" xml:space="preserve">
+    <value>Simulcast</value>
+  </data>
+  <data name="Nav.Discover" xml:space="preserve">
+    <value>Entdecken</value>
+  </data>
+  <data name="Language.Label" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="Theme.ToLight" xml:space="preserve">
+    <value>Zum hellen Modus wechseln</value>
+  </data>
+  <data name="Theme.ToDark" xml:space="preserve">
+    <value>Zum dunklen Modus wechseln</value>
+  </data>
+  <data name="Common.Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Common.No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="Common.NoCover" xml:space="preserve">
+    <value>Kein Cover verfügbar</value>
+  </data>
+  <data name="Common.CoverAlt" xml:space="preserve">
+    <value>Cover von {0}</value>
+  </data>
+  <data name="Anime.UnknownTitle" xml:space="preserve">
+    <value>Unbekannter Titel</value>
+  </data>
+  <data name="State.Retry" xml:space="preserve">
+    <value>Erneut versuchen</value>
+  </data>
+  <data name="Error.Connection" xml:space="preserve">
+    <value>Bitte prüfe deine Verbindung und versuche es erneut.</value>
+  </data>
+  <data name="Error.Unexpected" xml:space="preserve">
+    <value>Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es erneut.</value>
+  </data>
+  <data name="Error.RateLimit.Wait" xml:space="preserve">
+    <value>API bittet um etwas Geduld. Bitte versuche es in ca. {0} Sekunden erneut.</value>
+  </data>
+  <data name="Error.RateLimit.Soon" xml:space="preserve">
+    <value>API bittet um etwas Geduld. Bitte versuche es gleich noch einmal.</value>
+  </data>
+  <data name="Home.PageTitle" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Home.Top10.Title" xml:space="preserve">
+    <value>Top 10 Animes</value>
+  </data>
+  <data name="Home.Top10.Subtitle" xml:space="preserve">
+    <value>Top Animes gemessen anhand der community</value>
+  </data>
+  <data name="Home.Error.RateLimitTitle" xml:space="preserve">
+    <value>Zu viele Anfragen</value>
+  </data>
+  <data name="Home.Error.LoadTitle" xml:space="preserve">
+    <value>Das Ranking konnte nicht geladen werden</value>
+  </data>
+  <data name="Home.Empty.Title" xml:space="preserve">
+    <value>Keine Animes gefunden</value>
+  </data>
+  <data name="Home.Empty.Message" xml:space="preserve">
+    <value>API hat keine Einträge geliefert.</value>
+  </data>
+  <data name="Simulcast.PageTitle" xml:space="preserve">
+    <value>Simulcast</value>
+  </data>
+  <data name="Simulcast.Title" xml:space="preserve">
+    <value>Aktueller Simulcast</value>
+  </data>
+  <data name="Simulcast.LoadError" xml:space="preserve">
+    <value>Der Simulcast konnte nicht geladen werden</value>
+  </data>
+  <data name="Simulcast.Count.One" xml:space="preserve">
+    <value>{0:N0} Anime</value>
+  </data>
+  <data name="Simulcast.Count.Other" xml:space="preserve">
+    <value>{0:N0} Animes</value>
+  </data>
+  <data name="Season.WINTER" xml:space="preserve">
+    <value>Winter</value>
+  </data>
+  <data name="Season.SPRING" xml:space="preserve">
+    <value>Frühling</value>
+  </data>
+  <data name="Season.SUMMER" xml:space="preserve">
+    <value>Sommer</value>
+  </data>
+  <data name="Season.FALL" xml:space="preserve">
+    <value>Herbst</value>
+  </data>
+  <data name="Table.Empty.Title" xml:space="preserve">
+    <value>Keine Animes gefunden</value>
+  </data>
+  <data name="Table.Empty.Message" xml:space="preserve">
+    <value>Zu diesen Filtern gibt es keine Einträge.</value>
+  </data>
+  <data name="NotFound.Title" xml:space="preserve">
+    <value>Nicht gefunden</value>
+  </data>
+  <data name="NotFound.Message" xml:space="preserve">
+    <value>Entschuldigung, der gesuchte Inhalt existiert nicht.</value>
+  </data>
+  <data name="Infinite.EmptyTitle" xml:space="preserve">
+    <value>Keine Einträge gefunden</value>
+  </data>
+  <data name="Infinite.LoadingMore" xml:space="preserve">
+    <value>Weitere Einträge werden geladen</value>
+  </data>
+  <data name="Infinite.ErrorTitle" xml:space="preserve">
+    <value>Die Einträge konnten nicht geladen werden</value>
+  </data>
+  <data name="Table.Cover" xml:space="preserve">
+    <value>Cover</value>
+  </data>
+  <data name="Sort.Popularity" xml:space="preserve">
+    <value>Beliebtheit</value>
+  </data>
+  <data name="Sort.Score" xml:space="preserve">
+    <value>Rating</value>
+  </data>
+  <data name="Sort.Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="Sort.Episodes" xml:space="preserve">
+    <value>Episoden</value>
+  </data>
+  <data name="Sort.NextEpisode" xml:space="preserve">
+    <value>Nächste Folge</value>
+  </data>
+  <data name="Sort.Format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="Filter.AriaLabel" xml:space="preserve">
+    <value>Filter und Sortierung</value>
+  </data>
+  <data name="Filter.Search" xml:space="preserve">
+    <value>Titel suchen</value>
+  </data>
+  <data name="Filter.Format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="Filter.Format.All" xml:space="preserve">
+    <value>Alle Formate</value>
+  </data>
+  <data name="Filter.Genre" xml:space="preserve">
+    <value>Genre</value>
+  </data>
+  <data name="Filter.Genre.All" xml:space="preserve">
+    <value>Alle Genres</value>
+  </data>
+  <data name="Filter.Streaming" xml:space="preserve">
+    <value>Streaming-Dienst</value>
+  </data>
+  <data name="Filter.Streaming.All" xml:space="preserve">
+    <value>Alle Dienste</value>
+  </data>
+  <data name="Filter.SortBy" xml:space="preserve">
+    <value>Sortieren nach</value>
+  </data>
+  <data name="Filter.Direction.Desc" xml:space="preserve">
+    <value>Absteigend sortiert, zum Umkehren klicken</value>
+  </data>
+  <data name="Filter.Direction.Asc" xml:space="preserve">
+    <value>Aufsteigend sortiert, zum Umkehren klicken</value>
+  </data>
+  <data name="Filter.Reset" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="Format.TV" xml:space="preserve">
+    <value>TV</value>
+  </data>
+  <data name="Format.TV_SHORT" xml:space="preserve">
+    <value>TV-Kurzserie</value>
+  </data>
+  <data name="Format.MOVIE" xml:space="preserve">
+    <value>Film</value>
+  </data>
+  <data name="Format.SPECIAL" xml:space="preserve">
+    <value>Special</value>
+  </data>
+  <data name="Format.OVA" xml:space="preserve">
+    <value>OVA</value>
+  </data>
+  <data name="Format.ONA" xml:space="preserve">
+    <value>ONA</value>
+  </data>
+  <data name="Format.MUSIC" xml:space="preserve">
+    <value>Musik</value>
+  </data>
+  <data name="Format.WeekdayDate" xml:space="preserve">
+    <value>dddd, 'den' dd.MM.yyyy</value>
+  </data>
+  <data name="Format.WeekdayDateCompact" xml:space="preserve">
+    <value>dddd, dd.MM.yyyy</value>
+  </data>
+  <data name="Format.WeekdayDateTime" xml:space="preserve">
+    <value>dddd, 'den' dd.MM.yyyy 'um' HH:mm</value>
+  </data>
+  <data name="Card.MoreInfo" xml:space="preserve">
+    <value>Weitere Informationen</value>
+  </data>
+  <data name="Card.MoreInfoAbout" xml:space="preserve">
+    <value>Weitere Informationen zu {0}</value>
+  </data>
+  <data name="Card.AverageScore" xml:space="preserve">
+    <value>Durchschnittliche Bewertung</value>
+  </data>
+  <data name="Card.Rank" xml:space="preserve">
+    <value>Platz {0}</value>
+  </data>
+  <data name="Card.Popularity" xml:space="preserve">
+    <value>Nutzer, die den Anime in ihrer Liste haben</value>
+  </data>
+  <data name="Card.Finished" xml:space="preserve">
+    <value>Beendet</value>
+  </data>
+  <data name="Card.NextEpisode" xml:space="preserve">
+    <value>Nächste Folge</value>
+  </data>
+  <data name="Card.EpisodeOfTotal" xml:space="preserve">
+    <value>Folge {0} von {1} erscheint in</value>
+  </data>
+  <data name="Card.EpisodeAirs" xml:space="preserve">
+    <value>Folge {0} erscheint in</value>
+  </data>
+  <data name="Card.Episodes.One" xml:space="preserve">
+    <value>{0} Folge</value>
+  </data>
+  <data name="Card.Episodes.Other" xml:space="preserve">
+    <value>{0} Folgen</value>
+  </data>
+  <data name="Card.AllEpisodes" xml:space="preserve">
+    <value>Alle Folgen erschienen</value>
+  </data>
+  <data name="Card.NoDate" xml:space="preserve">
+    <value>Noch kein Termin</value>
+  </data>
+  <data name="Card.AlreadyAired" xml:space="preserve">
+    <value>Bereits erschienen</value>
+  </data>
+  <data name="Time.Day.One" xml:space="preserve">
+    <value>{0} Tag</value>
+  </data>
+  <data name="Time.Day.Other" xml:space="preserve">
+    <value>{0} Tage</value>
+  </data>
+  <data name="Time.Hour.One" xml:space="preserve">
+    <value>{0} Stunde</value>
+  </data>
+  <data name="Time.Hour.Other" xml:space="preserve">
+    <value>{0} Stunden</value>
+  </data>
+  <data name="Time.Minute.One" xml:space="preserve">
+    <value>{0} Minute</value>
+  </data>
+  <data name="Time.Minute.Other" xml:space="preserve">
+    <value>{0} Minuten</value>
+  </data>
+  <data name="WhatsNew.Title" xml:space="preserve">
+    <value>What's new</value>
+  </data>
+  <data name="WhatsNew.Count.One" xml:space="preserve">
+    <value>{0} Änderung</value>
+  </data>
+  <data name="WhatsNew.Count.Other" xml:space="preserve">
+    <value>{0} Änderungen</value>
+  </data>
+  <data name="Dialog.Close" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="Dialog.Loading" xml:space="preserve">
+    <value>Informationen werden geladen</value>
+  </data>
+  <data name="Dialog.Error.Title" xml:space="preserve">
+    <value>Die Informationen konnten nicht geladen werden</value>
+  </data>
+  <data name="Detail.Format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="Detail.Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Detail.Season" xml:space="preserve">
+    <value>Season</value>
+  </data>
+  <data name="Detail.Episodes" xml:space="preserve">
+    <value>Episoden</value>
+  </data>
+  <data name="Detail.Duration" xml:space="preserve">
+    <value>Dauer pro Folge</value>
+  </data>
+  <data name="Detail.DurationValue" xml:space="preserve">
+    <value>{0} Min.</value>
+  </data>
+  <data name="Detail.Score" xml:space="preserve">
+    <value>Bewertung</value>
+  </data>
+  <data name="Section.Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="Section.Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Detail.EnglishTitle" xml:space="preserve">
+    <value>Englischer Titel</value>
+  </data>
+  <data name="Detail.RomajiTitle" xml:space="preserve">
+    <value>Romaji-Titel</value>
+  </data>
+  <data name="Detail.NativeTitle" xml:space="preserve">
+    <value>Japanischer Titel</value>
+  </data>
+  <data name="Detail.Synonyms" xml:space="preserve">
+    <value>Weitere Titel</value>
+  </data>
+  <data name="Detail.Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Detail.End" xml:space="preserve">
+    <value>Ende</value>
+  </data>
+  <data name="Detail.Source" xml:space="preserve">
+    <value>Quelle</value>
+  </data>
+  <data name="Detail.Country" xml:space="preserve">
+    <value>Herkunftsland</value>
+  </data>
+  <data name="Detail.Licensed" xml:space="preserve">
+    <value>Lizenziert</value>
+  </data>
+  <data name="Detail.Hashtag" xml:space="preserve">
+    <value>Hashtag</value>
+  </data>
+  <data name="Detail.Studios" xml:space="preserve">
+    <value>Studios</value>
+  </data>
+  <data name="Detail.MainStudio" xml:space="preserve">
+    <value>{0} (Hauptstudio)</value>
+  </data>
+  <data name="Detail.AverageScore" xml:space="preserve">
+    <value>Ø-Bewertung</value>
+  </data>
+  <data name="Detail.MeanScore" xml:space="preserve">
+    <value>Mittlere Bewertung</value>
+  </data>
+  <data name="Detail.Popularity" xml:space="preserve">
+    <value>Beliebtheit</value>
+  </data>
+  <data name="Detail.Favourites" xml:space="preserve">
+    <value>Favoriten</value>
+  </data>
+  <data name="Detail.Trending" xml:space="preserve">
+    <value>Trend</value>
+  </data>
+  <data name="Detail.MalId" xml:space="preserve">
+    <value>MyAnimeList-ID</value>
+  </data>
+  <data name="Detail.Updated" xml:space="preserve">
+    <value>Zuletzt aktualisiert</value>
+  </data>
+  <data name="Detail.ViewOnAniList" xml:space="preserve">
+    <value>Auf AniList ansehen</value>
+  </data>
+  <data name="Section.NextEpisode" xml:space="preserve">
+    <value>Nächste Folge</value>
+  </data>
+  <data name="Detail.NextEpisode.At" xml:space="preserve">
+    <value>Folge {0} erscheint am {1} Uhr</value>
+  </data>
+  <data name="Detail.NextEpisode.NoDate" xml:space="preserve">
+    <value>Folge {0}</value>
+  </data>
+  <data name="Detail.Upcoming.At" xml:space="preserve">
+    <value>Folge {0} – {1}</value>
+  </data>
+  <data name="Detail.Upcoming.NoDate" xml:space="preserve">
+    <value>Folge {0}</value>
+  </data>
+  <data name="Section.Trailer" xml:space="preserve">
+    <value>Trailer</value>
+  </data>
+  <data name="Detail.Trailer.Thumbnail" xml:space="preserve">
+    <value>Vorschaubild des Trailers</value>
+  </data>
+  <data name="Detail.Trailer.Watch" xml:space="preserve">
+    <value>Trailer auf {0} ansehen</value>
+  </data>
+  <data name="Detail.Trailer.Plain" xml:space="preserve">
+    <value>Trailer auf {0} (ID: {1})</value>
+  </data>
+  <data name="Section.Rankings" xml:space="preserve">
+    <value>Platzierungen</value>
+  </data>
+  <data name="Ranking.AllTime" xml:space="preserve">
+    <value>aller Zeiten</value>
+  </data>
+  <data name="Section.Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Detail.SpoilerTags" xml:space="preserve">
+    <value>Spoiler-Tags anzeigen ({0})</value>
+  </data>
+  <data name="Section.Characters" xml:space="preserve">
+    <value>Charaktere</value>
+  </data>
+  <data name="Section.Staff" xml:space="preserve">
+    <value>Mitarbeiter</value>
+  </data>
+  <data name="Section.Links" xml:space="preserve">
+    <value>Links und Streaming</value>
+  </data>
+  <data name="Section.Reviews" xml:space="preserve">
+    <value>Reviews</value>
+  </data>
+  <data name="Detail.Review.Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="Detail.Review.Helpful" xml:space="preserve">
+    <value>{0} von {1} fanden das hilfreich</value>
+  </data>
+  <data name="Section.Trends" xml:space="preserve">
+    <value>Trends der letzten Tage</value>
+  </data>
+  <data name="Trend.Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="Trend.Trend" xml:space="preserve">
+    <value>Trend</value>
+  </data>
+  <data name="Trend.Popularity" xml:space="preserve">
+    <value>Beliebtheit</value>
+  </data>
+  <data name="Trend.AverageScore" xml:space="preserve">
+    <value>Ø-Bewertung</value>
+  </data>
+  <data name="Trend.Watching" xml:space="preserve">
+    <value>Schauen gerade</value>
+  </data>
+  <data name="Trend.Episode" xml:space="preserve">
+    <value>Folge</value>
+  </data>
+  <data name="Status.FINISHED" xml:space="preserve">
+    <value>Beendet</value>
+  </data>
+  <data name="Status.RELEASING" xml:space="preserve">
+    <value>Läuft aktuell</value>
+  </data>
+  <data name="Status.NOT_YET_RELEASED" xml:space="preserve">
+    <value>Noch nicht erschienen</value>
+  </data>
+  <data name="Status.CANCELLED" xml:space="preserve">
+    <value>Abgebrochen</value>
+  </data>
+  <data name="Status.HIATUS" xml:space="preserve">
+    <value>Pausiert</value>
+  </data>
+  <data name="Source.ORIGINAL" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="Source.MANGA" xml:space="preserve">
+    <value>Manga</value>
+  </data>
+  <data name="Source.LIGHT_NOVEL" xml:space="preserve">
+    <value>Light Novel</value>
+  </data>
+  <data name="Source.VISUAL_NOVEL" xml:space="preserve">
+    <value>Visual Novel</value>
+  </data>
+  <data name="Source.VIDEO_GAME" xml:space="preserve">
+    <value>Videospiel</value>
+  </data>
+  <data name="Source.OTHER" xml:space="preserve">
+    <value>Sonstiges</value>
+  </data>
+  <data name="Source.NOVEL" xml:space="preserve">
+    <value>Roman</value>
+  </data>
+  <data name="Source.DOUJINSHI" xml:space="preserve">
+    <value>Doujinshi</value>
+  </data>
+  <data name="Source.ANIME" xml:space="preserve">
+    <value>Anime</value>
+  </data>
+  <data name="Source.WEB_NOVEL" xml:space="preserve">
+    <value>Web Novel</value>
+  </data>
+  <data name="Source.LIVE_ACTION" xml:space="preserve">
+    <value>Realfilm</value>
+  </data>
+  <data name="Source.GAME" xml:space="preserve">
+    <value>Spiel</value>
+  </data>
+  <data name="Source.COMIC" xml:space="preserve">
+    <value>Comic</value>
+  </data>
+  <data name="Source.MULTIMEDIA_PROJECT" xml:space="preserve">
+    <value>Multimedia-Projekt</value>
+  </data>
+  <data name="Source.PICTURE_BOOK" xml:space="preserve">
+    <value>Bilderbuch</value>
+  </data>
+  <data name="Role.MAIN" xml:space="preserve">
+    <value>Hauptrolle</value>
+  </data>
+  <data name="Role.SUPPORTING" xml:space="preserve">
+    <value>Nebenrolle</value>
+  </data>
+  <data name="Role.BACKGROUND" xml:space="preserve">
+    <value>Hintergrund</value>
+  </data>
+  <data name="Country.JP" xml:space="preserve">
+    <value>Japan</value>
+  </data>
+  <data name="Country.CN" xml:space="preserve">
+    <value>China</value>
+  </data>
+  <data name="Country.KR" xml:space="preserve">
+    <value>Südkorea</value>
+  </data>
+  <data name="Country.TW" xml:space="preserve">
+    <value>Taiwan</value>
+  </data>
+  <data name="RankingType.RATED" xml:space="preserve">
+    <value>Bewertung</value>
+  </data>
+  <data name="RankingType.POPULAR" xml:space="preserve">
+    <value>Beliebtheit</value>
+  </data>
+  <data name="Changelog.AccentColor.Title" xml:space="preserve">
+    <value>Neue Akzentfarbe</value>
+  </data>
+  <data name="Changelog.AccentColor.Description" xml:space="preserve">
+    <value>Logo, aktive Menüpunkte, Sortierung und Buttons erscheinen jetzt in Gold statt Türkis und passen damit zu den Labels.</value>
+  </data>
+  <data name="Changelog.Discover.Title" xml:space="preserve">
+    <value>All Animes heißt jetzt Entdecken</value>
+  </data>
+  <data name="Changelog.Discover.Description" xml:space="preserve">
+    <value>Die Seite mit allen Animes hat einen neuen Namen, der besser zum Stöbern mit Filtern und Sortierung passt.</value>
+  </data>
+  <data name="Changelog.CardDesign.Title" xml:space="preserve">
+    <value>Neues Kartendesign</value>
+  </data>
+  <data name="Changelog.CardDesign.Description" xml:space="preserve">
+    <value>Die Karten zeigen jetzt Cover, Countdown bis zur nächsten Folge, Bewertung, Beschreibung und Genres im Querformat. Ein Klick auf das Bild öffnet alle Details. Die Top 10 stehen dadurch zu zweit nebeneinander.</value>
+  </data>
+  <data name="Changelog.ExtendedFilters.Title" xml:space="preserve">
+    <value>Erweiterte Filter</value>
+  </data>
+  <data name="Changelog.ExtendedFilters.Description" xml:space="preserve">
+    <value>Neben dem Streaming-Dienst kannst du jetzt auch nach Genres wie Action, Comedy oder Romance filtern. Bei beiden Filtern lassen sich mehrere Einträge gleichzeitig ankreuzen.</value>
+  </data>
+  <data name="Changelog.FullSimulcast.Title" xml:space="preserve">
+    <value>Vollständiger Simulcast</value>
+  </data>
+  <data name="Changelog.FullSimulcast.Description" xml:space="preserve">
+    <value>Der Simulcast zeigt jetzt alle Animes, die aktuell laufen oder bald starten, auch Fortsetzungen aus früheren Seasons.</value>
+  </data>
+  <data name="Changelog.FilterSort.Title" xml:space="preserve">
+    <value>Filterung und Sortierung</value>
+  </data>
+  <data name="Changelog.FilterSort.Description" xml:space="preserve">
+    <value>In den Tabellen gibt es jetzt die Möglichkeit einer Filterung und Sortierung.</value>
+  </data>
+  <data name="Changelog.MoreInfo.Title" xml:space="preserve">
+    <value>Mehr Informationen zu jedem Anime</value>
+  </data>
+  <data name="Changelog.MoreInfo.Description" xml:space="preserve">
+    <value>In Simulcast und Top 10 öffnet das Info-Symbol oben rechts im Bild alle Details zu einem Anime, bei All Animes ein Klick auf die Zeile. Die Informationen werden erst beim Öffnen geladen.</value>
+  </data>
+  <data name="Changelog.TopTenPopularity.Title" xml:space="preserve">
+    <value>Beliebtheit in den Top 10</value>
+  </data>
+  <data name="Changelog.TopTenPopularity.Description" xml:space="preserve">
+    <value>Die Top 10 zeigen jetzt auch, wie beliebt ein Anime ist. Bei beendeten Animes steht statt der nächsten Folge, wie viele Folgen es gibt.</value>
+  </data>
+  <data name="Changelog.NewHome.Title" xml:space="preserve">
+    <value>Neue Startseite</value>
+  </data>
+  <data name="Changelog.NewHome.Description" xml:space="preserve">
+    <value>Hier siehst du zuerst die Neuigkeiten und darunter die zehn beliebtesten Animes.</value>
+  </data>
+  <data name="Changelog.NewAllAnimes.Title" xml:space="preserve">
+    <value>Neue Seite All Animes</value>
+  </data>
+  <data name="Changelog.NewAllAnimes.Description" xml:space="preserve">
+    <value>Auf dieser Seite sind nun alle Animes in tabellarischer Auflistung zu finden, auch mit der Anzahl ihrer Folgen.</value>
+  </data>
+  <data name="Changelog.SimulcastCount.Title" xml:space="preserve">
+    <value>Simulcast mit Gesamtzahl</value>
+  </data>
+  <data name="Changelog.SimulcastCount.Description" xml:space="preserve">
+    <value>Auf der Simulcast-Seite siehst du jetzt, wie viele Animes in der aktuellen Season laufen.</value>
+  </data>
+  <data name="Changelog.MorePadding.Title" xml:space="preserve">
+    <value>Mehr Platz auf allen Seiten</value>
+  </data>
+  <data name="Changelog.MorePadding.Description" xml:space="preserve">
+    <value>Die Seiten nutzen jetzt die volle Breite deines Bildschirms.</value>
+  </data>
+</root>

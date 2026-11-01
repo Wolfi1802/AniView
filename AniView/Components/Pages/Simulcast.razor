@@ -1,9 +1,9 @@
 @page "/simulcast"
 @using AniView.Components.Shared
 
-<PageTitle>Simulcast</PageTitle>
+<PageTitle>@L["Simulcast.PageTitle"]</PageTitle>
 
-<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">Aktueller Simulcast</MudText>
+<MudText Typo="Typo.h4" Component="h1" GutterBottom="true">@L["Simulcast.Title"]</MudText>
 <MudText Class="mud-text-secondary mb-6">@SubTitle</MudText>
 
 <AnimeFilterBar @bind-Options="_options" DefaultOptions="AnimeListOptions.SimulcastDefault" ShowNextEpisodeSort="true" />
@@ -14,14 +14,14 @@
                ItemsPerPage="ItemsPerPage"
                ResetKey="_options"
                @bind-TotalItems="_totalItems"
-               ErrorTitle="Der Simulcast konnte nicht geladen werden"
+               ErrorTitle="@L["Simulcast.LoadError"]"
                ErrorMessageProvider="GetErrorMessage">
     <CardTemplate Context="entry">
         <AnimeCard Anime="entry.Item" ShowDetails="true" />
     </CardTemplate>
     <EmptyContent>
-        <StateMessage Title="Keine Animes gefunden"
-                      Message="Zu diesen Filtern gibt es keine Einträge."
+        <StateMessage Title="@L["Table.Empty.Title"]"
+                      Message="@L["Table.Empty.Message"]"
                       Icon="@Icons.Material.Filled.SearchOff" />
     </EmptyContent>
 </InfiniteTable>

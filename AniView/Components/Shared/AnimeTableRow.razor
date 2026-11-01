@@ -1,18 +1,18 @@
 <td>
     @if (!string.IsNullOrWhiteSpace(Anime.CoverUrl))
     {
-        <img class="av-table-cover" src="@Anime.CoverUrl" alt="Cover von @Anime.Title" loading="lazy" />
+        <img class="av-table-cover" src="@Anime.CoverUrl" alt="@L.Format("Common.CoverAlt", L.DisplayTitle(Anime.Title))" loading="lazy" />
     }
     else
     {
-        <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Title="Kein Cover verfügbar" />
+        <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Title="@L["Common.NoCover"]" />
     }
 </td>
-<td class="av-col-title">@Anime.Title</td>
-<td class="av-col-format">@(Anime.Format ?? "-")</td>
-<td class="av-col-episodes">@(Anime.Episodes?.ToString("N0", CultureInfo.CurrentCulture) ?? "-")</td>
-<td class="av-col-score">@(Anime.ScoreOutOfTen is { } score ? $"★ {score.ToString("0.0", CultureInfo.CurrentCulture)}" : "-")</td>
-<td class="av-col-popularity">@(Anime.Popularity?.ToString("N0", CultureInfo.CurrentCulture) ?? "-")</td>
+<td class="av-col-title">@L.DisplayTitle(Anime.Title)</td>
+<td class="av-col-format">@(L.Label("Format", Anime.Format) ?? "-")</td>
+<td class="av-col-episodes">@(Anime.Episodes?.ToString("N0", L.Culture) ?? "-")</td>
+<td class="av-col-score">@(Anime.ScoreOutOfTen is { } score ? $"★ {score.ToString("0.0", L.Culture)}" : "-")</td>
+<td class="av-col-popularity">@(Anime.Popularity?.ToString("N0", L.Culture) ?? "-")</td>
 
 @code {
     [Parameter, EditorRequired]

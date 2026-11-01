@@ -1,0 +1,16 @@
+@* Compact switch "EN | DE" for the navigation drawer. The offered languages come from LanguageService.SupportedLanguages. *@
+<div class="av-lang" role="group" aria-label="@L["Language.Label"]">
+    @foreach (var language in LanguageService.SupportedLanguages)
+    {
+        <button @key="language.Code"
+                type="button"
+                class="av-lang__btn"
+                lang="@language.Code"
+                aria-pressed="@(language.Code == L.Code ? "true" : "false")"
+                aria-label="@language.DisplayName"
+                title="@language.DisplayName"
+                @onclick="() => L.SetLanguageAsync(language.Code)">
+            @language.Code.ToUpperInvariant()
+        </button>
+    }
+</div>

@@ -10,70 +10,13 @@ namespace AniView.Structure.API.Mapping
     /// </summary>
     internal static partial class AnimeDetailsMapper
     {
-        private static readonly Dictionary<string, string> StatusLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["FINISHED"] = "Beendet",
-            ["RELEASING"] = "Läuft aktuell",
-            ["NOT_YET_RELEASED"] = "Noch nicht erschienen",
-            ["CANCELLED"] = "Abgebrochen",
-            ["HIATUS"] = "Pausiert"
-        };
-
-        private static readonly Dictionary<string, string> SeasonLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["WINTER"] = "Winter",
-            ["SPRING"] = "Frühling",
-            ["SUMMER"] = "Sommer",
-            ["FALL"] = "Herbst"
-        };
-
-        private static readonly Dictionary<string, string> SourceLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["ORIGINAL"] = "Original",
-            ["MANGA"] = "Manga",
-            ["LIGHT_NOVEL"] = "Light Novel",
-            ["VISUAL_NOVEL"] = "Visual Novel",
-            ["VIDEO_GAME"] = "Videospiel",
-            ["OTHER"] = "Sonstiges",
-            ["NOVEL"] = "Roman",
-            ["DOUJINSHI"] = "Doujinshi",
-            ["ANIME"] = "Anime",
-            ["WEB_NOVEL"] = "Web Novel",
-            ["LIVE_ACTION"] = "Realfilm",
-            ["GAME"] = "Spiel",
-            ["COMIC"] = "Comic",
-            ["MULTIMEDIA_PROJECT"] = "Multimedia-Projekt",
-            ["PICTURE_BOOK"] = "Bilderbuch"
-        };
-
-        private static readonly Dictionary<string, string> RoleLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["MAIN"] = "Hauptrolle",
-            ["SUPPORTING"] = "Nebenrolle",
-            ["BACKGROUND"] = "Hintergrund"
-        };
-
-        private static readonly Dictionary<string, string> CountryLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["JP"] = "Japan",
-            ["CN"] = "China",
-            ["KR"] = "Südkorea",
-            ["TW"] = "Taiwan"
-        };
-
-        private static readonly Dictionary<string, string> RankingTypeLabels = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["RATED"] = "Bewertung",
-            ["POPULAR"] = "Beliebtheit"
-        };
-
         public static AnimeDetails Map(MediaDto media)
         {
             var title = AnimeSummaryMapper.FirstNonEmpty(
                 media.Title?.English,
                 media.Title?.Romaji,
                 media.Title?.UserPreferred,
-                media.Title?.Native) ?? "Unbekannter Titel";
+                media.Title?.Native) ?? string.Empty;
 
             return new AnimeDetails(media.Id, title)
             {
@@ -88,15 +31,16 @@ namespace AniView.Structure.API.Mapping
                 BannerUrl = Clean(media.BannerImage),
                 Description = CleanDescription(media.Description),
 
-                Format = AnimeSummaryMapper.GetFormatLabel(media.Format),
-                Status = Label(StatusLabels, media.Status),
-                Season = FormatSeason(media.Season, media.SeasonYear),
-                StartDateText = FormatDate(media.StartDate),
-                EndDateText = FormatDate(media.EndDate),
+                Format = Clean(media.Format),
+                Status = Clean(media.Status),
+                Season = Clean(media.Season),
+                SeasonYear = media.SeasonYear,
+                StartDate = MapDate(media.StartDate),
+                EndDate = MapDate(media.EndDate),
                 Episodes = media.Episodes,
                 DurationMinutes = media.Duration,
-                Source = Label(SourceLabels, media.Source),
-                CountryOfOrigin = Label(CountryLabels, media.CountryOfOrigin),
+                Source = Clean(media.Source),
+                CountryOfOrigin = Clean(media.CountryOfOrigin),
                 IsLicensed = media.IsLicensed,
                 Hashtag = Clean(media.Hashtag),
                 Genres = Texts(media.Genres),
@@ -166,7 +110,7 @@ namespace AniView.Structure.API.Mapping
                 .Select(person => new AnimePerson(
                     person.Name!.Full!,
                     Clean(person.Name.Native),
-                    TranslateRole(person.Role),
+                    Clean(person.Role),
                     AnimeSummaryMapper.FirstNonEmpty(person.Image?.Large, person.Image?.Medium)))
                 .ToList();
 
@@ -187,10 +131,10 @@ namespace AniView.Structure.API.Mapping
                 .Where(ranking => ranking?.Rank is not null)
                 .Select(ranking => new AnimeRanking(
                     ranking!.Rank!.Value,
-                    Label(RankingTypeLabels, ranking.Type),
+                    Clean(ranking.Type),
                     Clean(ranking.Context),
                     ranking.Year,
-                    Label(SeasonLabels, ranking.Season),
+                    Clean(ranking.Season),
                     ranking.AllTime == true))
                 .ToList();
 
@@ -223,52 +167,11 @@ namespace AniView.Structure.API.Mapping
                 ? new AnimeAiring(episode, FromUnix(airing.AiringAt))
                 : null;
 
-        private static string? TranslateRole(string? role) => Label(RoleLabels, role);
-
         /// <summary>
-        /// Übersetzt einen AniList-Wert; unbekannte Werte werden lesbar aufbereitet (DOUBLE_WORD wird zu Double Word).
+        /// Bildet ein unvollständiges Datum so genau ab, wie AniList es kennt; ohne Jahr gibt es kein Datum.
         /// </summary>
-        private static string? Label(Dictionary<string, string>? labels, string? value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return null;
-            }
-
-            if (labels is not null && labels.TryGetValue(value, out var label))
-            {
-                return label;
-            }
-
-            var words = value.Split('_', StringSplitOptions.RemoveEmptyEntries)
-                .Select(word => char.ToUpperInvariant(word[0]) + word[1..].ToLowerInvariant());
-
-            return string.Join(' ', words);
-        }
-
-        private static string? FormatSeason(string? season, int? year)
-        {
-            var label = Label(SeasonLabels, season);
-
-            return (label, year) switch
-            {
-                (not null, not null) => $"{label} {year}",
-                (not null, null) => label,
-                (null, not null) => year.ToString(),
-                _ => null
-            };
-        }
-
-        /// <summary>
-        /// Bildet ein unvollständiges Datum so genau ab, wie AniList es kennt (Jahr, Monat und Jahr oder vollständig).
-        /// </summary>
-        private static string? FormatDate(FuzzyDateDto? date) => date switch
-        {
-            { Year: { } year, Month: { } month, Day: { } day } => $"{day:00}.{month:00}.{year}",
-            { Year: { } year, Month: { } month } => $"{month:00}.{year}",
-            { Year: { } year } => year.ToString(),
-            _ => null
-        };
+        private static AnimePartialDate? MapDate(FuzzyDateDto? date) =>
+            date?.Year is { } year ? new AnimePartialDate(year, date.Month, date.Day) : null;
 
         private static DateTimeOffset? FromUnix(int? seconds) =>
             seconds is { } value ? DateTimeOffset.FromUnixTimeSeconds(value) : null;

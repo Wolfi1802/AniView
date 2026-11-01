@@ -1,4 +1,4 @@
-<th scope="col">Cover</th>
+<th scope="col">@L["Table.Cover"]</th>
 @foreach (var field in SortableFields)
 {
     var isActive = Options.SortField == field;
@@ -8,7 +8,7 @@
         <button type="button"
                 class="av-sort-button @(isActive ? "av-sort-button--active" : null)"
                 @onclick="() => OptionsChanged.InvokeAsync(Options.SortedBy(field))">
-            <span>@AnimeFilterBar.GetSortFieldLabel(field)</span>
+            <span>@L.SortFieldLabel(field)</span>
             @if (isActive)
             {
                 <MudIcon Icon="@(Options.Descending ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward)"

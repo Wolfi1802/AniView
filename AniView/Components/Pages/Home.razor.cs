@@ -14,9 +14,7 @@ namespace AniView.Components.Pages
 
         private IReadOnlyList<AnimeSummary>? _items;
         private bool _isLoading = true;
-        private string? _errorTitle;
-        private string? _errorMessage;
-        private string _errorIcon = Icons.Material.Filled.ErrorOutline;
+        private Exception? _error;
 
         [Inject]
         private IPopularAnimeService popularAnimes { get; set; } = default!;
@@ -24,13 +22,25 @@ namespace AniView.Components.Pages
         [Inject]
         private ILogger<Home> Logger { get; set; } = default!;
 
+        // The texts are built when rendering (not when the error happens), so they follow a language change.
+        private string ErrorTitle => _error is ApiRateLimitException
+            ? L["Home.Error.RateLimitTitle"]
+            : L["Home.Error.LoadTitle"];
+
+        private string ErrorMessage => _error is ApiRateLimitException rateLimit
+            ? L.RateLimitMessage(rateLimit.RetryAfter)
+            : L["Error.Connection"];
+
+        private string ErrorIcon => _error is ApiRateLimitException
+            ? Icons.Material.Filled.HourglassEmpty
+            : Icons.Material.Filled.ErrorOutline;
+
         protected override Task OnInitializedAsync() => LoadAsync();
 
         private async Task LoadAsync()
         {
             _isLoading = true;
-            _errorTitle = null;
-            _errorMessage = null;
+            _error = null;
 
             try
             {
@@ -39,18 +49,12 @@ namespace AniView.Components.Pages
             }
             catch (ApiRateLimitException ex)
             {
-                _errorIcon = Icons.Material.Filled.HourglassEmpty;
-                _errorTitle = "Zu viele Anfragen";
-                _errorMessage = ex.RetryAfter is { } wait
-                    ? $"API bittet um etwas Geduld. Bitte versuche es in ca. {Math.Ceiling(wait.TotalSeconds)} Sekunden erneut."
-                    : "API bittet um etwas Geduld. Bitte versuche es gleich noch einmal.";
+                _error = ex;
             }
             catch (ApiException ex)
             {
                 Logger.LogWarning(ex, "Das Ranking konnte nicht geladen werden.");
-                _errorIcon = Icons.Material.Filled.ErrorOutline;
-                _errorTitle = "Das Ranking konnte nicht geladen werden";
-                _errorMessage = "Bitte prüfe deine Verbindung und versuche es erneut.";
+                _error = ex;
             }
             catch (OperationCanceledException)
             {
