@@ -29,7 +29,7 @@ AniView ist eine Anime-Entdeckungsseite mit eigenem Erscheinungsbild (kein AniLi
 
 Claude darf **ohne ausdrückliche Rückfrage und Freigabe nicht**:
 
-1. **Committen oder pushen.** Niemals. Commits und Pushes macht ausschließlich der Entwickler.
+1. **Pushen.** Niemals. Pushes macht ausschließlich der Entwickler. Committen ist erlaubt, aber nur lokal und nach den Regeln in Abschnitt 9.
 2. **Neue NuGet-Pakete** hinzufügen. MudBlazor ist die UI-Bibliothek.
 3. **Zusätzliche Features** bauen, die nicht ausdrücklich gewünscht wurden.
 4. **Ungefragt refactoren.** Nur Dateien ändern, die zur Aufgabe gehören.
@@ -83,8 +83,12 @@ Ein Branch pro Feature (z. B. `card-design`, `config-service`).
 
 - Claude arbeitet **immer im aktuell ausgecheckten Branch**. Kein Branch-Wechsel, kein neuer Branch, kein Merge durch Claude.
 - Vor jeder Sitzung wird der Branch validiert (siehe Arbeitsablauf, Schritt 0).
-- **Commits und Pushes macht ausschließlich der Entwickler.** Claude führt keine Git-Schreibbefehle aus (kein `commit`, `push`, `checkout`, `merge`, `reset`, `stash`). Lesende Befehle wie `git status`, `git branch --show-current` und `git diff` sind erlaubt.
-- Claude schlägt bei Bedarf eine Commit-Message vor.
+- **Claude darf committen**, aber nur lokal, nur im aktuell ausgecheckten (und validierten) Branch und erst, wenn der Plan freigegeben und die Aufgabe umgesetzt ist. Erlaubte Git-Schreibbefehle: `git add` (nur die Dateien der Aufgabe, kein `git add -A` über fremde Änderungen) und `git commit`.
+- **Pushes macht ausschließlich der Entwickler.** Claude führt kein `push` aus.
+- Weiterhin verboten: `checkout`, `switch`, `merge`, `rebase`, `reset`, `stash`, `tag`, Branches anlegen oder löschen, `commit --amend` und jede Form von Force. Bereits vorhandene Commits werden nie verändert.
+- Lesende Befehle wie `git status`, `git branch --show-current`, `git log` und `git diff` sind erlaubt.
+- Pro abgeschlossener Aufgabe ein Commit mit aussagekräftiger Commit-Message (Betreff in einer Zeile, bei Bedarf Details). Claude nennt nach dem Commit Message und enthaltene Dateien, damit der Entwickler vor dem Push prüfen kann.
+- Ist unklar, ob eine Änderung in den Commit gehört (zum Beispiel fremde, nicht zur Aufgabe passende Änderungen im Arbeitsverzeichnis), fragt Claude nach, statt sie mit einzuchecken.
 
 ## 10. Definition of Done
 
