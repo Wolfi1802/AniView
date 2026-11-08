@@ -20,9 +20,11 @@
     </div>
 
     <div class="av-filter-bar__field">
-        <MudSelect T="AnimeFormat?"
-                   Value="@Options.Format"
-                   ValueChanged="OnFormatChangedAsync"
+        <MudSelect T="AnimeFormat"
+                   MultiSelection="true"
+                   SelectedValues="@Options.Formats"
+                   SelectedValuesChanged="OnFormatsChangedAsync"
+                   ToStringFunc="@GetFormatLabel"
                    Label="@L["Filter.Format"]"
                    Placeholder="@L["Filter.Format.All"]"
                    Variant="Variant.Outlined"
@@ -30,7 +32,7 @@
                    Clearable="true">
             @foreach (var format in Enum.GetValues<AnimeFormat>())
             {
-                <MudSelectItem T="AnimeFormat?" Value="@((AnimeFormat?)format)">@GetFormatLabel(format)</MudSelectItem>
+                <MudSelectItem T="AnimeFormat" Value="@format">@GetFormatLabel(format)</MudSelectItem>
             }
         </MudSelect>
     </div>
@@ -48,6 +50,29 @@
             @foreach (var genre in _genres)
             {
                 <MudSelectItem T="string" Value="@genre">@genre</MudSelectItem>
+            }
+        </MudSelect>
+    </div>
+
+    <div class="av-filter-bar__field av-filter-bar__field--genre">
+        <MudSelect T="string"
+                   MultiSelection="true"
+                   SelectedValues="@Options.Tags"
+                   SelectedValuesChanged="OnTagsChangedAsync"
+                   Label="@L["Filter.Tags"]"
+                   Placeholder="@L["Filter.Tags.All"]"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Clearable="true">
+            @foreach (var tag in _tags)
+            {
+                <MudSelectItem T="string" Value="@tag.Name">
+                    <span>@tag.Name</span>
+                    @if (!string.IsNullOrEmpty(tag.Category))
+                    {
+                        <span class="av-filter-bar__tag-category">@tag.Category</span>
+                    }
+                </MudSelectItem>
             }
         </MudSelect>
     </div>
@@ -106,6 +131,7 @@
     private IJSObjectReference? _module;
     private IReadOnlyList<string> _streamingSites = [];
     private IReadOnlyList<string> _genres = [];
+    private IReadOnlyList<AnimeTagInfo> _tags = [];
 
     [Inject]
     private IJSRuntime JS { get; set; } = default!;
@@ -115,6 +141,9 @@
 
     [Inject]
     private IGenreService GenreService { get; set; } = default!;
+
+    [Inject]
+    private ITagService TagService { get; set; } = default!;
 
     /// <summary>
     /// Aktuelle Sortierung und Filter. Mit <c>@bind-Options</c> bindbar.
@@ -152,6 +181,23 @@
 
         _genres = await GenreService.GetGenresAsync();
         EnsureSelectedGenresListed();
+
+        _tags = await TagService.GetTagsAsync();
+        EnsureSelectedTagsListed();
+    }
+
+    // Ein aktiver Filter muss auswählbar bleiben, auch wenn der Tag nicht in der geladenen Liste steht.
+    private void EnsureSelectedTagsListed()
+    {
+        var missing = Options.Tags
+            .Where(tag => !_tags.Any(known => string.Equals(known.Name, tag, StringComparison.OrdinalIgnoreCase)))
+            .Select(tag => new AnimeTagInfo(tag, string.Empty))
+            .ToList();
+
+        if (missing.Count > 0)
+        {
+            _tags = [.. _tags, .. missing];
+        }
     }
 
     // Ein aktiver Filter muss auswählbar bleiben, auch wenn das Genre nicht in der geladenen Liste steht.
@@ -206,9 +252,11 @@
 
     private Task OnSearchChangedAsync(string? search) => OptionsChanged.InvokeAsync(Options.WithSearch(search));
 
-    private Task OnFormatChangedAsync(AnimeFormat? format) => OptionsChanged.InvokeAsync(Options with { Format = format });
+    private Task OnFormatsChangedAsync(IEnumerable<AnimeFormat>? formats) => OptionsChanged.InvokeAsync(Options.WithFormats(formats));
 
     private Task OnGenresChangedAsync(IEnumerable<string>? genres) => OptionsChanged.InvokeAsync(Options.WithGenres(genres));
+
+    private Task OnTagsChangedAsync(IEnumerable<string>? tags) => OptionsChanged.InvokeAsync(Options.WithTags(tags));
 
     private Task OnStreamingSitesChangedAsync(IEnumerable<string>? sites) => OptionsChanged.InvokeAsync(Options.WithStreamingSites(sites));
 

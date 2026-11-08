@@ -44,6 +44,11 @@ namespace AniView.Structure.API.Dtos
         public List<string?>? GenreCollection { get; init; }
     }
 
+    internal sealed class MediaTagCollectionData
+    {
+        public List<MediaTagDto?>? MediaTagCollection { get; init; }
+    }
+
     internal sealed class MediaByIdData
     {
         public MediaDto? Media { get; init; }

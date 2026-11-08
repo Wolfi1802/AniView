@@ -23,6 +23,13 @@
     flex-basis: 240px;
 }
 
+/* Kategorie des Tags (zum Beispiel "Demographic") als zweiter Text neben dem Namen im Auswahlmenü. */
+.av-filter-bar__tag-category {
+    margin-left: 8px;
+    font-size: 0.75rem;
+    color: var(--mud-palette-text-secondary);
+}
+
 .av-filter-bar__field--search {
     flex: 1 1 260px;
     max-width: 420px;
