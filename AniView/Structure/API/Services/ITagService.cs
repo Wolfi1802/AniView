@@ -8,7 +8,7 @@ namespace AniView.Structure.API.Services
     public interface ITagService
     {
         /// <summary>
-        /// Liefert alle Tags sortiert nach Kategorie und Name. Schlägt die Abfrage bei AniList fehl,
+        /// Liefert alle Tags alphabetisch nach Name (A bis Z). Schlägt die Abfrage bei AniList fehl,
         /// wird eine feste Auswahl (die Zielgruppen-Tags) geliefert, damit der Filter nutzbar bleibt.
         /// </summary>
         Task<IReadOnlyList<AnimeTagInfo>> GetTagsAsync(CancellationToken cancellationToken = default);

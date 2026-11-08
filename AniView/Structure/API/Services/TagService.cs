@@ -56,8 +56,7 @@ namespace AniView.Structure.API.Services
                     .Where(tag => tag is { IsAdult: not true } && !string.IsNullOrWhiteSpace(tag.Name))
                     .Select(tag => new AnimeTagInfo(tag!.Name!.Trim(), tag.Category?.Trim() ?? string.Empty))
                     .DistinctBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
-                    .OrderBy(tag => tag.Category, StringComparer.OrdinalIgnoreCase)
-                    .ThenBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
                 if (tags.Count > 0)
