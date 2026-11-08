@@ -11,6 +11,7 @@ namespace AniView.Structure
     {
         public static IReadOnlyList<ChangelogEntry> Entries { get; } =
         [
+            new(new DateOnly(2026, 11, 8), "AllFilterOptions"),
             new(new DateOnly(2026, 10, 20), "AccentColor"),
             new(new DateOnly(2026, 10, 20), "Discover"),
             new(new DateOnly(2026, 10, 18), "CardDesign"),

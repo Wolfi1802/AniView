@@ -177,6 +177,12 @@
   <data name="Filter.Genre.All" xml:space="preserve">
     <value>Alle Genres</value>
   </data>
+  <data name="Filter.Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Filter.Tags.All" xml:space="preserve">
+    <value>Alle Tags</value>
+  </data>
   <data name="Filter.Streaming" xml:space="preserve">
     <value>Streaming-Dienst</value>
   </data>
@@ -578,6 +584,12 @@
   </data>
   <data name="Changelog.ExtendedFilters.Description" xml:space="preserve">
     <value>Neben dem Streaming-Dienst kannst du jetzt auch nach Genres wie Action, Comedy oder Romance filtern. Bei beiden Filtern lassen sich mehrere Einträge gleichzeitig ankreuzen.</value>
+  </data>
+  <data name="Changelog.AllFilterOptions.Title" xml:space="preserve">
+    <value>Alle Filteroptionen</value>
+  </data>
+  <data name="Changelog.AllFilterOptions.Description" xml:space="preserve">
+    <value>Die Filter bieten jetzt alles an, was AniList liefert: mehrere Formate gleichzeitig und ein neuer Tag-Filter, zum Beispiel für Shounen, Seinen oder Isekai.</value>
   </data>
   <data name="Changelog.FullSimulcast.Title" xml:space="preserve">
     <value>Vollständiger Simulcast</value>

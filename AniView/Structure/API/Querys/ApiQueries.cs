@@ -275,7 +275,21 @@ namespace AniView.Structure.API.Querys
             }
             """;
 
-        private const string PageInfoFields = "pageInfo { total perPage currentPage lastPage hasNextPage }";
+        /// <summary>
+        /// Alle Tags, die AniList kennt (Grundlage des Tag-Filters), mit ihrer Kategorie.
+        /// </summary>
+        public const string Tags = """
+            query {
+              MediaTagCollection {
+                id
+                name
+                category
+                isAdult
+              }
+            }
+            """;
+
+        private const string PageInfoFields ="pageInfo { total perPage currentPage lastPage hasNextPage }";
 
         public static string MediaPage(MediaFieldsProfile profile) => $$"""
             query (
@@ -285,7 +299,8 @@ namespace AniView.Structure.API.Querys
               $search: String,
               $formatIn: [MediaFormat],
               $licensedByIn: [String],
-              $genreIn: [String]
+              $genreIn: [String],
+              $tagIn: [String]
             ) {
               Page(page: $page, perPage: $perPage) {
                 {{PageInfoFields}}
@@ -296,6 +311,7 @@ namespace AniView.Structure.API.Querys
                   format_in: $formatIn,
                   licensedBy_in: $licensedByIn,
                   genre_in: $genreIn,
+                  tag_in: $tagIn,
                   isAdult: false
                 ) {
                   {{BuildMediaFields(profile)}}
@@ -317,7 +333,8 @@ namespace AniView.Structure.API.Querys
               $search: String,
               $formatIn: [MediaFormat],
               $licensedByIn: [String],
-              $genreIn: [String]
+              $genreIn: [String],
+              $tagIn: [String]
             ) {
               Page(page: $page, perPage: $perPage) {
                 {{PageInfoFields}}
@@ -329,6 +346,7 @@ namespace AniView.Structure.API.Querys
                   format_in: $formatIn,
                   licensedBy_in: $licensedByIn,
                   genre_in: $genreIn,
+                  tag_in: $tagIn,
                   isAdult: false
                 ) {
                   {{BuildMediaFields(profile)}}
@@ -360,7 +378,8 @@ namespace AniView.Structure.API.Querys
               $search: String,
               $formatIn: [MediaFormat],
               $licensedByIn: [String],
-              $genreIn: [String]
+              $genreIn: [String],
+              $tagIn: [String]
             ) {
               Page(page: $page, perPage: $perPage) {
                 media(
@@ -370,6 +389,7 @@ namespace AniView.Structure.API.Querys
                   format_in: $formatIn,
                   licensedBy_in: $licensedByIn,
                   genre_in: $genreIn,
+                  tag_in: $tagIn,
                   isAdult: false
                 ) {
                   id

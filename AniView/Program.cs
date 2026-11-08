@@ -42,6 +42,7 @@ builder.Services.AddTransient<ICurrentSimulcastService, CurrentSimulcastService>
 builder.Services.AddTransient<IAnimeDetailService, AnimeDetailService>();
 builder.Services.AddTransient<IStreamingSiteService, StreamingSiteService>();
 builder.Services.AddTransient<IGenreService, GenreService>();
+builder.Services.AddTransient<ITagService, TagService>();
 
 var app = builder.Build();
 

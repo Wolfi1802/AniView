@@ -33,9 +33,9 @@ namespace AniView.Structure.API
                 variables["search"] = options.Search;
             }
 
-            if (options.Format is { } format)
+            if (options.Formats.Count > 0)
             {
-                variables["formatIn"] = new[] { ToApiFormat(format) };
+                variables["formatIn"] = options.Formats.Select(ToApiFormat).ToArray();
             }
 
             if (options.StreamingSites.Count > 0)
@@ -47,6 +47,11 @@ namespace AniView.Structure.API
             if (options.Genres.Count > 0)
             {
                 variables["genreIn"] = options.Genres;
+            }
+
+            if (options.Tags.Count > 0)
+            {
+                variables["tagIn"] = options.Tags;
             }
 
             return variables;
